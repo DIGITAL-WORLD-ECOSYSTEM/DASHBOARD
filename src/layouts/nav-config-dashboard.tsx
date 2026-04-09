@@ -14,7 +14,6 @@ const icon = (name: string) => (
 );
 
 const ICONS = {
-  job: icon('ic-job'),
   blog: icon('ic-blog'),
   chat: icon('ic-chat'),
   mail: icon('ic-mail'),
@@ -119,17 +118,6 @@ export const navData: NavSectionProps['data'] = [
           { title: 'Details', path: paths.dashboard.post.demo.details },
           { title: 'Create', path: paths.dashboard.post.new },
           { title: 'Edit', path: paths.dashboard.post.demo.edit },
-        ],
-      },
-      {
-        title: 'Job',
-        path: paths.dashboard.job.root,
-        icon: ICONS.job,
-        children: [
-          { title: 'List', path: paths.dashboard.job.root },
-          { title: 'Details', path: paths.dashboard.job.demo.details },
-          { title: 'Create', path: paths.dashboard.job.new },
-          { title: 'Edit', path: paths.dashboard.job.demo.edit },
         ],
       },
       {

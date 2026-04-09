@@ -68,7 +68,7 @@ export function applySettingsToTheme(
     };
 
     return {
-      ...currentScheme,
+      ...Object(currentScheme),
       palette: updatedPalette,
       customShadows: updatedCustomShadows,
     };

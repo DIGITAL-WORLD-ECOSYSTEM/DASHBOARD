@@ -1,7 +1,5 @@
 import type { TFunction } from 'i18next';
 
-import { paths } from 'src/routes/paths';
-
 import { CONFIG } from 'src/global-config';
 
 import { Label } from 'src/components/label';
