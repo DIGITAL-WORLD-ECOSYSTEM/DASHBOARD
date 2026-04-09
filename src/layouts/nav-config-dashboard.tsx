@@ -25,7 +25,6 @@ const ICONS = {
   label: icon('ic-label'),
   blank: icon('ic-blank'),
   folder: icon('ic-folder'),
-  course: icon('ic-course'),
   params: icon('ic-params'),
   banking: icon('ic-banking'),
   booking: icon('ic-booking'),
@@ -56,7 +55,6 @@ export const navData: NavSectionProps['data'] = [
       { title: 'Banking', path: paths.dashboard.general.banking, icon: ICONS.banking },
       { title: 'Booking', path: paths.dashboard.general.booking, icon: ICONS.booking },
       { title: 'File', path: paths.dashboard.general.file, icon: ICONS.file },
-      { title: 'Course', path: paths.dashboard.general.course, icon: ICONS.course },
     ],
   },
   /**
