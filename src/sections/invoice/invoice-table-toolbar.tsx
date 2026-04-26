@@ -151,7 +151,7 @@ export function InvoiceTableToolbar({ filters, options, dateError, onResetPage }
           onChange={handleFilterEndDate}
           slotProps={{
             textField: {
-              error: dateError,
+              message: dateError,
               helperText: dateError ? 'End date must be later than start date' : null,
             },
           }}

@@ -96,8 +96,8 @@ export function AccountGeneral() {
   return (
     <Form methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* @ts-expect-error: MUI-React-conflict */}
-        <Grid component="div" item xs={12} md={4}>
+        {/* @ts-ignore */}
+        <Grid component="div" xs={12} md={4}>
           <Card
             sx={{
               pt: 10,
@@ -139,8 +139,8 @@ export function AccountGeneral() {
           </Card>
         </Grid>
 
-        {/* @ts-expect-error: MUI-React-conflict */}
-        <Grid component="div" item xs={12} md={8}>
+        {/* @ts-ignore */}
+        <Grid component="div" xs={12} md={8}>
           <Card sx={{ p: 3 }}>
             <Box
               sx={{

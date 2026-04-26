@@ -22,14 +22,14 @@ import { Form, Field, schemaUtils } from 'src/components/hook-form';
 export type AddressCreateSchemaType = z.infer<typeof AddressCreateSchema>;
 
 export const AddressCreateSchema = z.object({
-  city: z.string().min(1, { error: 'City is required!' }),
-  state: z.string().min(1, { error: 'State is required!' }),
-  name: z.string().min(1, { error: 'Name is required!' }),
-  address: z.string().min(1, { error: 'Address is required!' }),
-  zipCode: z.string().min(1, { error: 'Zip code is required!' }),
+  city: z.string().min(1, { message: 'City is required!' }),
+  state: z.string().min(1, { message: 'State is required!' }),
+  name: z.string().min(1, { message: 'Name is required!' }),
+  address: z.string().min(1, { message: 'Address is required!' }),
+  zipCode: z.string().min(1, { message: 'Zip code is required!' }),
   phoneNumber: schemaUtils.phoneNumber({ isValid: isValidPhoneNumber }),
-  country: schemaUtils.nullableInput(z.string().min(1, { error: 'Country is required!' }), {
-    error: 'Country is required!',
+  country: schemaUtils.nullableInput(z.string().min(1, { message: 'Country is required!' }), {
+    message: 'Country is required!',
   }),
   // Not required
   primary: z.boolean(),

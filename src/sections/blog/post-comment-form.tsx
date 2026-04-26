@@ -14,7 +14,7 @@ import { Form, Field } from 'src/components/hook-form';
 export type CommentSchemaType = z.infer<typeof CommentSchema>;
 
 export const CommentSchema = z.object({
-  comment: z.string().min(1, { error: 'Comment is required!' }),
+  comment: z.string().min(1, { message: 'Comment is required!' }),
 });
 
 // ----------------------------------------------------------------------

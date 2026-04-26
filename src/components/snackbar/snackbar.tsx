@@ -34,7 +34,7 @@ export function Snackbar() {
             cancelButton: snackbarClasses.cancelButton,
             /********/
             info: snackbarClasses.info,
-            error: snackbarClasses.error,
+            message: snackbarClasses.error,
             success: snackbarClasses.success,
             warning: snackbarClasses.warning,
           },
@@ -46,7 +46,7 @@ export function Snackbar() {
           warning: (
             <Iconify className={snackbarClasses.iconSvg} icon="solar:danger-triangle-bold" />
           ),
-          error: <Iconify className={snackbarClasses.iconSvg} icon="solar:danger-bold" />,
+          message: <Iconify className={snackbarClasses.iconSvg} icon="solar:danger-bold" />,
         }}
       />
     </Portal>

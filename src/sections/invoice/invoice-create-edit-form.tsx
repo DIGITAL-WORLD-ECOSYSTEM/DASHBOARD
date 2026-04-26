@@ -29,10 +29,10 @@ export type InvoiceCreateSchemaType = z.infer<typeof InvoiceCreateSchema>;
 export const InvoiceCreateSchema = z
   .object({
     invoiceTo: schemaUtils.nullableInput(z.custom<IAddressItem>().nullable(), {
-      error: 'Invoice to is required!',
+      message: 'Invoice to is required!',
     }),
-    createDate: schemaUtils.date({ error: { required: 'Create date is required!' } }),
-    dueDate: schemaUtils.date({ error: { required: 'Due date is required!' } }),
+    createDate: schemaUtils.date({ message: { required: 'Create date is required!' } }),
+    dueDate: schemaUtils.date({ message: { required: 'Due date is required!' } }),
     items: z.array(
       z.object({
         title: z.string().min(1, { message: 'Title is required!' }),

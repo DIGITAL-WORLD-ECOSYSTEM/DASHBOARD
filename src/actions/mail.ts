@@ -1,13 +1,21 @@
 import type { SWRConfiguration } from 'swr';
 import type { IMail, IMailLabel } from 'src/types/mail';
 
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import { useMemo } from 'react';
 import { keyBy } from 'es-toolkit';
 
-import { fetcher, endpoints } from 'src/lib/axios';
+import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
 
 // ----------------------------------------------------------------------
+
+export async function sendCampaign(payload: any) {
+  const url = endpoints.platform.email.campaign;
+
+  const res = await axiosInstance.post(url, payload);
+
+  return res.data;
+}
 
 const swrOptions: SWRConfiguration = {
   revalidateIfStale: false,

@@ -64,7 +64,7 @@ export function RHFCode({
             sx={{ gap: gap ?? 1.5 }}
             TextFieldsProps={{
               placeholder,
-              error: !!error,
+              message: !!error,
               ...slotProps?.textField,
             }}
             {...other}

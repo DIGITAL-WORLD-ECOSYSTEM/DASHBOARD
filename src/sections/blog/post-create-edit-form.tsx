@@ -34,12 +34,12 @@ import { PostDetailsPreview } from './post-details-preview';
 export type PostCreateSchemaType = z.infer<typeof PostCreateSchema>;
 
 export const PostCreateSchema = z.object({
-  title: z.string().min(1, { error: 'Title is required!' }),
-  description: z.string().min(1, { error: 'Description is required!' }),
-  content: schemaUtils.editor().min(100, { error: 'Content must be at least 100 characters' }),
-  coverUrl: schemaUtils.file({ error: 'Cover is required!' }),
-  tags: z.string().array().min(2, { error: 'Must have at least 2 items!' }),
-  metaKeywords: z.string().array().min(1, { error: 'Meta keywords is required!' }),
+  title: z.string().min(1, { message: 'Title is required!' }),
+  description: z.string().min(1, { message: 'Description is required!' }),
+  content: schemaUtils.editor().min(100, { message: 'Content must be at least 100 characters' }),
+  coverUrl: schemaUtils.file({ message: 'Cover is required!' }),
+  tags: z.string().array().min(2, { message: 'Must have at least 2 items!' }),
+  metaKeywords: z.string().array().min(1, { message: 'Meta keywords is required!' }),
   // Not required
   metaTitle: z.string(),
   metaDescription: z.string(),

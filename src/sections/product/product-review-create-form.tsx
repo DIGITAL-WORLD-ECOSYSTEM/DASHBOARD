@@ -20,8 +20,8 @@ export type ProductReviewCreateSchemaType = z.infer<typeof ProductReviewCreateSc
 
 export const ProductReviewCreateSchema = z.object({
   rating: z.number().min(1, 'Rating must be greater than or equal to 1!'),
-  name: z.string().min(1, { error: 'Name is required!' }),
-  review: z.string().min(1, { error: 'Review is required!' }),
+  name: z.string().min(1, { message: 'Name is required!' }),
+  review: z.string().min(1, { message: 'Review is required!' }),
   email: schemaUtils.email(),
 });
 

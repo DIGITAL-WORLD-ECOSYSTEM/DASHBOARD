@@ -71,7 +71,7 @@ export function RHFUpload({ name, multiple, helperText, ...other }: RHFUploadPro
         const uploadProps = {
           multiple,
           accept: { 'image/*': [] },
-          error: !!error,
+          message: !!error,
           helperText: error?.message ?? helperText,
         };
 

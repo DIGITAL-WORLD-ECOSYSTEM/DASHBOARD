@@ -30,12 +30,12 @@ export type EventSchemaType = z.infer<typeof EventSchema>;
 export const EventSchema = z.object({
   title: z
     .string()
-    .min(1, { error: 'Title is required!' })
-    .max(100, { error: 'Title must be less than 100 characters' }),
+    .min(1, { message: 'Title is required!' })
+    .max(100, { message: 'Title must be less than 100 characters' }),
   description: z
     .string()
-    .min(1, { error: 'Description is required!' })
-    .min(50, { error: 'Description must be at least 50 characters' }),
+    .min(1, { message: 'Description is required!' })
+    .min(50, { message: 'Description must be at least 50 characters' }),
   // Not required
   color: z.string(),
   allDay: z.boolean(),
@@ -121,7 +121,7 @@ export function CalendarForm({ currentEvent, colorOptions, onClose }: Props) {
             label="End date"
             slotProps={{
               textField: {
-                error: dateError,
+                message: dateError,
                 helperText: dateError ? 'End date must be later than start date' : null,
               },
             }}

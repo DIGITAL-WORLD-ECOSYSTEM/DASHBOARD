@@ -22,8 +22,8 @@ export type VerifySchemaType = z.infer<typeof VerifySchema>;
 export const VerifySchema = z.object({
   code: z
     .string()
-    .min(1, { error: 'Code is required!' })
-    .min(6, { error: 'Code must be at least 6 characters!' }),
+    .min(1, { message: 'Code is required!' })
+    .min(6, { message: 'Code must be at least 6 characters!' }),
   email: schemaUtils.email(),
 });
 

@@ -17,7 +17,7 @@ export type PaginationExtendColor = {
   info: true;
   success: true;
   warning: true;
-  error: true;
+  message: true;
 };
 
 type PaginationItemVariants = ComponentsVariants<Theme>['MuiPaginationItem'];

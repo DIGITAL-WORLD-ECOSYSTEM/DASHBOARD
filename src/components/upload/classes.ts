@@ -20,7 +20,7 @@ export const uploadClasses = {
     description: createClasses('upload__placeholder__description'),
   },
   state: {
-    error: '--error',
+    message: '--error',
     focused: '--focused',
     disabled: '--disabled',
     dragActive: '--drag-active',

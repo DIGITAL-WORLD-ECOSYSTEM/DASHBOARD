@@ -28,7 +28,7 @@ const StepTwoSchema = z.object({
       .min(1, { message: 'Age is required!' })
       .min(18, { message: 'Age must be between 18 and 80' })
       .max(80, { message: 'Age must be between 18 and 80' }),
-    { error: 'Age is required!' }
+    { message: 'Age is required!' }
   ),
 });
 

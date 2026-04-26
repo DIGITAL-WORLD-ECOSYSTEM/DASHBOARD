@@ -41,23 +41,23 @@ export type ProductCreateSchemaType = z.infer<typeof ProductCreateSchema>;
 export const ProductCreateSchema = z.object({
   name: z.string().min(1, { message: 'Name is required!' }),
   description: schemaUtils
-    .editor({ error: 'Description is required!' })
+    .editor({ message: 'Description is required!' })
     .min(100, { message: 'Description must be at least 100 characters' }),
-  images: schemaUtils.files({ error: 'Images is required!' }).min(2, {
+  images: schemaUtils.files({ message: 'Images is required!' }).min(2, {
     message: 'Must have at least 2 items!',
   }),
   code: z.string().min(1, { message: 'Product code is required!' }),
   sku: z.string().min(1, { message: 'Product sku is required!' }),
   quantity: schemaUtils.nullableInput(
     z.coerce.number().min(1, { message: 'Quantity is required!' }),
-    { error: 'Quantity is required!' }
+    { message: 'Quantity is required!' }
   ),
   colors: z.string().array().min(1, { message: 'Choose at least one option!' }),
   sizes: z.string().array().min(1, { message: 'Choose at least one option!' }),
   tags: z.string().array().min(2, { message: 'Must have at least 2 items!' }),
   gender: z.array(z.string()).min(1, { message: 'Choose at least one option!' }),
   price: schemaUtils.nullableInput(z.coerce.number().min(1, { message: 'Price is required!' }), {
-    error: 'Price is required!',
+    message: 'Price is required!',
   }),
   // Not required
   category: z.string(),

@@ -40,7 +40,7 @@ export function useTranslate(namespace?: Namespace) {
         toast.promise(changeLangPromise, {
           loading: tMessages('languageSwitch.loading'),
           success: () => tMessages('languageSwitch.success'),
-          error: () => tMessages('languageSwitch.error'),
+          message: () => tMessages('languageSwitch.error'),
         });
 
         await changeLangPromise;

@@ -24,7 +24,7 @@ export type CustomShadows = {
   info: string;
   success: string;
   warning: string;
-  error: string;
+  message: string;
   card: string;
   dialog: string;
   dropdown: string;
@@ -55,7 +55,7 @@ function createCustomShadows(colorChannel: string): CustomShadows {
     info: createShadowColor(info.mainChannel),
     success: createShadowColor(success.mainChannel),
     warning: createShadowColor(warning.mainChannel),
-    error: createShadowColor(error.mainChannel),
+    message: createShadowColor(error.mainChannel),
   };
 }
 

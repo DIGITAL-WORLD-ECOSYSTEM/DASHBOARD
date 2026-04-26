@@ -1,3 +1,6 @@
+import { z as zod } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { varAlpha } from 'minimal-shared/utils';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useState, useEffect, useCallback } from 'react';
@@ -11,13 +14,26 @@ import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import LoadingButton from '@mui/lab/LoadingButton';
 
+import { toast } from 'src/components/snackbar';
 import { Editor } from 'src/components/editor';
 import { Iconify } from 'src/components/iconify';
+import { sendCampaign } from 'src/actions/mail';
 
 // ----------------------------------------------------------------------
 
-const POSITION = 20;
+const POSITION = 16;
+
+// ----------------------------------------------------------------------
+
+export const MailSchema = zod.object({
+  to: zod.string().min(1, { message: 'Recipient is required!' }),
+  subject: zod.string().min(1, { message: 'Subject is required!' }),
+  message: zod.string().min(1, { message: 'Message is required!' }),
+});
+
+export type MailSchemaType = zod.infer<typeof MailSchema>;
 
 type Props = {
   onCloseCompose: () => void;
@@ -27,12 +43,50 @@ export function MailCompose({ onCloseCompose }: Props) {
   const smUp = useMediaQuery((theme) => theme.breakpoints.up('sm'));
 
   const fullScreen = useBoolean();
+  const isSubmitting = useBoolean();
 
-  const [message, setMessage] = useState('');
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<MailSchemaType>({
+    resolver: zodResolver(MailSchema),
+    defaultValues: {
+      to: '',
+      subject: '',
+      message: '',
+    },
+  });
 
-  const handleChangeMessage = useCallback((value: string) => {
-    setMessage(value);
-  }, []);
+  const messageValue = watch('message');
+
+  const onSubmit = handleSubmit(async (data) => {
+    isSubmitting.onTrue();
+    try {
+      // Formata o payload para o Backend (SendPulse)
+      const payload = {
+        campaignName: `Campaign: ${data.subject}`,
+        addressBookId: 1000, // TODO: Permitir escolha de AddressBookId ou usar default
+        templateId: 0, // 0 indica envio manual/HTML bruto
+        subject: data.subject,
+        body: data.message,
+      };
+
+      await sendCampaign(payload);
+      
+      toast.success('Mailing campaign started successfully!');
+      reset();
+      onCloseCompose();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(`Error: ${error.message}`);
+    } finally {
+      isSubmitting.onFalse();
+    }
+  });
 
   useEffect(() => {
     document.body.style.overflow = fullScreen.value ? 'hidden' : '';
@@ -89,8 +143,10 @@ export function MailCompose({ onCloseCompose }: Props) {
         </Box>
 
         <InputBase
+          {...register('to')}
           id="mail-compose-to"
           placeholder="To"
+          error={!!errors.to}
           endAdornment={
             <Box sx={{ gap: 0.5, display: 'flex', typography: 'subtitle2' }}>
               <Box sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}>Cc</Box>
@@ -107,8 +163,10 @@ export function MailCompose({ onCloseCompose }: Props) {
         />
 
         <InputBase
+          {...register('subject')}
           id="mail-compose-subject"
           placeholder="Subject"
+          error={!!errors.subject}
           sx={[
             (theme) => ({
               px: 2,
@@ -129,8 +187,8 @@ export function MailCompose({ onCloseCompose }: Props) {
           }}
         >
           <Editor
-            value={message}
-            onChange={handleChangeMessage}
+            value={messageValue}
+            onChange={(value) => setValue('message', value)}
             placeholder="Type a message"
             slotProps={{
               wrapper: { sx: { ...(fullScreen.value && { minHeight: 0, flex: '1 1 auto' }) } },
@@ -152,13 +210,15 @@ export function MailCompose({ onCloseCompose }: Props) {
 
             <Box sx={{ flexGrow: 1 }} />
 
-            <Button
+            <LoadingButton
+              loading={isSubmitting.value}
               variant="contained"
               color="primary"
               endIcon={<Iconify icon="custom:send-fill" />}
+              onClick={onSubmit}
             >
               Send
-            </Button>
+            </LoadingButton>
           </Box>
         </Box>
       </Paper>

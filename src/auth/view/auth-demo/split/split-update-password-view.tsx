@@ -27,17 +27,17 @@ export const UpdatePasswordSchema = z
   .object({
     code: z
       .string()
-      .min(1, { error: 'Code is required!' })
-      .min(6, { error: 'Code must be at least 6 characters!' }),
+      .min(1, { message: 'Code is required!' })
+      .min(6, { message: 'Code must be at least 6 characters!' }),
     email: schemaUtils.email(),
     password: z
       .string()
-      .min(1, { error: 'Password is required!' })
-      .min(6, { error: 'Password must be at least 6 characters!' }),
-    confirmPassword: z.string().min(1, { error: 'Confirm password is required!' }),
+      .min(1, { message: 'Password is required!' })
+      .min(6, { message: 'Password must be at least 6 characters!' }),
+    confirmPassword: z.string().min(1, { message: 'Confirm password is required!' }),
   })
   .refine((val) => val.password === val.confirmPassword, {
-    error: 'Passwords do not match!',
+    message: 'Passwords do not match!',
     path: ['confirmPassword'],
   });
 
