@@ -1,7 +1,7 @@
 import type { SWRConfiguration } from 'swr';
 import type { IMail, IMailLabel } from 'src/types/mail';
 
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { useMemo } from 'react';
 import { keyBy } from 'es-toolkit';
 

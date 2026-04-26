@@ -26,6 +26,10 @@ export default defineConfig({
   resolve: {
     alias: [
       {
+        find: 'zod',
+        replacement: path.resolve(__dirname, '../node_modules/.pnpm/zod@3.25.76/node_modules/zod'),
+      },
+      {
         find: /^src(.+)/,
         replacement: path.resolve(process.cwd(), 'src/$1'),
       },

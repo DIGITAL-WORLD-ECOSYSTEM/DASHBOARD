@@ -87,7 +87,7 @@ export function OtherDemo({ debug, onClose }: Props) {
                 onRemove={(inputFile) =>
                   setValue(
                     'multiUpload',
-                    values.multiUpload.filter((file) => file !== inputFile),
+                    (values.multiUpload as (File | string)[]).filter((file) => file !== inputFile),
                     { shouldValidate: true }
                   )
                 }

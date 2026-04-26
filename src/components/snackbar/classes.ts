@@ -18,7 +18,7 @@ export const snackbarClasses = {
   loadingIcon: createClasses('snackbar__loading_icon'),
   /********/
   default: '&:not([data-type])',
-  message: createClasses('snackbar__error'),
+  error: createClasses('snackbar__error'),
   success: createClasses('snackbar__success'),
   warning: createClasses('snackbar__warning'),
   info: createClasses('snackbar__info'),

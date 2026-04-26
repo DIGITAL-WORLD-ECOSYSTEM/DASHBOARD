@@ -81,19 +81,19 @@ export function PaginationView() {
         <Box sx={contentStyles.grid()}>
           <ComponentBox title="Text">
             {COLORS.map((color) => (
-              <Pagination key={color} color={color} count={10} variant="text" />
+              <Pagination key={color} color={color as any} count={10} variant="text" />
             ))}
           </ComponentBox>
 
           <ComponentBox title="Outlined">
             {COLORS.map((color) => (
-              <Pagination key={color} color={color} count={10} variant="outlined" />
+              <Pagination key={color} color={color as any} count={10} variant="outlined" />
             ))}
           </ComponentBox>
 
           <ComponentBox title="Soft">
             {COLORS.map((color) => (
-              <Pagination key={color} color={color} count={10} variant="soft" />
+              <Pagination key={color} color={color as any} count={10} variant="soft" />
             ))}
           </ComponentBox>
         </Box>

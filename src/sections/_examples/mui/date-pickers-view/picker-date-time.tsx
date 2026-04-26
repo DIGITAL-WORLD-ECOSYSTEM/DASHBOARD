@@ -49,7 +49,7 @@ export function PickerDateTime() {
           <DateTimePicker
             {...pickerProps}
             label="Error"
-            slotProps={{ textField: { message: true } }}
+            slotProps={{ textField: { error: true } }}
           />
         </ComponentBox>
       </Box>

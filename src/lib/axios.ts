@@ -1,6 +1,7 @@
 import type { AxiosRequestConfig } from 'axios';
 
 import axios from 'axios';
+
 import { CryptoCore } from 'src/utils/crypto';
 
 import { CONFIG } from 'src/global-config';

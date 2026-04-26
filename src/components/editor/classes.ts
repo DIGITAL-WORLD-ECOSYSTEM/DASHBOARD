@@ -45,7 +45,7 @@ export const editorClasses = {
     orderedList: createClasses('editor__content__ordered__list'),
   },
   state: {
-    message: '--error',
+    error: '--error',
     disabled: '--disabled',
     fullscreen: '--fullscreen',
   },

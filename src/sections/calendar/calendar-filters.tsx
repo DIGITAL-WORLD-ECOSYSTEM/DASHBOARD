@@ -146,7 +146,7 @@ export function CalendarFilters({
         onChange={handleFilterEndDate}
         slotProps={{
           textField: {
-            message: dateError,
+            error: dateError,
             helperText: dateError ? 'End date must be later than start date' : null,
           },
         }}

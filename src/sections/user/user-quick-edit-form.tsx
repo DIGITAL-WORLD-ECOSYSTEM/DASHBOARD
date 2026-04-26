@@ -86,7 +86,7 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
       toast.promise(promise, {
         loading: 'Loading...',
         success: 'Update success!',
-        message: 'Update error!',
+        error: 'Update error!',
       });
 
       await promise;

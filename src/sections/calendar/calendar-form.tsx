@@ -121,7 +121,7 @@ export function CalendarForm({ currentEvent, colorOptions, onClose }: Props) {
             label="End date"
             slotProps={{
               textField: {
-                message: dateError,
+                error: dateError,
                 helperText: dateError ? 'End date must be later than start date' : null,
               },
             }}

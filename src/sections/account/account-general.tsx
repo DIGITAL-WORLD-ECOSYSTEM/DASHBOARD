@@ -24,10 +24,10 @@ export type UpdateUserSchemaType = z.infer<typeof UpdateUserSchema>;
 export const UpdateUserSchema = z.object({
   displayName: z.string().min(1, { message: 'Name is required!' }),
   email: schemaUtils.email(),
-  photoURL: schemaUtils.file({ error: 'Avatar is required!' }),
+  photoURL: schemaUtils.file({ message: 'Avatar is required!' }),
   phoneNumber: schemaUtils.phoneNumber({ isValid: isValidPhoneNumber }),
   country: schemaUtils.nullableInput(z.string().min(1, { message: 'Country is required!' }), {
-    error: 'Country is required!',
+    message: 'Country is required!',
   }),
   address: z.string().min(1, { message: 'Address is required!' }),
   state: z.string().min(1, { message: 'State is required!' }),
@@ -96,7 +96,7 @@ export function AccountGeneral() {
   return (
     <Form methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
-        {/* @ts-ignore */}
+        {/* @ts-expect-error MUI v2 Grid xs prop */}
         <Grid component="div" xs={12} md={4}>
           <Card
             sx={{
@@ -139,7 +139,7 @@ export function AccountGeneral() {
           </Card>
         </Grid>
 
-        {/* @ts-ignore */}
+        {/* @ts-expect-error MUI v2 Grid xs prop */}
         <Grid component="div" xs={12} md={8}>
           <Card sx={{ p: 3 }}>
             <Box

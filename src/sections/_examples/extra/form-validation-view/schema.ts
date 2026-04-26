@@ -104,10 +104,17 @@ export const ControlsSchema = z.object({
 export type OtherSchemaType = z.infer<typeof OtherSchema>;
 
 export const OtherSchema = z.object({
-  editor: schemaUtils
-    .editor()
+  editor: z
+    .string()
     .min(100, { message: 'Content must be at least 100 characters' })
-    .max(500, { message: 'Content must be less than 500 characters' }),
+    .max(500, { message: 'Content must be less than 500 characters' })
+    .refine(
+      (val) => {
+        const cleanedValue = val.trim();
+        return cleanedValue !== '' && cleanedValue !== '<p></p>';
+      },
+      { message: 'Content is required!' }
+    ),
   singleUpload: schemaUtils.file({ message: 'Single upload is required!' }),
   multiUpload: schemaUtils.files({ message: 'Multi upload is required!' }).min(2, {
     message: 'Must have at least 2 items!',

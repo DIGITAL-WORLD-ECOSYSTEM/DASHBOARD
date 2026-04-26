@@ -1,25 +1,25 @@
 import { z as zod } from 'zod';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { varAlpha } from 'minimal-shared/utils';
 import { useBoolean } from 'minimal-shared/hooks';
-import { useState, useEffect, useCallback } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import Portal from '@mui/material/Portal';
 import Backdrop from '@mui/material/Backdrop';
 import InputBase from '@mui/material/InputBase';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import LoadingButton from '@mui/lab/LoadingButton';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { toast } from 'src/components/snackbar';
-import { Editor } from 'src/components/editor';
-import { Iconify } from 'src/components/iconify';
 import { sendCampaign } from 'src/actions/mail';
+
+import { Editor } from 'src/components/editor';
+import { toast } from 'src/components/snackbar';
+import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 

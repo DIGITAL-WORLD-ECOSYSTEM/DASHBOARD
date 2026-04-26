@@ -29,7 +29,7 @@ export function SnackbarView() {
       toast.promise(promise, {
         loading: 'Loading...',
         success: () => `Loading success!`,
-        message: 'Error',
+        error: 'Error',
         closeButton: false,
       });
 

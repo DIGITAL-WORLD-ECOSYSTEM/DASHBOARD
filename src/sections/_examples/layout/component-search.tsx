@@ -9,14 +9,12 @@ import { isEqualPath } from 'minimal-shared/utils';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Link, { linkClasses } from '@mui/material/Link';
-import InputAdornment from '@mui/material/InputAdornment';
 import { inputBaseClasses } from '@mui/material/InputBase';
 import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 
 import { RouterLink } from 'src/routes/components';
 import { useRouter, usePathname } from 'src/routes/hooks';
 
-import { Iconify } from 'src/components/iconify';
 import { SearchNotFound } from 'src/components/search-not-found';
 
 // ----------------------------------------------------------------------
