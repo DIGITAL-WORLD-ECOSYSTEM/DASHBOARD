@@ -95,7 +95,7 @@ export const schemaUtils = {
       .number()
       .array()
       .refine((val) => val[0] >= props.min && val[1] <= props.max, {
-        error: props.error ?? `Range must be between ${props.min} and ${props.max}`,
+        message: props.error ?? `Range must be between ${props.min} and ${props.max}`,
       }),
 
   /**
@@ -119,10 +119,10 @@ export const schemaUtils = {
    * Files
    * Apply for upload multiple files.
    */
-  files: (props?: { message: string; minFiles?: number }) =>
+  files: (props?: { error: string; minFiles?: number }) =>
     z
       .array(z.union([z.string(), z.instanceof(File)]))
-      .min(1, { message: props?.message ?? 'Files is required!' }),
+      .min(1, { message: props?.error ?? 'Files is required!' }),
 };
 
 // ----------------------------------------------------------------------

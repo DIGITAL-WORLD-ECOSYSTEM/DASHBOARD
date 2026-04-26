@@ -40,12 +40,19 @@ export type ProductCreateSchemaType = z.infer<typeof ProductCreateSchema>;
 
 export const ProductCreateSchema = z.object({
   name: z.string().min(1, { message: 'Name is required!' }),
-  description: schemaUtils
-    .editor({ message: 'Description is required!' })
-    .min(100, { message: 'Description must be at least 100 characters' }),
-  images: schemaUtils.files({ message: 'Images is required!' }).min(2, {
-    message: 'Must have at least 2 items!',
-  }),
+  description: z
+    .string()
+    .min(100, { message: 'Description must be at least 100 characters' })
+    .refine(
+      (val) => {
+        const cleanedValue = val.trim();
+        return cleanedValue !== '' && cleanedValue !== '<p></p>';
+      },
+      { message: 'Description is required!' }
+    ),
+  images: z
+    .array(z.union([z.string(), z.instanceof(File)]))
+    .min(2, { message: 'Must have at least 2 items!' }),
   code: z.string().min(1, { message: 'Product code is required!' }),
   sku: z.string().min(1, { message: 'Product sku is required!' }),
   quantity: schemaUtils.nullableInput(
@@ -139,7 +146,8 @@ export function ProductCreateEditForm({ currentProduct }: Props) {
 
   const handleRemoveFile = useCallback(
     (inputFile: File | string) => {
-      const filtered = values.images && values.images?.filter((file) => file !== inputFile);
+      const filtered =
+        values.images && (values.images as (File | string)[]).filter((file) => file !== inputFile);
       setValue('images', filtered);
     },
     [setValue, values.images]

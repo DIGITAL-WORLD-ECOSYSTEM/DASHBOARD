@@ -55,7 +55,7 @@ export function RHFDatePicker({ name, slotProps, ...other }: PickerProps<DatePic
             ...slotProps,
             textField: {
               ...slotProps?.textField,
-              message: !!error,
+              error: !!error,
               helperText: error?.message ?? slotProps?.textField?.helperText,
             },
           }}
@@ -92,7 +92,7 @@ export function RHFTimePicker({ name, slotProps, ...other }: PickerProps<TimePic
             ...slotProps,
             textField: {
               ...slotProps?.textField,
-              message: !!error,
+              error: !!error,
               helperText: error?.message ?? slotProps?.textField?.helperText,
             },
           }}
@@ -129,7 +129,7 @@ export function RHFDateTimePicker({ name, slotProps, ...other }: PickerProps<Dat
             ...slotProps,
             textField: {
               ...slotProps?.textField,
-              message: !!error,
+              error: !!error,
               helperText: error?.message ?? slotProps?.textField?.helperText,
             },
           }}
