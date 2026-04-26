@@ -3,9 +3,15 @@ import checker from 'vite-plugin-checker';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
 // ----------------------------------------------------------------------
 
 const PORT = 8080;
+
+const zodPath = path.dirname(require.resolve('zod/package.json'));
 
 export default defineConfig({
   plugins: [
@@ -27,7 +33,7 @@ export default defineConfig({
     alias: [
       {
         find: 'zod',
-        replacement: path.resolve(__dirname, '../node_modules/.pnpm/zod@3.25.76/node_modules/zod'),
+        replacement: zodPath,
       },
       {
         find: /^src(.+)/,
