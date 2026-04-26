@@ -29,7 +29,7 @@ export const AddressCreateSchema = z.object({
   zipCode: z.string().min(1, { message: 'Zip code is required!' }),
   phoneNumber: schemaUtils.phoneNumber({ isValid: isValidPhoneNumber }),
   country: schemaUtils.nullableInput(z.string().min(1, { message: 'Country is required!' }), {
-    message: 'Country is required!',
+    error: 'Country is required!',
   }),
   // Not required
   primary: z.boolean(),

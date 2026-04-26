@@ -95,7 +95,7 @@ export const schemaUtils = {
       .number()
       .array()
       .refine((val) => val[0] >= props.min && val[1] <= props.max, {
-        message: props.error ?? `Range must be between ${props.min} and ${props.max}`,
+        error: props.error ?? `Range must be between ${props.min} and ${props.max}`,
       }),
 
   /**
