@@ -8,7 +8,7 @@ const MOCK_ID = _id[1];
 const MOCK_TITLE = _postTitles[2];
 
 const ROOTS = {
-  AUTH: '/auth',
+  AUTH: '',
   DASHBOARD: '/dashboard',
 };
 
@@ -46,11 +46,11 @@ export const paths = {
   // AUTH
   auth: {
     jwt: {
-      signIn: `${ROOTS.AUTH}/jwt/sign-in`,
-      signUp: `${ROOTS.AUTH}/jwt/sign-up`,
-      resetPassword: `${ROOTS.AUTH}/jwt/reset-password`,
-      updatePassword: `${ROOTS.AUTH}/jwt/update-password`,
-      verify: `${ROOTS.AUTH}/jwt/verify`,
+      signIn: `/login`,
+      signUp: `/register`,
+      resetPassword: `/forgot-password`,
+      updatePassword: `/reset-password`,
+      verify: `/verify`,
     },
   },
   // DASHBOARD

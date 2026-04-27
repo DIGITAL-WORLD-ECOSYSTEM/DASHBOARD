@@ -23,9 +23,9 @@ export default function OAuthCallbackPage() {
       window.location.href = CONFIG.auth.redirectPath;
     } else if (error) {
       console.error('OAuth Error:', error);
-      router.replace('/auth/jwt/sign-in');
+      router.replace('/login');
     } else {
-      router.replace('/auth/jwt/sign-in');
+      router.replace('/login');
     }
   }, [router, searchParams]);
 

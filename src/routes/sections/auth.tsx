@@ -26,71 +26,63 @@ const OAuth = {
   CallbackPage: lazy(() => import('src/pages/auth/oauth/callback')),
 };
 
-const authJwt = {
-  path: 'jwt',
-  children: [
-    {
-      path: 'sign-in',
-      element: (
-        <GuestGuard>
-          <AuthCenteredLayout>
-            <Jwt.SignInPage />
-          </AuthCenteredLayout>
-        </GuestGuard>
-      ),
-    },
-    {
-      path: 'sign-up',
-      element: (
-        <GuestGuard>
-          <AuthCenteredLayout>
-            <Jwt.SignUpPage />
-          </AuthCenteredLayout>
-        </GuestGuard>
-      ),
-    },
-    {
-      path: 'reset-password',
-      element: (
-        <AuthCenteredLayout>
-          <Jwt.ResetPasswordPage />
-        </AuthCenteredLayout>
-      ),
-    },
-    {
-      path: 'update-password',
-      element: (
-        <AuthCenteredLayout>
-          <Jwt.UpdatePasswordPage />
-        </AuthCenteredLayout>
-      ),
-    },
-    {
-      path: 'verify',
-      element: (
-        <AuthCenteredLayout>
-          <Jwt.VerifyPage />
-        </AuthCenteredLayout>
-      ),
-    },
-  ],
-};
-
 // ----------------------------------------------------------------------
 
 export const authRoutes: RouteObject[] = [
   {
-    path: 'auth',
     element: (
       <Suspense fallback={<SplashScreen />}>
         <Outlet />
       </Suspense>
     ),
     children: [
-      authJwt,
       {
-        path: 'oauth',
-        children: [{ path: 'callback', element: <OAuth.CallbackPage /> }],
+        path: 'login',
+        element: (
+          <GuestGuard>
+            <AuthCenteredLayout>
+              <Jwt.SignInPage />
+            </AuthCenteredLayout>
+          </GuestGuard>
+        ),
+      },
+      {
+        path: 'register',
+        element: (
+          <GuestGuard>
+            <AuthCenteredLayout>
+              <Jwt.SignUpPage />
+            </AuthCenteredLayout>
+          </GuestGuard>
+        ),
+      },
+      {
+        path: 'forgot-password',
+        element: (
+          <AuthCenteredLayout>
+            <Jwt.ResetPasswordPage />
+          </AuthCenteredLayout>
+        ),
+      },
+      {
+        path: 'reset-password',
+        element: (
+          <AuthCenteredLayout>
+            <Jwt.UpdatePasswordPage />
+          </AuthCenteredLayout>
+        ),
+      },
+      {
+        path: 'verify',
+        element: (
+          <AuthCenteredLayout>
+            <Jwt.VerifyPage />
+          </AuthCenteredLayout>
+        ),
+      },
+      {
+        path: 'auth/oauth/callback',
+        element: <OAuth.CallbackPage />,
       },
     ],
   },
