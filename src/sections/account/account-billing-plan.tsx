@@ -17,7 +17,6 @@ import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 
 import { AddressListDialog } from '../address';
-import { PaymentCardListDialog } from '../payment/payment-card-list-dialog';
 
 // ----------------------------------------------------------------------
 
@@ -155,16 +154,7 @@ export function AccountBillingPlan({ cardList, addressBook, plans }: Props) {
         { name: 'Billing phone number', content: selectedAddress?.phoneNumber },
         {
           name: 'Payment method',
-          content: (
-            <ButtonBase
-              disableRipple
-              onClick={openAddress.onTrue}
-              sx={{ gap: 1, typography: 'subtitle2' }}
-            >
-              {selectedCard?.cardNumber}
-              <Iconify width={16} icon="eva:arrow-ios-downward-fill" />
-            </ButtonBase>
-          ),
+          content: selectedCard?.cardNumber || 'No card selected',
         },
       ].map((item) => (
         <Grid key={item.name} container spacing={{ xs: 0.5, md: 2 }}>
@@ -192,20 +182,7 @@ export function AccountBillingPlan({ cardList, addressBook, plans }: Props) {
     </Box>
   );
 
-  const renderCardListDialog = () => (
-    <PaymentCardListDialog
-      list={cardList}
-      open={openCards.value}
-      onClose={openCards.onFalse}
-      selected={(selectedId: string) => selectedCard?.id === selectedId}
-      onSelect={handleSelectCard}
-      action={
-        <Button size="small" startIcon={<Iconify icon="mingcute:add-line" />}>
-          Add
-        </Button>
-      }
-    />
-  );
+  const renderCardListDialog = () => null;
 
   const renderAddressListDialog = () => (
     <AddressListDialog

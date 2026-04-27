@@ -18,8 +18,6 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 import { Iconify } from 'src/components/iconify';
 
-import { PaymentCardCreateForm } from '../payment/payment-card-create-form';
-
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
@@ -34,6 +32,20 @@ export function CheckoutPaymentMethods({ name, options, sx, ...other }: Props) {
   const { control } = useFormContext();
 
   const openForm = useBoolean();
+
+  const renderCardCreateFormDialog = () => (
+    <Dialog fullWidth maxWidth="xs" open={openForm.value} onClose={openForm.onFalse}>
+      <DialogTitle>Add card</DialogTitle>
+      <Box sx={{ p: 3, typography: 'body2' }}>
+        Card management is currently disabled in this dashboard.
+      </Box>
+      <DialogActions>
+        <Button color="inherit" variant="outlined" onClick={openForm.onFalse}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 
   return (
     <>
@@ -78,20 +90,7 @@ export function CheckoutPaymentMethods({ name, options, sx, ...other }: Props) {
         />
       </Card>
 
-      <Dialog fullWidth maxWidth="xs" open={openForm.value} onClose={openForm.onFalse}>
-        <DialogTitle>Add card</DialogTitle>
-
-        <PaymentCardCreateForm sx={{ px: 3 }} />
-
-        <DialogActions>
-          <Button color="inherit" variant="outlined" onClick={openForm.onFalse}>
-            Cancel
-          </Button>
-          <Button color="inherit" variant="contained" onClick={openForm.onFalse}>
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {renderCardCreateFormDialog()}
     </>
   );
 }

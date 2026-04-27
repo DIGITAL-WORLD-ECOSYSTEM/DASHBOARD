@@ -21,21 +21,13 @@ import { Iconify } from 'src/components/iconify';
 
 const LINKS = [
   {
-    headline: 'Minimal',
-    children: [
-      { name: 'About us', href: paths.about },
-      { name: 'Contact us', href: paths.contact },
-      { name: 'FAQs', href: paths.faqs },
-    ],
-  },
-  {
     headline: 'Legal',
     children: [
       { name: 'Terms and condition', href: '#' },
       { name: 'Privacy policy', href: '#' },
     ],
   },
-  { headline: 'Contact', children: [{ name: 'support@minimals.cc', href: '#' }] },
+  { headline: 'Contact', children: [{ name: 'support@asppibra.com', href: '#' }] },
 ];
 
 // ----------------------------------------------------------------------
