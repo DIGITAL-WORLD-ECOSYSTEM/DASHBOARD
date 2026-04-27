@@ -119,12 +119,12 @@ function CarouselItem({ item, showCurrency, onToggleCurrency }: CarouselItemProp
       <MenuList>
         <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
           <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
+          Excluir
         </MenuItem>
 
         <MenuItem onClick={handleEdit}>
           <Iconify icon="solar:pen-bold" />
-          Edit
+          Editar
         </MenuItem>
       </MenuList>
     </CustomPopover>
@@ -149,7 +149,7 @@ function CarouselItem({ item, showCurrency, onToggleCurrency }: CarouselItemProp
         </IconButton>
 
         <div>
-          <Box sx={{ mb: 1.5, typography: 'subtitle2', opacity: 0.48 }}>Current balance</Box>
+          <Box sx={{ mb: 1.5, typography: 'subtitle2', opacity: 0.48 }}>Saldo atual</Box>
 
           <Box sx={{ gap: 1, display: 'flex', alignItems: 'center' }}>
             <Box component="span" sx={{ typography: 'h4' }}>
@@ -185,6 +185,9 @@ function CarouselItem({ item, showCurrency, onToggleCurrency }: CarouselItemProp
             {item.cardType === 'mastercard' && (
               <Iconify width={32} height="auto" icon="payments:mastercard" />
             )}
+            {item.cardType === 'blockchain' && (
+              <Iconify width={32} height="auto" icon="solar:atom-bold-duotone" sx={{ color: 'primary.main' }} />
+            )}
           </Box>
 
           {item.cardNumber}
@@ -192,11 +195,15 @@ function CarouselItem({ item, showCurrency, onToggleCurrency }: CarouselItemProp
 
         <Box sx={{ gap: 5, display: 'flex', typography: 'subtitle1' }}>
           <div>
-            <Box sx={{ mb: 1, opacity: 0.48, typography: 'caption' }}>Card holder</Box>
+            <Box sx={{ mb: 1, opacity: 0.48, typography: 'caption' }}>
+              {item.cardType === 'blockchain' ? 'Titular da conta' : 'Titular do cartão'}
+            </Box>
             <Box component="span">{item.cardHolder}</Box>
           </div>
           <div>
-            <Box sx={{ mb: 1, opacity: 0.48, typography: 'caption' }}>Expiration date</Box>
+            <Box sx={{ mb: 1, opacity: 0.48, typography: 'caption' }}>
+              {item.cardType === 'blockchain' ? 'Rede / Protocolo' : 'Data de validade'}
+            </Box>
             <Box component="span">{item.cardValid}</Box>
           </div>
         </Box>

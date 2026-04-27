@@ -27,35 +27,35 @@ export function OverviewBankingView() {
             <BankingOverview />
 
             <BankingBalanceStatistics
-              title="Balance statistics"
-              subheader="Statistics on balance over time"
+              title="Estatísticas de Saldo"
+              subheader="Evolução do seu saldo ao longo do tempo"
               chart={{
                 series: [
                   {
-                    name: 'Weekly',
-                    categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                    name: 'Semanal',
+                    categories: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
                     data: [
-                      { name: 'Income', data: [24, 41, 35, 151, 49] },
-                      { name: 'Savings', data: [24, 56, 77, 88, 99] },
-                      { name: 'Investment', data: [40, 34, 77, 88, 99] },
+                      { name: 'Entradas', data: [24, 41, 35, 151, 49] },
+                      { name: 'Economias', data: [24, 56, 77, 88, 99] },
+                      { name: 'Investimentos', data: [40, 34, 77, 88, 99] },
                     ],
                   },
                   {
-                    name: 'Monthly',
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    name: 'Mensal',
+                    categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'],
                     data: [
-                      { name: 'Income', data: [83, 112, 119, 88, 103, 112, 114, 108, 93] },
-                      { name: 'Savings', data: [46, 46, 43, 58, 40, 59, 54, 42, 51] },
-                      { name: 'Investment', data: [25, 40, 38, 35, 20, 32, 27, 40, 21] },
+                      { name: 'Entradas', data: [83, 112, 119, 88, 103, 112, 114, 108, 93] },
+                      { name: 'Economias', data: [46, 46, 43, 58, 40, 59, 54, 42, 51] },
+                      { name: 'Investimentos', data: [25, 40, 38, 35, 20, 32, 27, 40, 21] },
                     ],
                   },
                   {
-                    name: 'Yearly',
+                    name: 'Anual',
                     categories: ['2018', '2019', '2020', '2021', '2022', '2023'],
                     data: [
-                      { name: 'Income', data: [76, 42, 29, 41, 27, 96] },
-                      { name: 'Savings', data: [46, 44, 24, 43, 44, 43] },
-                      { name: 'Investment', data: [23, 22, 37, 38, 32, 25] },
+                      { name: 'Entradas', data: [76, 42, 29, 41, 27, 96] },
+                      { name: 'Economias', data: [46, 44, 24, 43, 44, 43] },
+                      { name: 'Investimentos', data: [23, 22, 37, 38, 32, 25] },
                     ],
                   },
                 ],
@@ -63,17 +63,17 @@ export function OverviewBankingView() {
             />
 
             <BankingExpensesCategories
-              title="Expenses categories"
+              title="Categorias de Despesas"
               chart={{
                 series: [
-                  { label: 'Entertainment', value: 22 },
-                  { label: 'Fuel', value: 18 },
-                  { label: 'Fast food', value: 16 },
-                  { label: 'Cafe', value: 17 },
-                  { label: 'Сonnection', value: 14 },
-                  { label: 'Healthcare', value: 22 },
-                  { label: 'Fitness', value: 10 },
-                  { label: 'Supermarket', value: 21 },
+                  { label: 'Entretenimento', value: 22 },
+                  { label: 'Combustível', value: 18 },
+                  { label: 'Alimentação', value: 16 },
+                  { label: 'Café', value: 17 },
+                  { label: 'Conectividade', value: 14 },
+                  { label: 'Saúde', value: 22 },
+                  { label: 'Academia', value: 10 },
+                  { label: 'Supermercado', value: 21 },
                 ],
                 icons: [
                   <Iconify icon="solar:gamepad-bold" />,
@@ -89,12 +89,12 @@ export function OverviewBankingView() {
             />
 
             <BankingRecentTransitions
-              title="Recent transitions"
+              title="Últimas Transações"
               tableData={_bankingRecentTransitions}
               headCells={[
-                { id: 'description', label: 'Description' },
-                { id: 'date', label: 'Date' },
-                { id: 'amount', label: 'Amount' },
+                { id: 'description', label: 'Descrição' },
+                { id: 'date', label: 'Data' },
+                { id: 'amount', label: 'Valor' },
                 { id: 'status', label: 'Status' },
                 { id: '' },
               ]}
@@ -106,18 +106,18 @@ export function OverviewBankingView() {
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
             <BankingCurrentBalance list={_bankingCreditCard} />
 
-            <BankingQuickTransfer title="Quick transfer" list={_bankingContacts} />
+            <BankingQuickTransfer title="Transferência Rápida" list={_bankingContacts} />
 
             <BankingContacts
-              title="Contacts"
-              subheader="You have 122 contacts"
+              title="Contatos"
+              subheader="Você tem 122 contatos"
               list={_bankingContacts.slice(-5)}
             />
 
             <BankingInviteFriends
-              price="$50"
-              title={`Invite friends \n and earn`}
-              description="Praesent egestas tristique nibh. Duis lobortis massa imperdiet quam."
+              price="R$ 50"
+              title={`Convide amigos \n e ganhe`}
+              description="Convide seus parceiros para a rede e ganhe recompensas em tokens ASPPIBRA."
               imgUrl={`${CONFIG.assetsDir}/assets/illustrations/illustration-receipt.webp`}
             />
           </Box>

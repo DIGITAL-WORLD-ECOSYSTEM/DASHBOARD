@@ -21,14 +21,14 @@ import { Chart, useChart } from 'src/components/chart';
 const TABS = [
   {
     value: 'income',
-    label: 'Income',
+    label: 'Entradas',
     percent: 8.2,
     total: 9990,
     chart: { series: [{ data: [5, 31, 33, 50, 99, 76, 72, 76, 89] }] },
   },
   {
     value: 'expenses',
-    label: 'Expenses',
+    label: 'Saídas',
     percent: -6.6,
     total: 1989,
     chart: { series: [{ data: [10, 41, 35, 51, 49, 62, 69, 91, 148] }] },
@@ -45,7 +45,7 @@ export function BankingOverview({ sx, ...other }: CardProps) {
 
   const chartOptions = useChart({
     colors: chartColors,
-    xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'] },
+    xaxis: { categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'] },
     stroke: { width: 3 },
     tooltip: {
       y: { formatter: (value: number) => fCurrency(value), title: { formatter: () => '' } },
@@ -64,8 +64,8 @@ export function BankingOverview({ sx, ...other }: CardProps) {
           typography: 'subtitle2',
         }}
       >
-        Total balance
-        <Tooltip title="Vestibulum ullamcorper mauris">
+        Saldo total
+        <Tooltip title="Saldo consolidado da conta">
           <Iconify width={16} icon="eva:info-outline" sx={{ color: 'text.disabled' }} />
         </Tooltip>
       </Box>
@@ -81,21 +81,21 @@ export function BankingOverview({ sx, ...other }: CardProps) {
         size="small"
         startIcon={<Iconify width={16} icon="eva:arrow-upward-fill" />}
       >
-        Send
+        Enviar
       </Button>
       <Button
         variant="soft"
         size="small"
         startIcon={<Iconify width={16} icon="mingcute:add-line" />}
       >
-        Add card
+        Novo Cartão
       </Button>
       <Button
         variant="soft"
         size="small"
         startIcon={<Iconify width={16} icon="eva:arrow-downward-fill" />}
       >
-        Request
+        Solicitar
       </Button>
     </Box>
   );

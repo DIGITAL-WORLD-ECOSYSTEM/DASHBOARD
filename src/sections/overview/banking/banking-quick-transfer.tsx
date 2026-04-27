@@ -132,7 +132,7 @@ export function BankingQuickTransfer({ title, subheader, list, sx, ...other }: P
   const renderInput = () => (
     <>
       <Typography variant="overline" sx={{ color: 'text.secondary' }}>
-        Insert amount
+        Inserir valor
       </Typography>
 
       <InputAmount
@@ -155,7 +155,7 @@ export function BankingQuickTransfer({ title, subheader, list, sx, ...other }: P
 
       <Box sx={{ my: 4, display: 'flex', alignItems: 'center', typography: 'subtitle1' }}>
         <Box component="span" sx={{ flexGrow: 1 }}>
-          Your balance
+          Seu saldo
         </Box>
         {fCurrency(34212)}
       </Box>
@@ -168,7 +168,7 @@ export function BankingQuickTransfer({ title, subheader, list, sx, ...other }: P
         disabled={amount === 0}
         onClick={confirmDialog.onTrue}
       >
-        Transfer now
+        Transferir agora
       </Button>
     </>
   );
@@ -206,7 +206,7 @@ export function BankingQuickTransfer({ title, subheader, list, sx, ...other }: P
         <Box sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant="overline" sx={{ color: 'text.secondary', flexGrow: 1 }}>
-              Recent
+              Recentes
             </Typography>
 
             <Button
@@ -215,7 +215,7 @@ export function BankingQuickTransfer({ title, subheader, list, sx, ...other }: P
               endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
               sx={{ mr: -1 }}
             >
-              View all
+              Ver todos
             </Button>
           </Box>
 
@@ -252,7 +252,7 @@ function ConfirmTransferDialog({
 }: ConfirmTransferDialogProps) {
   return (
     <Dialog open={open} fullWidth maxWidth="xs" onClose={onClose} disableRestoreFocus>
-      <DialogTitle>Transfer to</DialogTitle>
+      <DialogTitle>Transferir para</DialogTitle>
 
       <Box
         sx={{
@@ -276,14 +276,14 @@ function ConfirmTransferDialog({
 
         <InputAmount onBlur={onBlur} onChange={onChange} value={value} />
 
-        <TextField fullWidth multiline rows={3} placeholder="Write a message..." />
+        <TextField fullWidth multiline rows={3} placeholder="Escreva uma mensagem..." />
       </Box>
 
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>Cancelar</Button>
 
         <Button variant="contained" disabled={value === '0'} onClick={onClose}>
-          Transfer
+          Transferir
         </Button>
       </DialogActions>
     </Dialog>
@@ -312,7 +312,7 @@ function InputAmount({ value, sx, inputProps, ...other }: InputProps) {
       }}
     >
       <Box component="span" sx={{ typography: 'h5', transform: 'translate(0px, 4px)' }}>
-        $
+        R$
       </Box>
       <Box component="span" sx={{ ...inputStyles, mx: 'auto', visibility: 'hidden' }}>
         {value as string}

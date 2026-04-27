@@ -33,7 +33,7 @@ type Props = CardProps & {
 export function BankingBalanceStatistics({ title, subheader, chart, sx, ...other }: Props) {
   const theme = useTheme();
 
-  const [selectedSeries, setSelectedSeries] = useState('Yearly');
+  const [selectedSeries, setSelectedSeries] = useState('Anual');
 
   const currentSeries = chart.series.find((i) => i.name === selectedSeries);
 
@@ -80,7 +80,7 @@ export function BankingBalanceStatistics({ title, subheader, chart, sx, ...other
 
       <Chart
         type="bar"
-        series={currentSeries?.data}
+        series={currentSeries?.data ?? []}
         options={chartOptions}
         slotProps={{ loading: { p: 2.5 } }}
         sx={{

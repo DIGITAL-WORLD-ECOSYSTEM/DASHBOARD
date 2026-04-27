@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router';
 import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
 
-import { AuthSplitLayout } from 'src/layouts/auth-split';
+import { AuthCenteredLayout } from 'src/layouts/auth-centered';
 
 import { SplashScreen } from 'src/components/loading-screen';
 
@@ -17,6 +17,9 @@ import { GuestGuard } from 'src/auth/guard';
 const Jwt = {
   SignInPage: lazy(() => import('src/pages/auth/jwt/sign-in')),
   SignUpPage: lazy(() => import('src/pages/auth/jwt/sign-up')),
+  ResetPasswordPage: lazy(() => import('src/pages/auth/jwt/reset-password')),
+  UpdatePasswordPage: lazy(() => import('src/pages/auth/jwt/update-password')),
+  VerifyPage: lazy(() => import('src/pages/auth/jwt/verify')),
 };
 
 const authJwt = {
@@ -26,13 +29,9 @@ const authJwt = {
       path: 'sign-in',
       element: (
         <GuestGuard>
-          <AuthSplitLayout
-            slotProps={{
-              section: { title: 'Hi, Welcome back' },
-            }}
-          >
+          <AuthCenteredLayout>
             <Jwt.SignInPage />
-          </AuthSplitLayout>
+          </AuthCenteredLayout>
         </GuestGuard>
       ),
     },
@@ -40,10 +39,34 @@ const authJwt = {
       path: 'sign-up',
       element: (
         <GuestGuard>
-          <AuthSplitLayout>
+          <AuthCenteredLayout>
             <Jwt.SignUpPage />
-          </AuthSplitLayout>
+          </AuthCenteredLayout>
         </GuestGuard>
+      ),
+    },
+    {
+      path: 'reset-password',
+      element: (
+        <AuthCenteredLayout>
+          <Jwt.ResetPasswordPage />
+        </AuthCenteredLayout>
+      ),
+    },
+    {
+      path: 'update-password',
+      element: (
+        <AuthCenteredLayout>
+          <Jwt.UpdatePasswordPage />
+        </AuthCenteredLayout>
+      ),
+    },
+    {
+      path: 'verify',
+      element: (
+        <AuthCenteredLayout>
+          <Jwt.VerifyPage />
+        </AuthCenteredLayout>
       ),
     },
   ],

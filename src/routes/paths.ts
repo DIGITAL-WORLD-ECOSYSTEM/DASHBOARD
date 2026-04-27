@@ -9,7 +9,6 @@ const MOCK_TITLE = _postTitles[2];
 
 const ROOTS = {
   AUTH: '/auth',
-  AUTH_DEMO: '/auth-demo',
   DASHBOARD: '/dashboard',
 };
 
@@ -49,22 +48,9 @@ export const paths = {
     jwt: {
       signIn: `${ROOTS.AUTH}/jwt/sign-in`,
       signUp: `${ROOTS.AUTH}/jwt/sign-up`,
-    },
-  },
-  authDemo: {
-    split: {
-      signIn: `${ROOTS.AUTH_DEMO}/split/sign-in`,
-      signUp: `${ROOTS.AUTH_DEMO}/split/sign-up`,
-      resetPassword: `${ROOTS.AUTH_DEMO}/split/reset-password`,
-      updatePassword: `${ROOTS.AUTH_DEMO}/split/update-password`,
-      verify: `${ROOTS.AUTH_DEMO}/split/verify`,
-    },
-    centered: {
-      signIn: `${ROOTS.AUTH_DEMO}/centered/sign-in`,
-      signUp: `${ROOTS.AUTH_DEMO}/centered/sign-up`,
-      resetPassword: `${ROOTS.AUTH_DEMO}/centered/reset-password`,
-      updatePassword: `${ROOTS.AUTH_DEMO}/centered/update-password`,
-      verify: `${ROOTS.AUTH_DEMO}/centered/verify`,
+      resetPassword: `${ROOTS.AUTH}/jwt/reset-password`,
+      updatePassword: `${ROOTS.AUTH}/jwt/update-password`,
+      verify: `${ROOTS.AUTH}/jwt/verify`,
     },
   },
   // DASHBOARD

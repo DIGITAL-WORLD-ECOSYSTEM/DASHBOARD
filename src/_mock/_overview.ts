@@ -196,11 +196,11 @@ export const _bankingCreditCard = [
   },
   {
     id: _mock.id(4),
-    balance: 2000.89,
-    cardType: 'mastercard',
-    cardHolder: _mock.fullName(4),
-    cardNumber: '**** **** **** 7755',
-    cardValid: '11/22',
+    balance: 1540.50,
+    cardType: 'blockchain',
+    cardHolder: '@sandro_da_asppibra',
+    cardNumber: '0x8864...7755',
+    cardValid: 'Binance Smart Chain',
   },
 ];
 

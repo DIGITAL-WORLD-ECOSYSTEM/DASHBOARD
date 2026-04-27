@@ -1,17 +1,17 @@
 import { CONFIG } from 'src/global-config';
 
-import { SplitSignInView } from 'src/auth/view/auth-demo/split';
+import { JwtVerifyView } from 'src/auth/view/jwt';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Sign in | Layout split - ${CONFIG.appName}` };
+const metadata = { title: `Verify | Jwt - ${CONFIG.appName}` };
 
 export default function Page() {
   return (
     <>
       <title>{metadata.title}</title>
 
-      <SplitSignInView />
+      <JwtVerifyView />
     </>
   );
 }

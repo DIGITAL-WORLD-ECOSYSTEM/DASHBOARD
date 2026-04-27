@@ -17,6 +17,19 @@ export type SignUpParams = {
   lastName: string;
 };
 
+export type Web3SignInParams = {
+  address: string;
+};
+
+// ----------------------------------------------------------------------
+
+declare global {
+  interface Window {
+    ethereum?: any;
+  }
+}
+
+
 /** **************************************
  * Sign in
  *************************************** */
@@ -82,3 +95,40 @@ export const signOut = async (): Promise<void> => {
     throw error;
   }
 };
+
+/** **************************************
+ * Web3 Sign in (SIWE)
+ * *************************************** */
+export const signInWithWeb3 = async (address: string): Promise<void> => {
+  try {
+    const nonceRes = await axios.get(endpoints.auth.web3Nonce, { params: { address } });
+    const { nonce, message } = nonceRes.data;
+
+    if (!window.ethereum) {
+      throw new Error('MetaMask is not installed');
+    }
+
+    const signature = await window.ethereum.request({
+      method: 'personal_sign',
+      params: [message, address],
+    });
+
+    const verifyRes = await axios.post(endpoints.auth.web3Verify, {
+      address,
+      message,
+      signature,
+    });
+
+    const { accessToken } = verifyRes.data;
+
+    if (!accessToken) {
+      throw new Error('Access token not found in response');
+    }
+
+    setSession(accessToken);
+  } catch (error) {
+    console.error('Error during Web3 sign in:', error);
+    throw error;
+  }
+};
+

@@ -1,65 +1,63 @@
 import * as z from 'zod';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBoolean } from 'minimal-shared/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+
+import { SentIcon } from 'src/assets/icons';
 
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
-import { signUp } from '../../context/jwt';
-import { useAuthContext } from '../../hooks';
-import { getErrorMessage } from '../../utils';
-import { SignUpTerms } from '../../components/sign-up-terms';
+import { FormResendCode } from '../../components/form-resend-code';
 
 // ----------------------------------------------------------------------
 
-export type SignUpSchemaType = z.infer<typeof SignUpSchema>;
+export type UpdatePasswordSchemaType = z.infer<typeof UpdatePasswordSchema>;
 
-export const SignUpSchema = z.object({
-  firstName: z.string().min(1, { message: 'O nome é obrigatório!' }),
-  lastName: z.string().min(1, { message: 'O sobrenome é obrigatório!' }),
-  email: schemaUtils.email(),
-  password: z
-    .string()
-    .min(1, { message: 'A senha é obrigatória!' })
-    .min(6, { message: 'A senha deve ter pelo menos 6 caracteres!' }),
-});
+export const UpdatePasswordSchema = z
+  .object({
+    code: z
+      .string()
+      .min(1, { message: 'O código é obrigatório!' })
+      .min(6, { message: 'O código deve ter pelo menos 6 caracteres!' }),
+    email: schemaUtils.email(),
+    password: z
+      .string()
+      .min(1, { message: 'A senha é obrigatória!' })
+      .min(6, { message: 'A senha deve ter pelo menos 6 caracteres!' }),
+    confirmPassword: z.string().min(1, { message: 'A confirmação de senha é obrigatória!' }),
+  })
+  .refine((val) => val.password === val.confirmPassword, {
+    message: 'As senhas não coincidem!',
+    path: ['confirmPassword'],
+  });
 
 // ----------------------------------------------------------------------
 
 const NEON_GREEN = '#00E5BC';
 
-export function JwtSignUpView() {
-  const router = useRouter();
-
+export function JwtUpdatePasswordView() {
   const showPassword = useBoolean();
 
-  const { checkUserSession } = useAuthContext();
-
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const defaultValues: SignUpSchemaType = {
-    firstName: '',
-    lastName: '',
+  const defaultValues: UpdatePasswordSchemaType = {
+    code: '',
     email: '',
     password: '',
+    confirmPassword: '',
   };
 
   const methods = useForm({
-    resolver: zodResolver(SignUpSchema),
+    resolver: zodResolver(UpdatePasswordSchema),
     defaultValues,
   });
 
@@ -70,61 +68,19 @@ export function JwtSignUpView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await signUp({
-        email: data.email,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-      });
-      await checkUserSession?.();
-      router.refresh();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      console.info('DATA', data);
     } catch (error) {
       console.error(error);
-      const feedbackMessage = getErrorMessage(error);
-      setErrorMessage(feedbackMessage);
     }
   });
 
   const renderForm = () => (
     <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-      <Box
-        sx={{ display: 'flex', gap: { xs: 3, sm: 2 }, flexDirection: { xs: 'column', sm: 'row' } }}
-      >
-        <Field.Text
-          name="firstName"
-          label="Nome"
-          slotProps={{ 
-            inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
-            input: {
-              sx: {
-                borderRadius: 1,
-                '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-                '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-                '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
-              }
-            }
-          }}
-        />
-        <Field.Text
-          name="lastName"
-          label="Sobrenome"
-          slotProps={{ 
-            inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
-            input: {
-              sx: {
-                borderRadius: 1,
-                '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-                '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-                '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
-              }
-            }
-          }}
-        />
-      </Box>
-
-      <Field.Text 
-        name="email" 
-        label="E-mail" 
+      <Field.Text
+        name="email"
+        label="E-mail"
+        placeholder="usuario@mundodigital.com"
         slotProps={{ 
           inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
           input: {
@@ -135,13 +91,41 @@ export function JwtSignUpView() {
               '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
             }
           }
-        }} 
+        }}
       />
+
+      <Box sx={{ p: 2, border: `1px dashed rgba(0, 229, 188, 0.2)`, borderRadius: 1 }}>
+        <Typography variant="caption" sx={{ color: NEON_GREEN, mb: 1, display: 'block' }}>CÓDIGO DE VERIFICAÇÃO</Typography>
+        <Field.Code name="code" />
+      </Box>
 
       <Field.Text
         name="password"
-        label="Senha"
-        placeholder="6+ caracteres"
+        label="Nova Senha"
+        type={showPassword.value ? 'text' : 'password'}
+        slotProps={{
+          inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+          input: {
+            sx: {
+              borderRadius: 1,
+              '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
+              '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
+              '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+            },
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: NEON_GREEN }}>
+                  <Iconify icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
+      />
+
+      <Field.Text
+        name="confirmPassword"
+        label="Confirmar Nova Senha"
         type={showPassword.value ? 'text' : 'password'}
         slotProps={{
           inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
@@ -184,7 +168,7 @@ export function JwtSignUpView() {
           }
         }}
       >
-        CRIAR CONTA
+        ATUALIZAR SENHA
       </Button>
     </Box>
   );
@@ -204,28 +188,33 @@ export function JwtSignUpView() {
       }}
     >
       <Box sx={{ mb: 2, textAlign: 'center' }}>
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
+           <SentIcon sx={{ width: 64, height: 64, color: NEON_GREEN, filter: `drop-shadow(0 0 10px ${NEON_GREEN})` }} />
+        </Box>
         <Typography variant="h5" sx={{ color: NEON_GREEN, mb: 1, fontWeight: 'bold' }}>
-          SOLICITAR ACESSO
+          SOLICITAÇÃO ENVIADA!
         </Typography>
         <Typography variant="body2" sx={{ color: 'grey.500' }}>
-          Já possui uma conta?{' '}
-          <Link component={RouterLink} href={paths.auth.jwt.signIn} sx={{ color: NEON_GREEN, fontWeight: 'bold', textDecoration: 'none' }}>
-            ENTRAR
-          </Link>
+          Enviamos um código de confirmação de 6 dígitos para o seu e-mail. Por favor, insira o código abaixo para redefinir sua senha.
         </Typography>
       </Box>
-
-      {!!errorMessage && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {errorMessage}
-        </Alert>
-      )}
 
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm()}
       </Form>
 
-      <SignUpTerms sx={{ color: 'grey.600', mt: 2 }} />
+      <FormResendCode onResendCode={() => {}} value={0} disabled={false} sx={{ color: NEON_GREEN, '& .MuiButton-root': { color: NEON_GREEN, fontWeight: 'bold' } }} />
+
+      <Box sx={{ mt: 2, textAlign: 'center' }}>
+        <Link 
+          component={RouterLink} 
+          href={paths.auth.jwt.signIn} 
+          sx={{ color: NEON_GREEN, fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}
+        >
+          <Iconify icon="eva:arrow-ios-back-fill" />
+          VOLTAR PARA O LOGIN
+        </Link>
+      </Box>
     </Box>
   );
 }

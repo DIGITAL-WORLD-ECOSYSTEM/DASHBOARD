@@ -80,9 +80,11 @@ export const endpoints = {
   chat: '/api/chat',
   calendar: '/api/calendar',
   auth: {
-    me: '/api/auth/me',
-    signIn: '/api/auth/sign-in',
-    signUp: '/api/auth/sign-up',
+    me: '/api/core/identity/me',
+    signIn: '/api/core/identity/local/login',
+    signUp: '/api/core/identity/local/register',
+    web3Nonce: '/api/core/identity/web3/nonce',
+    web3Verify: '/api/core/identity/web3/verify',
   },
   mail: {
     list: '/api/mail/list',

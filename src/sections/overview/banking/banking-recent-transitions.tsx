@@ -80,7 +80,7 @@ export function BankingRecentTransitions({
           color="inherit"
           endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
         >
-          View all
+          Ver tudo
         </Button>
       </Box>
     </Card>
@@ -162,24 +162,24 @@ function RowItem({ row }: RowItemProps) {
       <MenuList>
         <MenuItem onClick={handleDownload}>
           <Iconify icon="eva:cloud-download-fill" />
-          Download
+          Baixar
         </MenuItem>
 
         <MenuItem onClick={handlePrint}>
           <Iconify icon="solar:printer-minimalistic-bold" />
-          Print
+          Imprimir
         </MenuItem>
 
         <MenuItem onClick={handleShare}>
           <Iconify icon="solar:share-bold" />
-          Share
+          Compartilhar
         </MenuItem>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
         <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
           <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
+          Excluir
         </MenuItem>
       </MenuList>
     </CustomPopover>
@@ -220,7 +220,9 @@ function RowItem({ row }: RowItemProps) {
             }
             sx={{ textTransform: 'capitalize' }}
           >
-            {row.status}
+            {row.status === 'completed' && 'Concluído'}
+            {row.status === 'progress' && 'Em andamento'}
+            {row.status === 'failed' && 'Falhou'}
           </Label>
         </TableCell>
 

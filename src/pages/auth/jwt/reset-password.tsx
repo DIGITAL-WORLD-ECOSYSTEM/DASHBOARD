@@ -1,17 +1,17 @@
 import { CONFIG } from 'src/global-config';
 
-import { SplitUpdatePasswordView } from 'src/auth/view/auth-demo/split';
+import { JwtResetPasswordView } from 'src/auth/view/jwt';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `Update password | Layout split - ${CONFIG.appName}` };
+const metadata = { title: `Reset password | Jwt - ${CONFIG.appName}` };
 
 export default function Page() {
   return (
     <>
       <title>{metadata.title}</title>
 
-      <SplitUpdatePasswordView />
+      <JwtResetPasswordView />
     </>
   );
 }
