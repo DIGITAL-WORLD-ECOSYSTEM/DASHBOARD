@@ -17,6 +17,8 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import { CONFIG } from 'src/global-config';
+
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
@@ -90,6 +92,11 @@ export function JwtSignInView() {
       console.error(error);
       setErrorMessage(getErrorMessage(error));
     }
+  };
+
+  const handleSocialLogin = (provider: 'google' | 'github') => {
+    const { serverUrl } = CONFIG;
+    window.location.href = `${serverUrl}/api/core/identity/oauth/${provider}/login`;
   };
 
   const renderForm = () => (
@@ -216,6 +223,7 @@ export function JwtSignInView() {
         <Button
           fullWidth
           variant="outlined"
+          onClick={() => handleSocialLogin('google')}
           startIcon={<Iconify icon={"logos:google-icon" as any} />}
           sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.1)' }}
         >
@@ -224,6 +232,7 @@ export function JwtSignInView() {
         <Button
           fullWidth
           variant="outlined"
+          onClick={() => handleSocialLogin('github')}
           startIcon={<Iconify icon={"logos:github-icon" as any} />}
           sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.1)' }}
         >

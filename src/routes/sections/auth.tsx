@@ -22,6 +22,10 @@ const Jwt = {
   VerifyPage: lazy(() => import('src/pages/auth/jwt/verify')),
 };
 
+const OAuth = {
+  CallbackPage: lazy(() => import('src/pages/auth/oauth/callback')),
+};
+
 const authJwt = {
   path: 'jwt',
   children: [
@@ -82,6 +86,12 @@ export const authRoutes: RouteObject[] = [
         <Outlet />
       </Suspense>
     ),
-    children: [authJwt],
+    children: [
+      authJwt,
+      {
+        path: 'oauth',
+        children: [{ path: 'callback', element: <OAuth.CallbackPage /> }],
+      },
+    ],
   },
 ];

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { paths } from 'src/routes/paths';
-import { useRouter, usePathname } from 'src/routes/hooks';
+import { useRouter } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/global-config';
 
@@ -25,7 +25,6 @@ export function AuthGuard({ children }: AuthGuardProps) {
   const [isChecking, setIsChecking] = useState(true);
 
   const router = useRouter();
-  const pathname = usePathname();
 
   const checkPermissions = async (): Promise<void> => {
     if (loading) {
