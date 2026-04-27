@@ -9,7 +9,7 @@ type FormDividerProps = {
   label?: React.ReactNode;
 };
 
-export function FormDivider({ sx, label = 'OR' }: FormDividerProps) {
+export function FormDivider({ sx, label = 'OU' }: FormDividerProps) {
   return (
     <Divider
       sx={[
@@ -17,6 +17,8 @@ export function FormDivider({ sx, label = 'OR' }: FormDividerProps) {
           my: 3,
           typography: 'overline',
           color: 'text.disabled',
+          fontFamily: 'var(--font-orbitron), sans-serif',
+          fontWeight: 700,
           '&::before, :after': { borderTopStyle: 'dashed' },
         }),
         ...(Array.isArray(sx) ? sx : [sx]),

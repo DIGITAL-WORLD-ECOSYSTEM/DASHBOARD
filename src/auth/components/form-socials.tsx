@@ -1,6 +1,7 @@
 import type { BoxProps } from '@mui/material/Box';
 
 import Box from '@mui/material/Box';
+import { alpha } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 
 import { Iconify } from 'src/components/iconify';
@@ -32,14 +33,47 @@ export function FormSocials({
       ]}
       {...other}
     >
-      <IconButton color="inherit" onClick={signInWithGoogle}>
-        <Iconify width={22} icon="socials:google" />
+      <IconButton 
+        color="inherit" 
+        onClick={signInWithGoogle}
+        sx={{
+          border: (theme) => `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
+          '&:hover': {
+            bgcolor: (theme) => alpha(theme.palette.info.main, 0.1),
+            transform: 'scale(1.1)',
+            boxShadow: (theme) => `0 0 15px ${alpha(theme.palette.info.main, 0.3)}`,
+          }
+        }}
+      >
+        <Iconify width={22} icon="logos:google-icon" />
       </IconButton>
-      <IconButton color="inherit" onClick={singInWithGithub}>
-        <Iconify width={22} icon="socials:github" />
+      <IconButton 
+        color="inherit" 
+        onClick={singInWithGithub}
+        sx={{
+          border: (theme) => `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
+          '&:hover': {
+            bgcolor: (theme) => alpha(theme.palette.info.main, 0.1),
+            transform: 'scale(1.1)',
+            boxShadow: (theme) => `0 0 15px ${alpha(theme.palette.info.main, 0.3)}`,
+          }
+        }}
+      >
+        <Iconify width={22} icon="logos:github-icon" />
       </IconButton>
-      <IconButton color="inherit" onClick={signInWithTwitter}>
-        <Iconify width={22} icon="socials:twitter" />
+      <IconButton 
+        color="inherit" 
+        onClick={signInWithTwitter}
+        sx={{
+          border: (theme) => `1px solid ${alpha(theme.palette.info.main, 0.2)}`,
+          '&:hover': {
+            bgcolor: (theme) => alpha(theme.palette.info.main, 0.1),
+            transform: 'scale(1.1)',
+            boxShadow: (theme) => `0 0 15px ${alpha(theme.palette.info.main, 0.3)}`,
+          }
+        }}
+      >
+        <Iconify width={22} icon={"logos:twitter" as any} />
       </IconButton>
     </Box>
   );

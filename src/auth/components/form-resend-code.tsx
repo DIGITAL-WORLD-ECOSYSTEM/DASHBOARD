@@ -30,16 +30,21 @@ export function FormResendCode({
       ]}
       {...other}
     >
-      {`Don’t have a code? `}
+      {`Não recebeu o código? `}
       <Link
         variant="subtitle2"
         onClick={onResendCode}
         sx={{
           cursor: 'pointer',
+          fontFamily: 'var(--font-orbitron), sans-serif',
+          fontWeight: 700,
+          color: 'info.main',
+          textDecoration: 'none',
+          '&:hover': { textDecoration: 'underline' },
           ...(disabled && { color: 'text.disabled', pointerEvents: 'none' }),
         }}
       >
-        Resend {disabled && value && value > 0 && `(${value}s)`}
+        Reenviar {disabled && value && value > 0 && `(${value}s)`}
       </Link>
     </Box>
   );

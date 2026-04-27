@@ -10,6 +10,7 @@ import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
@@ -40,9 +41,9 @@ export const SignUpSchema = z.object({
 
 // ----------------------------------------------------------------------
 
-const NEON_GREEN = '#00E5BC';
-
 export function JwtSignUpView() {
+  const theme = useTheme();
+
   const router = useRouter();
 
   const showPassword = useBoolean();
@@ -94,13 +95,29 @@ export function JwtSignUpView() {
           name="firstName"
           label="Nome"
           slotProps={{ 
-            inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+            inputLabel: { 
+              shrink: true, 
+              sx: { 
+                fontFamily: 'var(--font-orbitron), sans-serif',
+                fontWeight: 600,
+                color: 'info.main' 
+              } 
+            },
             input: {
               sx: {
                 borderRadius: 1,
-                '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-                '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-                '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+                '& input': {
+                  fontFamily: 'var(--font-orbitron), sans-serif',
+                  color: 'info.main',
+                  '&:-webkit-autofill': {
+                    WebkitBoxShadow: '0 0 0 100px #020817 inset',
+                    WebkitTextFillColor: theme.palette.info.main,
+                    transition: 'background-color 5000s ease-in-out 0s',
+                  },
+                },
+                '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
+                '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
+                '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
               }
             }
           }}
@@ -109,13 +126,29 @@ export function JwtSignUpView() {
           name="lastName"
           label="Sobrenome"
           slotProps={{ 
-            inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+            inputLabel: { 
+              shrink: true, 
+              sx: { 
+                fontFamily: 'var(--font-orbitron), sans-serif',
+                fontWeight: 600,
+                color: 'info.main' 
+              } 
+            },
             input: {
               sx: {
                 borderRadius: 1,
-                '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-                '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-                '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+                '& input': {
+                  fontFamily: 'var(--font-orbitron), sans-serif',
+                  color: 'info.main',
+                  '&:-webkit-autofill': {
+                    WebkitBoxShadow: '0 0 0 100px #020817 inset',
+                    WebkitTextFillColor: theme.palette.info.main,
+                    transition: 'background-color 5000s ease-in-out 0s',
+                  },
+                },
+                '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
+                '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
+                '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
               }
             }
           }}
@@ -126,13 +159,29 @@ export function JwtSignUpView() {
         name="email" 
         label="E-mail" 
         slotProps={{ 
-          inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+          inputLabel: { 
+            shrink: true, 
+            sx: { 
+              fontFamily: 'var(--font-orbitron), sans-serif',
+              fontWeight: 600,
+              color: 'info.main' 
+            } 
+          },
           input: {
             sx: {
               borderRadius: 1,
-              '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-              '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-              '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+              '& input': {
+                fontFamily: 'var(--font-orbitron), sans-serif',
+                color: 'info.main',
+                '&:-webkit-autofill': {
+                  WebkitBoxShadow: '0 0 0 100px #020817 inset',
+                  WebkitTextFillColor: theme.palette.info.main,
+                  transition: 'background-color 5000s ease-in-out 0s',
+                },
+              },
+              '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
+              '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
+              '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
             }
           }
         }} 
@@ -144,17 +193,33 @@ export function JwtSignUpView() {
         placeholder="6+ caracteres"
         type={showPassword.value ? 'text' : 'password'}
         slotProps={{
-          inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+          inputLabel: { 
+            shrink: true, 
+            sx: { 
+              fontFamily: 'var(--font-orbitron), sans-serif',
+              fontWeight: 600,
+              color: 'info.main' 
+            } 
+          },
           input: {
             sx: {
               borderRadius: 1,
-              '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-              '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-              '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+              '& input': {
+                fontFamily: 'var(--font-orbitron), sans-serif',
+                color: 'info.main',
+                '&:-webkit-autofill': {
+                  WebkitBoxShadow: '0 0 0 100px #020817 inset',
+                  WebkitTextFillColor: theme.palette.info.main,
+                  transition: 'background-color 5000s ease-in-out 0s',
+                },
+              },
+              '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
+              '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
+              '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
             },
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: NEON_GREEN }}>
+                <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: 'info.main' }}>
                   <Iconify icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </InputAdornment>
@@ -167,21 +232,41 @@ export function JwtSignUpView() {
         fullWidth
         size="large"
         type="submit"
-        variant="outlined"
+        variant="contained"
         loading={isSubmitting}
         sx={{
-          py: 1.5,
-          fontSize: '1.1rem',
-          fontWeight: 'bold',
-          letterSpacing: 2,
-          color: '#FFF',
-          borderColor: NEON_GREEN,
-          boxShadow: `0 0 10px ${NEON_GREEN}`,
+          height: 60,
+          fontSize: 18,
+          fontFamily: 'var(--font-orbitron), sans-serif',
+          fontWeight: 900,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          bgcolor: alpha('#020817', 0.9),
+          color: 'common.white',
+          position: 'relative',
+          border: 'none',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 'inherit',
+            padding: '1.5px',
+            background: `linear-gradient(180deg, 
+              ${alpha(theme.palette.info.main, 1)} 0%, 
+              ${alpha(theme.palette.common.white, 0.05)} 50%, 
+              ${alpha(theme.palette.warning.main, 1)} 100%
+            )`,
+            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+            pointerEvents: 'none',
+          },
+          transition: theme.transitions.create(['all']),
           '&:hover': {
-            borderColor: NEON_GREEN,
-            backgroundColor: 'rgba(0, 229, 188, 0.1)',
-            boxShadow: `0 0 20px ${NEON_GREEN}`,
-          }
+            bgcolor: alpha(theme.palette.info.main, 0.1),
+            transform: 'scale(1.03)',
+            boxShadow: `0 0 25px ${alpha(theme.palette.info.main, 0.4)}`,
+          },
         }}
       >
         CRIAR CONTA
@@ -192,24 +277,19 @@ export function JwtSignUpView() {
   return (
     <Box
       sx={{
-        p: 4,
         width: 1,
-        borderRadius: 2,
-        backgroundColor: '#0A0D10',
-        border: `1px solid ${NEON_GREEN}`,
-        boxShadow: `0 0 15px rgba(0, 229, 188, 0.3)`,
         display: 'flex',
         flexDirection: 'column',
-        gap: 3,
+        gap: 2,
       }}
     >
       <Box sx={{ mb: 2, textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ color: NEON_GREEN, mb: 1, fontWeight: 'bold' }}>
+        <Typography variant="h5" sx={{ color: 'info.main', mb: 1, fontWeight: 900, fontFamily: 'var(--font-orbitron), sans-serif' }}>
           SOLICITAR ACESSO
         </Typography>
-        <Typography variant="body2" sx={{ color: 'grey.500' }}>
+        <Typography variant="body2" sx={{ color: 'grey.500', fontSize: 13 }}>
           Já possui uma conta?{' '}
-          <Link component={RouterLink} href={paths.auth.jwt.signIn} sx={{ color: NEON_GREEN, fontWeight: 'bold', textDecoration: 'none' }}>
+          <Link component={RouterLink} href={paths.auth.jwt.signIn} sx={{ color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif', textDecoration: 'none' }}>
             ENTRAR
           </Link>
         </Typography>

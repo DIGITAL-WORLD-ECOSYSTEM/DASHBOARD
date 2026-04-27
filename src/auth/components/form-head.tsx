@@ -34,7 +34,7 @@ export function FormHead({ sx, icon, title, description, ...other }: FormHeadPro
         ]}
         {...other}
       >
-        <Typography variant="h5">{title}</Typography>
+        <Typography variant="h5" sx={{ fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 900 }}>{title}</Typography>
 
         {description && (
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>

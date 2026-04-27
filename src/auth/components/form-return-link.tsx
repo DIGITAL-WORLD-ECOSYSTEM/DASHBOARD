@@ -28,13 +28,18 @@ export function FormReturnLink({ sx, href, label, icon, children, ...other }: Fo
           mx: 'auto',
           alignItems: 'center',
           display: 'inline-flex',
+          fontFamily: 'var(--font-orbitron), sans-serif',
+          fontWeight: 700,
+          color: 'info.main',
+          textDecoration: 'none',
+          '&:hover': { textDecoration: 'underline' },
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
     >
       {icon || <Iconify width={16} icon="eva:arrow-ios-back-fill" />}
-      {label || 'Return to sign in'}
+      {label || 'Voltar para o acesso'}
       {children}
     </Link>
   );

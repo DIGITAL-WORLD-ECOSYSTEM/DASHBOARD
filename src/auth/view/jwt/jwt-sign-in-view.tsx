@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
@@ -40,9 +41,9 @@ export const SignInSchema = z.object({
 
 // ----------------------------------------------------------------------
 
-const NEON_GREEN = '#00E5BC';
-
 export function JwtSignInView() {
+  const theme = useTheme();
+
   const router = useRouter();
 
   const showPassword = useBoolean();
@@ -106,13 +107,29 @@ export function JwtSignInView() {
         label="E-mail" 
         placeholder="usuario@mundodigital.com"
         slotProps={{ 
-          inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+          inputLabel: { 
+            shrink: true, 
+            sx: { 
+              fontFamily: 'var(--font-orbitron), sans-serif',
+              fontWeight: 600,
+              color: 'info.main' 
+            } 
+          },
           input: {
             sx: {
               borderRadius: 1,
-              '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-              '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-              '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+              '& input': {
+                fontFamily: 'var(--font-orbitron), sans-serif',
+                color: 'info.main',
+                '&:-webkit-autofill': {
+                  WebkitBoxShadow: '0 0 0 100px #020817 inset',
+                  WebkitTextFillColor: theme.palette.info.main,
+                  transition: 'background-color 5000s ease-in-out 0s',
+                },
+              },
+              '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
+              '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
+              '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
             }
           }
         }} 
@@ -124,17 +141,33 @@ export function JwtSignInView() {
           label="Senha"
           type={showPassword.value ? 'text' : 'password'}
           slotProps={{
-            inputLabel: { shrink: true, sx: { color: NEON_GREEN } },
+            inputLabel: { 
+              shrink: true, 
+              sx: { 
+                fontFamily: 'var(--font-orbitron), sans-serif',
+                fontWeight: 600,
+                color: 'info.main' 
+              } 
+            },
             input: {
               sx: {
                 borderRadius: 1,
-                '& fieldset': { borderColor: 'rgba(0, 229, 188, 0.2)' },
-                '&:hover fieldset': { borderColor: `${NEON_GREEN} !important` },
-                '&.Mui-focused fieldset': { borderColor: `${NEON_GREEN} !important` },
+                '& input': {
+                  fontFamily: 'var(--font-orbitron), sans-serif',
+                  color: 'info.main',
+                  '&:-webkit-autofill': {
+                    WebkitBoxShadow: '0 0 0 100px #020817 inset',
+                    WebkitTextFillColor: theme.palette.info.main,
+                    transition: 'background-color 5000s ease-in-out 0s',
+                  },
+                },
+                '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
+                '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
+                '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
               },
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: NEON_GREEN }}>
+                  <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: 'info.main' }}>
                     <Iconify
                       icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
                     />
@@ -147,17 +180,17 @@ export function JwtSignInView() {
       </Box>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="caption" sx={{ color: 'grey.500' }}>
+        <Typography variant="caption" sx={{ color: 'grey.500', fontSize: 11 }}>
           Novo na DAO?{' '}
-          <Link component={RouterLink} href={paths.auth.jwt.signUp} sx={{ color: NEON_GREEN, fontWeight: 'bold', textDecoration: 'none' }}>
+          <Link component={RouterLink} href={paths.auth.jwt.signUp} sx={{ color: 'info.main', fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 800, textDecoration: 'none' }}>
             SOLICITAR
           </Link>
         </Typography>
         <Link
           component={RouterLink}
-          href="#"
+          href={paths.auth.jwt.resetPassword}
           variant="caption"
-          sx={{ color: NEON_GREEN, fontWeight: 'bold', textDecoration: 'none' }}
+          sx={{ color: 'info.main', fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 800, textDecoration: 'none', fontSize: 10 }}
         >
           ESQUECEU A SENHA?
         </Link>
@@ -167,21 +200,41 @@ export function JwtSignInView() {
         fullWidth
         size="large"
         type="submit"
-        variant="outlined"
+        variant="contained"
         loading={isSubmitting}
         sx={{
-          py: 1.5,
-          fontSize: '1.1rem',
-          fontWeight: 'bold',
-          letterSpacing: 2,
-          color: '#FFF',
-          borderColor: NEON_GREEN,
-          boxShadow: `0 0 10px ${NEON_GREEN}`,
+          height: 60,
+          fontSize: 18,
+          fontFamily: 'var(--font-orbitron), sans-serif',
+          fontWeight: 900,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          bgcolor: alpha('#020817', 0.9),
+          color: 'common.white',
+          position: 'relative',
+          border: 'none',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: 'inherit',
+            padding: '1.5px',
+            background: `linear-gradient(180deg, 
+              ${alpha(theme.palette.info.main, 1)} 0%, 
+              ${alpha(theme.palette.common.white, 0.05)} 50%, 
+              ${alpha(theme.palette.warning.main, 1)} 100%
+            )`,
+            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            WebkitMaskComposite: 'xor',
+            maskComposite: 'exclude',
+            pointerEvents: 'none',
+          },
+          transition: theme.transitions.create(['all']),
           '&:hover': {
-            borderColor: NEON_GREEN,
-            backgroundColor: 'rgba(0, 229, 188, 0.1)',
-            boxShadow: `0 0 20px ${NEON_GREEN}`,
-          }
+            bgcolor: alpha(theme.palette.info.main, 0.1),
+            transform: 'scale(1.03)',
+            boxShadow: `0 0 25px ${alpha(theme.palette.info.main, 0.4)}`,
+          },
         }}
       >
         ENTRAR NO PORTAL
@@ -192,12 +245,7 @@ export function JwtSignInView() {
   return (
     <Box
       sx={{
-        p: 4,
         width: 1,
-        borderRadius: 2,
-        backgroundColor: '#0A0D10',
-        border: `1px solid ${NEON_GREEN}`,
-        boxShadow: `0 0 15px rgba(0, 229, 188, 0.3)`,
         display: 'flex',
         flexDirection: 'column',
         gap: 3,
@@ -213,8 +261,8 @@ export function JwtSignInView() {
         {renderForm()}
       </Form>
 
-      <Divider sx={{ my: 2, '&::before, &::after': { borderColor: 'grey.800' } }}>
-        <Typography variant="caption" sx={{ color: 'grey.500', letterSpacing: 2, fontWeight: 'bold' }}>
+      <Divider sx={{ my: 2, '&::before, &::after': { borderTopStyle: 'dashed', opacity: 0.15 } }}>
+        <Typography variant="caption" sx={{ color: 'grey.500', letterSpacing: 2.5, fontWeight: 700, fontFamily: 'var(--font-orbitron), sans-serif' }}>
           OU CONTINUE COM
         </Typography>
       </Divider>
@@ -224,8 +272,20 @@ export function JwtSignInView() {
           fullWidth
           variant="outlined"
           onClick={() => handleSocialLogin('google')}
-          startIcon={<Iconify icon={"logos:google-icon" as any} />}
-          sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.1)' }}
+          startIcon={<Iconify icon="logos:google-icon" />}
+          sx={{ 
+            color: 'white', 
+            borderColor: alpha(theme.palette.info.main, 0.1),
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontWeight: 700,
+            fontSize: 13,
+            '&:hover': {
+              borderColor: 'info.main',
+              bgcolor: alpha(theme.palette.info.main, 0.05),
+              transform: 'translateY(-2px)',
+              boxShadow: `0 5px 15px ${alpha(theme.palette.info.main, 0.2)}`,
+            }
+          }}
         >
           Google
         </Button>
@@ -233,8 +293,20 @@ export function JwtSignInView() {
           fullWidth
           variant="outlined"
           onClick={() => handleSocialLogin('github')}
-          startIcon={<Iconify icon={"logos:github-icon" as any} />}
-          sx={{ color: 'white', borderColor: 'rgba(255,255,255,0.1)' }}
+          startIcon={<Iconify icon="logos:github-icon" />}
+          sx={{ 
+            color: 'white', 
+            borderColor: alpha(theme.palette.info.main, 0.1),
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontWeight: 700,
+            fontSize: 13,
+            '&:hover': {
+              borderColor: 'info.main',
+              bgcolor: alpha(theme.palette.info.main, 0.05),
+              transform: 'translateY(-2px)',
+              boxShadow: `0 5px 15px ${alpha(theme.palette.info.main, 0.2)}`,
+            }
+          }}
         >
           GitHub
         </Button>
@@ -242,15 +314,39 @@ export function JwtSignInView() {
 
       <Button
         fullWidth
-        variant="outlined"
+        variant="soft"
         onClick={handleWeb3Login}
-        startIcon={<Iconify icon={"logos:metamask-icon" as any} />}
+        startIcon={<Iconify icon="logos:metamask-icon" />}
         sx={{ 
-          color: NEON_GREEN, 
-          borderColor: NEON_GREEN,
+          height: 54,
+          fontFamily: 'var(--font-orbitron), sans-serif',
+          fontWeight: 900,
+          letterSpacing: 1.5,
+          color: 'info.main', 
+          bgcolor: alpha('#020817', 0.8),
+          border: `1px solid ${alpha(theme.palette.info.main, 0.4)}`,
+          position: 'relative',
+          overflow: 'hidden',
           '&:hover': {
-            borderColor: NEON_GREEN,
-            backgroundColor: 'rgba(0, 229, 188, 0.05)',
+            borderColor: 'info.main',
+            backgroundColor: alpha('#020817', 0.9),
+            boxShadow: `0 0 30px ${alpha(theme.palette.info.main, 0.6)}`,
+            transform: 'scale(1.02)',
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            top: '-50%',
+            left: '-50%',
+            width: '200%',
+            height: '200%',
+            background: `linear-gradient(45deg, transparent, ${alpha(theme.palette.info.main, 0.1)}, transparent)`,
+            transform: 'rotate(45deg)',
+            animation: 'shimmer 3s infinite',
+          },
+          '@keyframes shimmer': {
+            '0%': { transform: 'translateX(-100%) rotate(45deg)' },
+            '100%': { transform: 'translateX(100%) rotate(45deg)' },
           }
         }}
       >

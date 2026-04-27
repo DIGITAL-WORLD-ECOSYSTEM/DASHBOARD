@@ -121,12 +121,13 @@ export function AuthCenteredLayout({
       /** **************************************
        * @Styles
        *************************************** */
-      cssVars={{ '--layout-auth-content-width': '420px', ...cssVars }}
+      cssVars={{ '--layout-auth-content-width': '380px', ...cssVars }}
       sx={[
-        (theme) => ({
+        {
           position: 'relative',
-          '&::before': backgroundStyles(theme),
-        }),
+          overflow: 'hidden',
+          bgcolor: '#030712', // ✅ PADRONIZADO: Digital Void do Frontend
+        },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
@@ -138,19 +139,6 @@ export function AuthCenteredLayout({
 // ----------------------------------------------------------------------
 
 const backgroundStyles = (theme: Theme): CSSObject => ({
-  backgroundColor: '#05070A',
-  ...theme.mixins.bgGradient({
-    images: [`url(${CONFIG.assetsDir}/assets/background/background-3-blur.webp)`],
-  }),
-  zIndex: 1,
-  opacity: 0.1,
-  width: '100%',
-  height: '100%',
-  content: "''",
-  position: 'absolute',
-  ...theme.applyStyles('dark', {
-    opacity: 0.05,
-    backgroundColor: '#020305',
-  }),
+  display: 'none', // ✅ DESATIVADO: Usando vácuo digital sólido conforme frontline
 });
 
