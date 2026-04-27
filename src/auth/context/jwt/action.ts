@@ -104,6 +104,12 @@ export const signInWithWeb3 = async (address: string): Promise<void> => {
     const nonceRes = await axios.get(endpoints.auth.web3Nonce, { params: { address } });
     const { nonce, message } = nonceRes.data;
 
+    console.log('Web3 Nonce received:', { nonce, message, address });
+
+    if (!message) {
+      throw new Error('Falha ao obter a mensagem de autenticação do servidor.');
+    }
+
     if (!window.ethereum) {
       throw new Error('MetaMask is not installed');
     }
