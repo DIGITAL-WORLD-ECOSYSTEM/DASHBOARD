@@ -57,12 +57,11 @@ export function tokenExpired(exp: number) {
 
   setTimeout(() => {
     try {
-      alert('Token expired!');
-      sessionStorage.removeItem(JWT_STORAGE_KEY);
+      alert('Sua sessão expirou!');
+      setSession(null);
       window.location.href = paths.auth.jwt.signIn;
     } catch (error) {
       console.error('Error during token expiration:', error);
-      throw error;
     }
   }, timeLeft);
 }
@@ -72,19 +71,23 @@ export function tokenExpired(exp: number) {
 export async function setSession(accessToken: string | null) {
   try {
     if (accessToken) {
-      sessionStorage.setItem(JWT_STORAGE_KEY, accessToken);
+      // 1. Salvar no LocalStorage (Compatível com Frontend)
+      localStorage.setItem(JWT_STORAGE_KEY, accessToken);
+
+      // 2. Salvar no Cookie (Para o Middleware do Next.js)
+      document.cookie = `daoAccessToken=${accessToken}; path=/; domain=.asppibra.com; max-age=86400; SameSite=Lax`;
 
       axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-      const decodedToken = jwtDecode(accessToken); // ~3 days by minimals server
+      const decodedToken = jwtDecode(accessToken);
 
       if (decodedToken && 'exp' in decodedToken) {
         tokenExpired(decodedToken.exp);
-      } else {
-        throw new Error('Invalid access token!');
       }
     } else {
-      sessionStorage.removeItem(JWT_STORAGE_KEY);
+      // 3. Limpar Tudo no Logout
+      localStorage.removeItem(JWT_STORAGE_KEY);
+      document.cookie = 'daoAccessToken=; path=/; domain=.asppibra.com; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax';
       delete axios.defaults.headers.common.Authorization;
     }
   } catch (error) {
