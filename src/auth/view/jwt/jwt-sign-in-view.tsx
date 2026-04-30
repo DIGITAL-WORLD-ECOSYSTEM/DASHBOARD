@@ -71,7 +71,7 @@ export function JwtSignInView() {
     try {
       await signInWithPassword({ email: data.email, password: data.password });
       await checkUserSession?.();
-      router.refresh();
+      router.push(paths.dashboard.root);
     } catch (error) {
       console.error(error);
       const feedbackMessage = getErrorMessage(error);
@@ -88,7 +88,7 @@ export function JwtSignInView() {
       const address = accounts[0];
       await signInWithWeb3(address);
       await checkUserSession?.();
-      router.refresh();
+      router.push(paths.dashboard.root);
     } catch (error) {
       console.error(error);
       setErrorMessage(getErrorMessage(error));

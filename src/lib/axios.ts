@@ -17,8 +17,8 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(async (config) => {
   // 1. Zero-Trust Signature Header
-  const identityKey = sessionStorage.getItem('identityKey');
-  const did = sessionStorage.getItem('identityDID');
+  const identityKey = localStorage.getItem('identityKey');
+  const did = localStorage.getItem('identityDID');
 
   if (identityKey && did) {
     const timestamp = Date.now().toString();
@@ -38,7 +38,7 @@ axiosInstance.interceptors.request.use(async (config) => {
   }
 
   // 2. JWT Fallback
-  const token = sessionStorage.getItem('accessToken');
+  const token = localStorage.getItem('dao_access_token');
   if (token && !config.headers.Authorization) {
     config.headers.Authorization = `Bearer ${token}`;
   }
