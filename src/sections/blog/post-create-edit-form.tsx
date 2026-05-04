@@ -127,7 +127,7 @@ export function PostCreateEditForm({ currentPost }: Props) {
       toast.success(currentPost ? 'Update success!' : 'Create success!');
       router.push(paths.dashboard.post.root);
     } catch (error) {
-      toast.error(error.message || 'Something went wrong!');
+      toast.error(error instanceof Error ? error.message : 'Something went wrong!');
       console.error(error);
     }
   });

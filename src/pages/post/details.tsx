@@ -14,7 +14,7 @@ export default function Page() {
 
   const { post, postLoading, postError } = useGetPost(title);
 
-  const { latestPosts } = useGetLatestPosts(title);
+  const { latestPosts } = useGetLatestPosts();
 
   return (
     <>
