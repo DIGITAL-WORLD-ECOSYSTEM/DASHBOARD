@@ -92,10 +92,10 @@ export const endpoints = {
     labels: '/api/mail/labels',
   },
   post: {
-    list: '/api/post/list',
-    details: '/api/post/details',
-    latest: '/api/post/latest',
-    search: '/api/post/search',
+    list: '/api/posts',
+    details: '/api/posts', // O slug será passado via param
+    latest: '/api/posts', // Podemos usar o list com filtro ou limite
+    search: '/api/posts/search',
   },
   product: {
     list: '/api/product/list',

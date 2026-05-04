@@ -27,6 +27,9 @@ import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
+import { uploadImage } from 'src/actions/storage';
+import { createPost, updatePost } from 'src/actions/blog';
+
 import { PostDetailsPreview } from './post-details-preview';
 
 // ----------------------------------------------------------------------
@@ -35,14 +38,14 @@ export type PostCreateSchemaType = z.infer<typeof PostCreateSchema>;
 
 export const PostCreateSchema = z.object({
   title: z.string().min(1, { message: 'Title is required!' }),
-  description: z.string().min(1, { message: 'Description is required!' }),
-  content: z.string().min(100, { message: 'Content must be at least 100 characters' }),
+  description: z.string().min(1, { message: 'Description is required!' }).max(160),
+  content: z.string().min(10, { message: 'Content must be at least 10 characters' }),
   coverUrl: schemaUtils.file({ message: 'Cover is required!' }),
   tags: z.string().array().min(2, { message: 'Must have at least 2 items!' }),
-  metaKeywords: z.string().array().min(1, { message: 'Meta keywords is required!' }),
-  // Not required
-  metaTitle: z.string(),
-  metaDescription: z.string(),
+  metaKeywords: z.string().array().optional(),
+  metaTitle: z.string().optional(),
+  metaDescription: z.string().optional(),
+  publish: z.boolean().optional(),
 });
 
 // ----------------------------------------------------------------------
@@ -67,13 +70,14 @@ export function PostCreateEditForm({ currentPost }: Props) {
     metaKeywords: [],
     metaTitle: '',
     metaDescription: '',
+    publish: true,
   };
 
   const methods = useForm({
     mode: 'all',
     resolver: zodResolver(PostCreateSchema),
     defaultValues,
-    values: currentPost,
+    values: currentPost ? { ...currentPost, publish: currentPost.publish === 'published' } : defaultValues,
   });
 
   const {
@@ -88,13 +92,42 @@ export function PostCreateEditForm({ currentPost }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      let coverUrl = data.coverUrl;
+
+      // 1. Handle image upload if it's a new file
+      if (typeof data.coverUrl !== 'string' && data.coverUrl) {
+        const uploadRes = await uploadImage(data.coverUrl as unknown as File);
+        coverUrl = uploadRes.data.url;
+      }
+
+      // 2. Prepare payload for backend
+      const payload = {
+        title: data.title,
+        description: data.description,
+        content: data.content,
+        coverUrl: coverUrl,
+        tags: data.tags,
+        status: data.publish ? 'published' : 'draft',
+        slug: data.title
+          .toLowerCase()
+          .replace(/ /g, '-')
+          .replace(/[^\w-]+/g, ''),
+        category: 'Geral', // Default
+      };
+
+      // 3. API Call
+      if (currentPost) {
+        await updatePost(currentPost.id, payload);
+      } else {
+        await createPost(payload);
+      }
+
       reset();
       showPreview.onFalse();
       toast.success(currentPost ? 'Update success!' : 'Create success!');
       router.push(paths.dashboard.post.root);
-      console.info('DATA', data);
     } catch (error) {
+      toast.error(error.message || 'Something went wrong!');
       console.error(error);
     }
   });
@@ -209,9 +242,9 @@ export function PostCreateEditForm({ currentPost }: Props) {
         justifyContent: 'flex-end',
       }}
     >
-      <FormControlLabel
+      <Field.Switch
+        name="publish"
         label="Publish"
-        control={<Switch defaultChecked slotProps={{ input: { id: 'publish-switch' } }} />}
         sx={{ pl: 3, flexGrow: 1 }}
       />
 
