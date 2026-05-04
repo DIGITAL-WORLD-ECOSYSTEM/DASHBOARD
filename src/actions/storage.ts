@@ -1,4 +1,4 @@
-import axios, { endpoints } from 'src/lib/axios';
+import axios from 'src/lib/axios';
 
 // ----------------------------------------------------------------------
 

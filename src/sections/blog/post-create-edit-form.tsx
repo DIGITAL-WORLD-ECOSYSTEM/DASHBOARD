@@ -22,7 +22,6 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 
 import { _tags } from 'src/_mock';
-
 import { uploadImage } from 'src/actions/storage';
 import { createPost, updatePost } from 'src/actions/blog';
 
@@ -105,7 +104,7 @@ export function PostCreateEditForm({ currentPost }: Props) {
         title: data.title,
         description: data.description,
         content: data.content,
-        coverUrl: coverUrl,
+        coverUrl,
         tags: data.tags,
         status: data.publish ? 'published' : 'draft',
         slug: data.title
