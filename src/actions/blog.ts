@@ -1,8 +1,8 @@
 import type { SWRConfiguration } from 'swr';
 import type { IPostItem } from 'src/types/blog';
 
-import useSWR, { mutate } from 'swr';
 import { useMemo } from 'react';
+import useSWR, { mutate } from 'swr';
 
 import axios, { fetcher, endpoints } from 'src/lib/axios';
 

@@ -23,12 +23,12 @@ import { useRouter } from 'src/routes/hooks';
 
 import { _tags } from 'src/_mock';
 
+import { uploadImage } from 'src/actions/storage';
+import { createPost, updatePost } from 'src/actions/blog';
+
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
-
-import { uploadImage } from 'src/actions/storage';
-import { createPost, updatePost } from 'src/actions/blog';
 
 import { PostDetailsPreview } from './post-details-preview';
 
