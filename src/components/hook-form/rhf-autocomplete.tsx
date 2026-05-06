@@ -85,15 +85,17 @@ export function RHFAutocomplete({
             renderInput={(params) => (
               <TextField
                 {...params}
-                {...textField}
                 label={label}
                 placeholder={placeholder}
                 error={!!error}
                 helperText={error?.message ?? helperText}
                 inputRef={ref}
+                {...textField}
                 slotProps={{
+                  ...params.slotProps,
                   ...textField?.slotProps,
                   htmlInput: {
+                    ...params.inputProps,
                     ...textField?.slotProps?.htmlInput,
                     autoComplete: 'new-password',
                   },
