@@ -71,7 +71,7 @@ export function PostCreateEditForm({ currentPost }: Props) {
     content: '',
     coverUrl: null,
     coverAlt: '',
-    category: 'Geral',
+    category: 'Tecnologia',
     tags: [],
     metaKeywords: [],
     metaTitle: '',
@@ -87,7 +87,7 @@ export function PostCreateEditForm({ currentPost }: Props) {
       ? {
           ...currentPost,
           publish: currentPost.publish === 'published',
-          category: currentPost.category || 'Geral',
+          category: currentPost.category || 'Tecnologia',
           slug: currentPost.slug || '',
         }
       : defaultValues,
@@ -195,11 +195,10 @@ export function PostCreateEditForm({ currentPost }: Props) {
 
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <Field.Select name="category" label="Category">
-              <MenuItem value="Geral">Geral</MenuItem>
               <MenuItem value="Tecnologia">Tecnologia</MenuItem>
-              <MenuItem value="Finanças">Finanças</MenuItem>
-              <MenuItem value="Agronegócio">Agronegócio</MenuItem>
-              <MenuItem value="Governança">Governança</MenuItem>
+              <MenuItem value="Economia">Economia</MenuItem>
+              <MenuItem value="Geopolítica">Geopolítica</MenuItem>
+              <MenuItem value="Meio Ambiente">Meio Ambiente</MenuItem>
             </Field.Select>
 
             <Field.Text name="coverAlt" label="Image Alt Text (SEO)" />
