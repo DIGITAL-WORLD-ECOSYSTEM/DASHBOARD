@@ -45,39 +45,45 @@ export function RHFAutocomplete({
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }) => (
-        <Autocomplete
-          {...field}
-          id={`${name}-rhf-autocomplete`}
-          onChange={(event, newValue) => setValue(name, newValue, { shouldValidate: true })}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              {...textField}
-              label={label}
-              placeholder={placeholder}
-              error={!!error}
-              helperText={error?.message ?? helperText}
-              slotProps={{
-                ...textField?.slotProps,
-                htmlInput: {
-                  ...textField?.slotProps?.htmlInput,
-                  autoComplete: 'new-password', // Disable autocomplete and autofill
-                },
-              }}
-            />
-          )}
-          slotProps={{
-            ...otherSlotProps,
-            chip: {
-              size: 'small',
-              variant: 'soft',
-              ...otherSlotProps?.chip,
-            },
-          }}
-          {...other}
-        />
-      )}
+      render={({ field, fieldState: { error } }) => {
+        const { ref, ...fieldProps } = field;
+
+        return (
+          <Autocomplete
+            {...fieldProps}
+            id={`${name}-rhf-autocomplete`}
+            onChange={(event, newValue) => field.onChange(newValue)}
+            onBlur={(event) => field.onBlur()}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                {...textField}
+                label={label}
+                placeholder={placeholder}
+                error={!!error}
+                helperText={error?.message ?? helperText}
+                inputRef={ref}
+                slotProps={{
+                  ...textField?.slotProps,
+                  htmlInput: {
+                    ...textField?.slotProps?.htmlInput,
+                    autoComplete: 'new-password',
+                  },
+                }}
+              />
+            )}
+            slotProps={{
+              ...otherSlotProps,
+              chip: {
+                size: 'small',
+                variant: 'soft',
+                ...otherSlotProps?.chip,
+              },
+            }}
+            {...other}
+          />
+        );
+      }}
     />
   );
 }

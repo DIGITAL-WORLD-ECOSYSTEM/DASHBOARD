@@ -37,9 +37,12 @@ export type PostCreateSchemaType = z.infer<typeof PostCreateSchema>;
 
 export const PostCreateSchema = z.object({
   title: z.string().min(1, { message: 'Title is required!' }),
+  slug: z.string().min(1, { message: 'Slug is required!' }),
   description: z.string().min(1, { message: 'Description is required!' }).max(160),
   content: z.string().min(10, { message: 'Content must be at least 10 characters' }),
   coverUrl: schemaUtils.file({ message: 'Cover is required!' }),
+  coverAlt: z.string().optional(),
+  category: z.string().min(1, { message: 'Category is required!' }),
   tags: z.string().array().min(2, { message: 'Must have at least 2 items!' }),
   metaKeywords: z.string().array().optional(),
   metaTitle: z.string().optional(),
@@ -62,9 +65,12 @@ export function PostCreateEditForm({ currentPost }: Props) {
 
   const defaultValues: PostCreateSchemaType = {
     title: '',
+    slug: '',
     description: '',
     content: '',
     coverUrl: null,
+    coverAlt: '',
+    category: 'Geral',
     tags: [],
     metaKeywords: [],
     metaTitle: '',
@@ -89,6 +95,18 @@ export function PostCreateEditForm({ currentPost }: Props) {
 
   const values = watch();
 
+  const handleAutoSlug = useCallback(() => {
+    const title = watch('title');
+    if (title && !currentPost) {
+      const generatedSlug = title
+        .toLowerCase()
+        .trim()
+        .replace(/ /g, '-')
+        .replace(/[^\w-]+/g, '');
+      setValue('slug', generatedSlug, { shouldValidate: true });
+    }
+  }, [currentPost, setValue, watch]);
+
   const onSubmit = handleSubmit(async (data) => {
     try {
       let coverUrl = data.coverUrl;
@@ -102,16 +120,17 @@ export function PostCreateEditForm({ currentPost }: Props) {
       // 2. Prepare payload for backend
       const payload = {
         title: data.title,
+        slug: data.slug,
         description: data.description,
         content: data.content,
         coverUrl,
+        coverAlt: data.coverAlt,
+        category: data.category,
         tags: data.tags,
+        metaTitle: data.metaTitle || data.title,
+        metaDescription: data.metaDescription || data.description,
+        metaKeywords: data.metaKeywords,
         status: data.publish ? 'published' : 'draft',
-        slug: data.title
-          .toLowerCase()
-          .replace(/ /g, '-')
-          .replace(/[^\w-]+/g, ''),
-        category: 'Geral', // Default
       };
 
       // 3. API Call
@@ -154,13 +173,28 @@ export function PostCreateEditForm({ currentPost }: Props) {
         <Divider />
 
         <Stack spacing={3} sx={{ p: 3 }}>
-          <Field.Text name="title" label="Post title" />
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+            <Field.Text name="title" label="Post title" onBlur={handleAutoSlug} />
+            <Field.Text name="slug" label="Slug (URL)" />
+          </Stack>
 
           <Field.Text name="description" label="Description" multiline rows={3} />
 
           <Stack spacing={1.5}>
             <Typography variant="subtitle2">Content</Typography>
             <Field.Editor name="content" sx={{ maxHeight: 480 }} />
+          </Stack>
+
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+            <Field.Select name="category" label="Category" native>
+              <option value="Geral">Geral</option>
+              <option value="Tecnologia">Tecnologia</option>
+              <option value="Finanças">Finanças</option>
+              <option value="Agronegócio">Agronegócio</option>
+              <option value="Governança">Governança</option>
+            </Field.Select>
+
+            <Field.Text name="coverAlt" label="Image Alt Text (SEO)" />
           </Stack>
 
           <Stack spacing={1.5}>
