@@ -89,8 +89,22 @@ export function RHFAutocomplete({
                 placeholder={placeholder}
                 error={!!error}
                 helperText={error?.message ?? helperText}
-                inputRef={ref}
                 {...textField}
+                inputRef={(node) => {
+                  // Sincroniza a ref do React Hook Form
+                  ref(node);
+                  // Sincroniza a ref interna do Autocomplete do MUI
+                  const p = params as any;
+                  if (p.InputProps?.ref) {
+                    p.InputProps.ref.current = node;
+                  }
+                  if (p.inputRef) {
+                    p.inputRef.current = node;
+                  }
+                  if (p.slotProps?.input?.ref) {
+                    p.slotProps.input.ref.current = node;
+                  }
+                }}
                 slotProps={{
                   ...params.slotProps,
                   ...textField?.slotProps,
