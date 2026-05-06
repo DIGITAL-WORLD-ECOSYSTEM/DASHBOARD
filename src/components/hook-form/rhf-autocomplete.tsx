@@ -95,7 +95,7 @@ export function RHFAutocomplete({
                   ...params.slotProps,
                   ...textField?.slotProps,
                   htmlInput: {
-                    ...params.inputProps,
+                    ...(params as any).inputProps,
                     ...textField?.slotProps?.htmlInput,
                     autoComplete: 'new-password',
                   },
