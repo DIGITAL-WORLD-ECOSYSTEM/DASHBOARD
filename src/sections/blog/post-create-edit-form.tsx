@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
@@ -82,7 +83,14 @@ export function PostCreateEditForm({ currentPost }: Props) {
     mode: 'all',
     resolver: zodResolver(PostCreateSchema),
     defaultValues,
-    values: currentPost ? { ...currentPost, publish: currentPost.publish === 'published' } : defaultValues,
+    values: currentPost
+      ? {
+          ...currentPost,
+          publish: currentPost.publish === 'published',
+          category: currentPost.category || 'Geral',
+          slug: currentPost.slug || '',
+        }
+      : defaultValues,
   });
 
   const {
@@ -186,12 +194,12 @@ export function PostCreateEditForm({ currentPost }: Props) {
           </Stack>
 
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <Field.Select name="category" label="Category" native>
-              <option value="Geral">Geral</option>
-              <option value="Tecnologia">Tecnologia</option>
-              <option value="Finanças">Finanças</option>
-              <option value="Agronegócio">Agronegócio</option>
-              <option value="Governança">Governança</option>
+            <Field.Select name="category" label="Category">
+              <MenuItem value="Geral">Geral</MenuItem>
+              <MenuItem value="Tecnologia">Tecnologia</MenuItem>
+              <MenuItem value="Finanças">Finanças</MenuItem>
+              <MenuItem value="Agronegócio">Agronegócio</MenuItem>
+              <MenuItem value="Governança">Governança</MenuItem>
             </Field.Select>
 
             <Field.Text name="coverAlt" label="Image Alt Text (SEO)" />
