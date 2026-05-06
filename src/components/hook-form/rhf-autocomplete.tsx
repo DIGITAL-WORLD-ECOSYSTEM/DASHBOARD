@@ -37,9 +37,11 @@ export function RHFAutocomplete({
   placeholder,
   ...other
 }: RHFAutocompleteProps) {
-  const { control, setValue } = useFormContext();
+  const { control } = useFormContext();
 
   const { textField, ...otherSlotProps } = slotProps ?? {};
+
+  const { multiple, freeSolo } = other;
 
   return (
     <Controller
@@ -51,9 +53,35 @@ export function RHFAutocomplete({
         return (
           <Autocomplete
             {...fieldProps}
+            {...other}
             id={`${name}-rhf-autocomplete`}
             onChange={(event, newValue) => field.onChange(newValue)}
-            onBlur={(event) => field.onBlur()}
+            onBlur={(event) => {
+              field.onBlur();
+              if (freeSolo && multiple) {
+                const inputValue = (event.target as HTMLInputElement).value;
+                if (inputValue) {
+                  const currentValues = Array.isArray(field.value) ? field.value : [];
+                  if (!currentValues.includes(inputValue)) {
+                    field.onChange([...currentValues, inputValue]);
+                  }
+                  (event.target as HTMLInputElement).value = '';
+                }
+              }
+            }}
+            onKeyDown={(event) => {
+              if (freeSolo && multiple && event.key === ',') {
+                event.preventDefault();
+                const inputValue = (event.target as HTMLInputElement).value;
+                if (inputValue) {
+                  const currentValues = Array.isArray(field.value) ? field.value : [];
+                  if (!currentValues.includes(inputValue)) {
+                    field.onChange([...currentValues, inputValue]);
+                  }
+                  (event.target as HTMLInputElement).value = '';
+                }
+              }
+            }}
             renderInput={(params) => (
               <TextField
                 {...params}
