@@ -106,5 +106,8 @@ export const endpoints = {
     email: {
       campaign: '/api/platform/email/campaign',
     },
+    treasury: {
+      analytics: '/api/platform/treasury/analytics',
+    },
   },
 } as const;

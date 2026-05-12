@@ -1,6 +1,7 @@
 import type { CardProps } from '@mui/material/Card';
 import type { ChartOptions } from 'src/components/chart';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import { useTheme, alpha as hexAlpha } from '@mui/material/styles';
@@ -44,21 +45,29 @@ export function AnalyticsWebsiteVisits({ title, subheader, chart, sx, ...other }
   });
 
   return (
-    <Card sx={sx} {...other}>
+    <Card
+      sx={{
+        height: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        ...sx,
+      }}
+      {...other}
+    >
       <CardHeader title={title} subheader={subheader} />
 
-      <Chart
-        type="line"
-        series={chart.series}
-        options={chartOptions}
-        slotProps={{ loading: { p: 2.5 } }}
-        sx={{
-          pl: 1,
-          py: 2.5,
-          pr: 2.5,
-          height: 364,
-        }}
-      />
+      <Box sx={{ flexGrow: 1, py: 2.5, pr: 2.5, pl: 1 }}>
+        <Chart
+          type="line"
+          series={chart.series}
+          options={chartOptions}
+          slotProps={{ loading: { p: 2.5 } }}
+          sx={{
+            height: 1,
+            minHeight: 364,
+          }}
+        />
+      </Box>
     </Card>
   );
 }

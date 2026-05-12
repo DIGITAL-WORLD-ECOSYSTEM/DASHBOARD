@@ -1,6 +1,7 @@
 import type { CardProps } from '@mui/material/Card';
 import type { ChartOptions } from 'src/components/chart';
 
+import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material/styles';
@@ -54,20 +55,28 @@ export function AnalyticsCurrentVisits({ title, subheader, chart, sx, ...other }
   });
 
   return (
-    <Card sx={sx} {...other}>
+    <Card
+      sx={{
+        height: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        ...sx,
+      }}
+      {...other}
+    >
       <CardHeader title={title} subheader={subheader} />
 
-      <Chart
-        type="donut"
-        series={chartSeries}
-        options={chartOptions}
-        sx={{
-          my: 6,
-          mx: 'auto',
-          width: { xs: 240, xl: 260 },
-          height: { xs: 240, xl: 260 },
-        }}
-      />
+      <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Chart
+          type="donut"
+          series={chartSeries}
+          options={chartOptions}
+          sx={{
+            width: { xs: 240, xl: 260 },
+            height: { xs: 240, xl: 260 },
+          }}
+        />
+      </Box>
 
       <Divider sx={{ borderStyle: 'dashed' }} />
 
