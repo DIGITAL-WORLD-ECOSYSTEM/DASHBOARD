@@ -24,7 +24,7 @@ axiosInstance.interceptors.request.use(async (config) => {
     const timestamp = Date.now().toString();
     const body = config.data ? JSON.stringify(config.data) : '';
     const msg = CryptoCore.encode(timestamp + body);
-    
+
     // Converte a chave (supondo Hex)
     const privateKeyBytes = Uint8Array.from(
       identityKey.match(/.{1,2}/g)?.map((byte) => parseInt(byte, 16)) || []

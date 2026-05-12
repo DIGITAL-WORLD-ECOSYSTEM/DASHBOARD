@@ -85,11 +85,11 @@ export function PostCreateEditForm({ currentPost }: Props) {
     defaultValues,
     values: currentPost
       ? {
-          ...currentPost,
-          publish: currentPost.publish === 'published',
-          category: currentPost.category || 'Tecnologia',
-          slug: currentPost.slug || '',
-        }
+        ...currentPost,
+        publish: currentPost.publish === 'published',
+        category: currentPost.category || 'Tecnologia',
+        slug: currentPost.slug || '',
+      }
       : defaultValues,
   });
 

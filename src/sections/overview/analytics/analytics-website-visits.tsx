@@ -33,10 +33,13 @@ export function AnalyticsWebsiteVisits({ title, subheader, chart, sx, ...other }
 
   const chartOptions = useChart({
     colors: chartColors,
-    stroke: { width: 2, colors: ['transparent'] },
+    stroke: {
+      width: 3,
+      curve: 'smooth',
+    },
     xaxis: { categories: chart.categories },
-    legend: { show: true },
-    tooltip: { y: { formatter: (value: number) => `${value} visits` } },
+    legend: { show: true, position: 'bottom', horizontalAlign: 'center' },
+    tooltip: { y: { formatter: (value: number) => `R$ ${value.toLocaleString('pt-BR')}` } },
     ...chart.options,
   });
 
@@ -45,7 +48,7 @@ export function AnalyticsWebsiteVisits({ title, subheader, chart, sx, ...other }
       <CardHeader title={title} subheader={subheader} />
 
       <Chart
-        type="bar"
+        type="line"
         series={chart.series}
         options={chartOptions}
         slotProps={{ loading: { p: 2.5 } }}

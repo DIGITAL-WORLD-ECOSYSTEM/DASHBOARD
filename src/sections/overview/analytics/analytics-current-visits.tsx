@@ -31,10 +31,10 @@ export function AnalyticsCurrentVisits({ title, subheader, chart, sx, ...other }
   const chartSeries = chart.series.map((item) => item.value);
 
   const chartColors = chart.colors ?? [
+    theme.palette.info.main,
+    theme.palette.info.light,
     theme.palette.primary.main,
-    theme.palette.warning.light,
-    theme.palette.info.dark,
-    theme.palette.error.main,
+    theme.palette.secondary.main,
   ];
 
   const chartOptions = useChart({
@@ -58,7 +58,7 @@ export function AnalyticsCurrentVisits({ title, subheader, chart, sx, ...other }
       <CardHeader title={title} subheader={subheader} />
 
       <Chart
-        type="pie"
+        type="donut"
         series={chartSeries}
         options={chartOptions}
         sx={{

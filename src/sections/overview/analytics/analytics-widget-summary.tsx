@@ -20,11 +20,11 @@ import { Chart, useChart } from 'src/components/chart';
 
 type Props = CardProps & {
   title: string;
-  total: number;
+  total: string | number;
   percent: number;
   color?: PaletteColorKey;
   icon: React.ReactNode;
-  chart: {
+  chart?: {
     series: number[];
     categories: string[];
     options?: ChartOptions;
@@ -43,12 +43,12 @@ export function AnalyticsWidgetSummary({
 }: Props) {
   const theme = useTheme();
 
-  const chartColors = [theme.palette[color].dark];
+  const chartColors = [theme.palette[color].main];
 
   const chartOptions = useChart({
     chart: { sparkline: { enabled: true } },
     colors: chartColors,
-    xaxis: { categories: chart.categories },
+    xaxis: { categories: chart?.categories },
     grid: {
       padding: {
         top: 6,
@@ -58,26 +58,27 @@ export function AnalyticsWidgetSummary({
       },
     },
     tooltip: {
-      y: { formatter: (value: number) => fNumber(value), title: { formatter: () => '' } },
+      y: { formatter: (value: number) => value.toString(), title: { formatter: () => '' } },
     },
     markers: {
       strokeWidth: 0,
     },
-    ...chart.options,
+    ...chart?.options,
   });
 
   const renderTrending = () => (
     <Box
       sx={{
-        top: 16,
         gap: 0.5,
-        right: 16,
         display: 'flex',
-        position: 'absolute',
         alignItems: 'center',
+        color: percent < 0 ? 'error.main' : 'success.main',
       }}
     >
-      <Iconify width={20} icon={percent < 0 ? 'eva:trending-down-fill' : 'eva:trending-up-fill'} />
+      <Iconify
+        width={16}
+        icon={percent < 0 ? 'solar:double-alt-arrow-down-bold-duotone' : 'solar:double-alt-arrow-up-bold-duotone'}
+      />
       <Box component="span" sx={{ typography: 'subtitle2' }}>
         {percent > 0 && '+'}
         {fPercent(percent)}
@@ -89,56 +90,48 @@ export function AnalyticsWidgetSummary({
     <Card
       sx={[
         () => ({
-          p: 3,
-          boxShadow: 'none',
+          p: 2.5,
+          boxShadow: theme.customShadows.card,
           position: 'relative',
-          color: `${color}.darker`,
           backgroundColor: 'common.white',
-          backgroundImage: `linear-gradient(135deg, ${varAlpha(theme.vars.palette[color].lighterChannel, 0.48)}, ${varAlpha(theme.vars.palette[color].lightChannel, 0.48)})`,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
     >
-      <Box sx={{ width: 48, height: 48, mb: 3 }}>{icon}</Box>
-
-      {renderTrending()}
-
       <Box
         sx={{
+          width: 48,
+          height: 48,
+          flexShrink: 0,
           display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'flex-end',
-          justifyContent: 'flex-end',
+          borderRadius: 1.5,
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: `${color}.main`,
+          bgcolor: varAlpha(theme.vars.palette[color].mainChannel, 0.08),
         }}
       >
-        <Box sx={{ flexGrow: 1, minWidth: 112 }}>
-          <Box sx={{ mb: 1, typography: 'subtitle2' }}>{title}</Box>
+        {icon}
+      </Box>
 
-          <Box sx={{ typography: 'h4' }}>{fShortenNumber(total)}</Box>
-        </Box>
+      <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ typography: 'subtitle2', color: 'text.secondary', mb: 0.5 }}>{title}</Box>
+        <Box sx={{ typography: 'h5', fontWeight: 'fontWeightBold' }}>{typeof total === 'number' ? fShortenNumber(total) : total}</Box>
+        {renderTrending()}
+      </Box>
 
+      {chart && (
         <Chart
           type="line"
           series={[{ data: chart.series }]}
           options={chartOptions}
-          sx={{ width: 84, height: 56 }}
+          sx={{ width: 60, height: 40 }}
         />
-      </Box>
-
-      <SvgColor
-        src={`${CONFIG.assetsDir}/assets/background/shape-square.svg`}
-        sx={{
-          top: 0,
-          left: -20,
-          width: 240,
-          zIndex: -1,
-          height: 240,
-          opacity: 0.24,
-          position: 'absolute',
-          color: `${color}.main`,
-        }}
-      />
+      )}
     </Card>
   );
 }
