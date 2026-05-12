@@ -7,10 +7,9 @@ import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { DashboardContent } from 'src/layouts/dashboard';
+import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
 import { Iconify } from 'src/components/iconify';
-
-import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
 import { AnalyticsTable } from '../analytics-table';
 import { AnalyticsFilters } from '../analytics-filters';
@@ -69,7 +68,7 @@ export function OverviewAnalyticsView() {
       />
 
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="TOTAL OUTFLOW"
             percent={-2.6}
@@ -79,7 +78,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="TOP RECIPIENT"
             percent={0.1}
@@ -89,7 +88,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="TICKET MEDIUM"
             percent={2.8}
@@ -99,7 +98,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="FREQUENCY"
             percent={3.6}
@@ -109,7 +108,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid item xs={12} md={6} lg={8}>
+        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsWebsiteVisits
             title="Monthly Trend (BRL)"
             chart={{
@@ -124,7 +123,7 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentVisits
             title="Recipient Distribution"
             chart={{
@@ -133,11 +132,11 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <AnalyticsTable title="Digital Receipt Ledger" tableData={transactions} />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <AnalyticsAIInsights />
         </Grid>
       </Grid>
