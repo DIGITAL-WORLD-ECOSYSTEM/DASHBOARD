@@ -61,6 +61,7 @@ export interface ITreasuryAnalytics {
     label: string;
     value: number;
   }[];
+  availableYears: string[];
   transactions: ITreasuryTransaction[];
 }
 

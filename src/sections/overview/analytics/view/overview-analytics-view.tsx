@@ -22,6 +22,8 @@ import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 
 export function OverviewAnalyticsView() {
   const [selectedYear, setSelectedYear] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const { analytics, analyticsLoading } = useGetTreasuryAnalytics(selectedYear);
 
   if (analyticsLoading) {
@@ -32,12 +34,24 @@ export function OverviewAnalyticsView() {
     );
   }
 
-  const { summary, monthlyTrend, distribution, transactions } = analytics || {
+  const { summary, monthlyTrend, distribution, transactions, availableYears } = analytics || {
     summary: { totalOutflow: 0, topRecipient: 'N/A', avgTicket: 0, count: 0 },
     monthlyTrend: [],
     distribution: [],
+    availableYears: ['All'],
     transactions: [],
   };
+
+  const dataFiltered = transactions.filter((tx) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      tx.counterparty_name?.toLowerCase().includes(searchLower) ||
+      tx.origin_institution?.toLowerCase().includes(searchLower) ||
+      tx.destination_institution?.toLowerCase().includes(searchLower) ||
+      tx.category?.toLowerCase().includes(searchLower) ||
+      tx.payment_method?.toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <DashboardContent maxWidth="xl">
@@ -62,9 +76,10 @@ export function OverviewAnalyticsView() {
       </Box>
 
       <AnalyticsFilters
-        years={['All', '2023', '2024', '2025']}
+        years={availableYears}
         selectedYear={selectedYear}
         onSelectYear={setSelectedYear}
+        onSearch={setSearchQuery}
       />
 
       <Grid container spacing={3}>
@@ -133,7 +148,7 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <AnalyticsTable title="Digital Receipt Ledger" tableData={transactions} />
+          <AnalyticsTable title="Digital Receipt Ledger" tableData={dataFiltered} />
         </Grid>
 
         <Grid size={{ xs: 12 }}>

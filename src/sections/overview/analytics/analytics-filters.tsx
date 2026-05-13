@@ -11,10 +11,11 @@ import { Iconify } from 'src/components/iconify';
 type Props = {
   years: string[];
   selectedYear: string;
+  onSearch: (value: string) => void;
   onSelectYear: (year: string) => void;
 };
 
-export function AnalyticsFilters({ years, selectedYear, onSelectYear }: Props) {
+export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch }: Props) {
   return (
     <Box
       sx={{
@@ -56,6 +57,7 @@ export function AnalyticsFilters({ years, selectedYear, onSelectYear }: Props) {
 
       <TextField
         placeholder="Search favored or institution..."
+        onChange={(e) => onSearch(e.target.value)}
         sx={{
           maxWidth: { md: 440 },
           width: 1,
