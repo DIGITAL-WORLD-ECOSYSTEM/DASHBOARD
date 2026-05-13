@@ -22,6 +22,8 @@ export interface ITreasuryTransaction {
   payer_id: string;
   recipient_id: string;
   counterparty_name?: string; // Nome amigável para exibição
+  origin_institution?: string; // Banco de Origem
+  destination_institution?: string; // Banco de Destino
   payment_method: string;
   external_reference: string | null;
   status: 'pending' | 'confirmed' | 'failed' | 'canceled';

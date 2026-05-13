@@ -59,13 +59,13 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Category</TableCell>
                 <TableCell>Counterparty</TableCell>
+                <TableCell>Origin Bank</TableCell>
+                <TableCell>Dest. Bank</TableCell>
                 <TableCell>Value</TableCell>
                 <TableCell>Method</TableCell>
-                <TableCell align="center">Insights</TableCell>
-                <TableCell align="center">Receipt</TableCell>
                 <TableCell align="right">Status</TableCell>
+                <TableCell align="center">Insights</TableCell>
               </TableRow>
             </TableHead>
 
@@ -75,13 +75,22 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
                   <TableCell>{fDate(row.created_at)}</TableCell>
                   
                   <TableCell>
-                    <Label variant="soft" color="info" sx={{ textTransform: 'capitalize' }}>
+                    <Typography variant="subtitle2">{row.counterparty_name || row.recipient_id}</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                       {row.category}
+                    </Typography>
+                  </TableCell>
+
+                  <TableCell>
+                    <Label variant="soft" color="default" sx={{ textTransform: 'uppercase' }}>
+                      {row.origin_institution || 'N/A'}
                     </Label>
                   </TableCell>
 
                   <TableCell>
-                    <Typography variant="subtitle2">{row.counterparty_name || row.recipient_id}</Typography>
+                    <Label variant="soft" color="info" sx={{ textTransform: 'uppercase' }}>
+                      {row.destination_institution || 'N/A'}
+                    </Label>
                   </TableCell>
 
                   <TableCell>
@@ -91,48 +100,9 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
                   </TableCell>
 
                   <TableCell>
-                    <Label
-                      variant="soft"
-                      color="default"
-                      sx={{ textTransform: 'uppercase', bgcolor: alpha(theme.palette.grey[500], 0.08) }}
-                    >
+                    <Typography variant="body2" sx={{ textTransform: 'uppercase', color: 'text.secondary' }}>
                       {row.payment_method}
-                    </Label>
-                  </TableCell>
-
-                  <TableCell align="center">
-                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
-                      {row.ai_flags.map((flag, index) => (
-                        <Iconify
-                          key={index}
-                          icon={getFlagIcon(flag.type) as any}
-                          sx={{
-                            color: 'primary.main',
-                            width: 20,
-                            height: 20,
-                          }}
-                        />
-                      ))}
-                      {row.risk_score.level !== 'low' && (
-                        <Iconify
-                          icon={"eva:alert-triangle-fill" as any}
-                          sx={{
-                            color: 'error.main',
-                            width: 20,
-                            height: 20,
-                          }}
-                        />
-                      )}
-                      {row.ai_flags.length === 0 && row.risk_score.level === 'low' && (
-                        <Iconify icon={"eva:checkmark-circle-2-fill" as any} sx={{ color: 'success.main', width: 20, height: 20 }} />
-                      )}
-                    </Box>
-                  </TableCell>
-
-                  <TableCell align="center">
-                    {row.documents.length > 0 && (
-                      <Iconify icon={"eva:paperclip-fill" as any} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
-                    )}
+                    </Typography>
                   </TableCell>
 
                   <TableCell align="right">
@@ -147,6 +117,45 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
                     >
                       {row.status}
                     </Label>
+                  </TableCell>
+
+                  <TableCell align="center">
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
+                      {/* Recibo */}
+                      {row.documents.length > 0 && (
+                        <Iconify icon={"eva:paperclip-fill" as any} sx={{ color: 'text.primary', width: 18, height: 18 }} />
+                      )}
+
+                      {/* IA Flags */}
+                      {row.ai_flags.map((flag, index) => (
+                        <Iconify
+                          key={index}
+                          icon={getFlagIcon(flag.type) as any}
+                          sx={{
+                            color: 'primary.main',
+                            width: 18,
+                            height: 18,
+                          }}
+                        />
+                      ))}
+
+                      {/* Risco */}
+                      {row.risk_score.level !== 'low' && (
+                        <Iconify
+                          icon={"eva:alert-triangle-fill" as any}
+                          sx={{
+                            color: 'error.main',
+                            width: 18,
+                            height: 18,
+                          }}
+                        />
+                      )}
+
+                      {/* Sucesso (Se nada mais houver) */}
+                      {row.ai_flags.length === 0 && row.risk_score.level === 'low' && row.documents.length === 0 && (
+                        <Iconify icon={"eva:checkmark-circle-2-fill" as any} sx={{ color: 'success.main', width: 18, height: 18 }} />
+                      )}
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
