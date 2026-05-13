@@ -21,8 +21,8 @@ import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
-  const { analytics, analyticsLoading } = useGetTreasuryAnalytics();
-  const [selectedYear, setSelectedYear] = useState('2024');
+  const [selectedYear, setSelectedYear] = useState('All');
+  const { analytics, analyticsLoading } = useGetTreasuryAnalytics(selectedYear);
 
   if (analyticsLoading) {
     return (

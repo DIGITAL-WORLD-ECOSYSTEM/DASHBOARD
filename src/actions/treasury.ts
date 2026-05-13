@@ -62,8 +62,8 @@ export interface ITreasuryAnalytics {
   transactions: ITreasuryTransaction[];
 }
 
-export function useGetTreasuryAnalytics() {
-  const url = endpoints.platform.treasury.analytics;
+export function useGetTreasuryAnalytics(year?: string) {
+  const url = year ? `${endpoints.platform.treasury.analytics}?year=${year}` : endpoints.platform.treasury.analytics;
 
   const { data, isLoading, error, isValidating } = useSWR<{ data: ITreasuryAnalytics }>(url, fetcher);
 

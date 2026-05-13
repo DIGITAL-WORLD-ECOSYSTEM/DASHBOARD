@@ -64,6 +64,7 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
                 <TableCell>Value</TableCell>
                 <TableCell>Method</TableCell>
                 <TableCell align="center">Insights</TableCell>
+                <TableCell align="center">Receipt</TableCell>
                 <TableCell align="right">Status</TableCell>
               </TableRow>
             </TableHead>
@@ -126,6 +127,12 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
                         <Iconify icon={"eva:checkmark-circle-2-fill" as any} sx={{ color: 'success.main', width: 20, height: 20 }} />
                       )}
                     </Box>
+                  </TableCell>
+
+                  <TableCell align="center">
+                    {row.documents.length > 0 && (
+                      <Iconify icon={"eva:paperclip-fill" as any} sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+                    )}
                   </TableCell>
 
                   <TableCell align="right">
