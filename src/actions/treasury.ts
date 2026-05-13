@@ -3,6 +3,47 @@ import { useMemo } from 'react';
 
 import { fetcher, endpoints } from 'src/lib/axios';
 
+export interface ITreasuryTransaction {
+  id: string;
+  tenant_id: string;
+  version: number;
+  created_at: string;
+  updated_at: string;
+  processed_at: string | null;
+  amount: number;
+  currency: string;
+  base_currency: string;
+  base_amount: number;
+  exchange_rate: number;
+  type: 'income' | 'expense' | 'transfer';
+  direction: 'inbound' | 'outbound';
+  category: string;
+  tags: string[];
+  payer_id: string;
+  recipient_id: string;
+  counterparty_name?: string; // Nome amigável para exibição
+  payment_method: string;
+  external_reference: string | null;
+  status: 'pending' | 'confirmed' | 'failed' | 'canceled';
+  reconciliation_status: 'matched' | 'unmatched' | 'manual_review';
+  risk_score: {
+    level: 'low' | 'medium' | 'high';
+    score: number;
+  };
+  integrity_hash: string;
+  documents: {
+    id: string;
+    type: string;
+    verified: boolean;
+  }[];
+  ai_flags: {
+    type: string;
+    confidence: number;
+  }[];
+  source_channel: string;
+  notes: string | null;
+}
+
 export interface ITreasuryAnalytics {
   summary: {
     totalOutflow: number;
@@ -18,15 +59,7 @@ export interface ITreasuryAnalytics {
     label: string;
     value: number;
   }[];
-  transactions: {
-    id: string;
-    date: string;
-    favored: string;
-    value: number;
-    institution: string;
-    insight: string;
-    receipt: boolean;
-  }[];
+  transactions: ITreasuryTransaction[];
 }
 
 export function useGetTreasuryAnalytics() {

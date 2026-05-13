@@ -11,26 +11,20 @@ import Typography from '@mui/material/Typography';
 import { useTheme, alpha } from '@mui/material/styles';
 import TableContainer from '@mui/material/TableContainer';
 
+import { fDate } from 'src/utils/format-time';
+
+import { ITreasuryTransaction } from 'src/actions/treasury';
+
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 // ----------------------------------------------------------------------
 
-type RowProps = {
-  id: string;
-  date: string;
-  favored: string;
-  value: number;
-  institution: string;
-  insight: string;
-  receipt: boolean;
-};
-
 type Props = {
   title?: string;
   subheader?: string;
-  tableData: RowProps[];
+  tableData: ITreasuryTransaction[];
 };
 
 export function AnalyticsTable({ title, subheader, tableData }: Props) {
@@ -65,49 +59,87 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
             <TableHead>
               <TableRow>
                 <TableCell>Date</TableCell>
-                <TableCell>Favored</TableCell>
+                <TableCell>Category</TableCell>
+                <TableCell>Counterparty</TableCell>
                 <TableCell>Value</TableCell>
-                <TableCell>Institution</TableCell>
-                <TableCell>Insights</TableCell>
-                <TableCell align="right">Receipt</TableCell>
+                <TableCell>Method</TableCell>
+                <TableCell align="center">Insights</TableCell>
+                <TableCell align="right">Status</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
               {tableData.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{fDate(row.created_at)}</TableCell>
+                  
                   <TableCell>
-                    <Typography variant="subtitle2">{row.favored}</Typography>
+                    <Label variant="soft" color="info" sx={{ textTransform: 'capitalize' }}>
+                      {row.category}
+                    </Label>
                   </TableCell>
+
                   <TableCell>
-                    <Typography variant="subtitle2" sx={{ color: 'primary.main' }}>
-                      R$ {row.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    <Typography variant="subtitle2">{row.counterparty_name || row.recipient_id}</Typography>
+                  </TableCell>
+
+                  <TableCell>
+                    <Typography variant="subtitle2" sx={{ color: row.direction === 'inbound' ? 'success.main' : 'error.main' }}>
+                      {row.direction === 'inbound' ? '+' : '-'} R$ {(row.amount / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </Typography>
                   </TableCell>
+
                   <TableCell>
                     <Label
                       variant="soft"
                       color="default"
-                      sx={{ textTransform: 'capitalize', bgcolor: alpha(theme.palette.grey[500], 0.08) }}
+                      sx={{ textTransform: 'uppercase', bgcolor: alpha(theme.palette.grey[500], 0.08) }}
                     >
-                      {row.institution}
+                      {row.payment_method}
                     </Label>
                   </TableCell>
-                  <TableCell>
-                    <Iconify
-                      icon={getInsightIcon(row.insight) as any}
-                      sx={{
-                        color: getInsightColor(row.insight),
-                        width: 20,
-                        height: 20,
-                      }}
-                    />
+
+                  <TableCell align="center">
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
+                      {row.ai_flags.map((flag, index) => (
+                        <Iconify
+                          key={index}
+                          icon={getFlagIcon(flag.type) as any}
+                          sx={{
+                            color: 'primary.main',
+                            width: 20,
+                            height: 20,
+                          }}
+                        />
+                      ))}
+                      {row.risk_score.level !== 'low' && (
+                        <Iconify
+                          icon={"eva:alert-triangle-fill" as any}
+                          sx={{
+                            color: 'error.main',
+                            width: 20,
+                            height: 20,
+                          }}
+                        />
+                      )}
+                      {row.ai_flags.length === 0 && row.risk_score.level === 'low' && (
+                        <Iconify icon={"eva:checkmark-circle-2-fill" as any} sx={{ color: 'success.main', width: 20, height: 20 }} />
+                      )}
+                    </Box>
                   </TableCell>
+
                   <TableCell align="right">
-                    {row.receipt && (
-                      <Iconify icon={"eva:paperclip-fill" as any} sx={{ color: 'text.disabled' }} />
-                    )}
+                    <Label
+                      variant="filled"
+                      color={
+                        (row.status === 'confirmed' && 'success') ||
+                        (row.status === 'pending' && 'warning') ||
+                        (row.status === 'failed' && 'error') ||
+                        'default'
+                      }
+                    >
+                      {row.status}
+                    </Label>
                   </TableCell>
                 </TableRow>
               ))}
@@ -133,28 +165,13 @@ export function AnalyticsTable({ title, subheader, tableData }: Props) {
 
 // ----------------------------------------------------------------------
 
-function getInsightIcon(insight: string) {
-  switch (insight) {
+function getFlagIcon(type: string) {
+  switch (type) {
     case 'recurring':
       return 'eva:clock-fill';
-    case 'change':
-      return 'eva:swap-fill';
-    case 'alert':
-      return 'eva:alert-triangle-fill';
+    case 'high_confidence':
+      return 'eva:shield-fill';
     default:
-      return 'eva:checkmark-circle-2-fill';
-  }
-}
-
-function getInsightColor(insight: string) {
-  switch (insight) {
-    case 'recurring':
-      return 'success.main';
-    case 'change':
-      return 'warning.main';
-    case 'alert':
-      return 'error.main';
-    default:
-      return 'primary.main';
+      return 'eva:info-fill';
   }
 }
