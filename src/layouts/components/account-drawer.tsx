@@ -75,14 +75,14 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
       ]}
     >
       {data.map((option) => {
-        const rootLabel = pathname.includes('/dashboard') ? 'Home' : 'Dashboard';
+        const rootLabel = pathname.includes('/dashboard') ? 'Início' : 'Painel';
         const rootHref = pathname.includes('/dashboard') ? '/' : paths.dashboard.root;
 
         return (
           <MenuItem key={option.label}>
             <Link
               component={RouterLink}
-              href={option.label === 'Home' ? rootHref : option.href}
+              href={option.label === 'Início' ? rootHref : option.href}
               color="inherit"
               underline="none"
               onClick={onClose}
@@ -100,7 +100,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
               {option.icon}
 
               <Box component="span" sx={{ ml: 2 }}>
-                {option.label === 'Home' ? rootLabel : option.label}
+                {option.label === 'Início' ? rootLabel : option.label}
               </Box>
 
               {option.info && (
@@ -178,7 +178,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
             {Array.from({ length: 3 }, (_, index) => (
               <Tooltip
                 key={_mock.fullName(index + 1)}
-                title={`Switch to: ${_mock.fullName(index + 1)}`}
+                title={`Mudar para: ${_mock.fullName(index + 1)}`}
               >
                 <Avatar
                   alt={_mock.fullName(index + 1)}
@@ -188,7 +188,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
               </Tooltip>
             ))}
 
-            <Tooltip title="Add account">
+            <Tooltip title="Adicionar conta">
               <IconButton
                 sx={[
                   (theme) => ({

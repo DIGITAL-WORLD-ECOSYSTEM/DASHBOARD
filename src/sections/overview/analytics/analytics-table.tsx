@@ -100,6 +100,14 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
   const isOutbound = row.direction === 'outbound';
   const isAudit = row.category === 'AUDIT';
 
+  const categoryMap: Record<string, string> = {
+    'Subscription': 'Assinatura',
+    'Recurring': 'Recorrente',
+    'AUDIT': 'AUDITORIA',
+    'Inbound': 'Recebimento',
+    'Outbound': 'Pagamento',
+  };
+
   return (
     <TableRow>
       <TableCell>{fDate(row.created_at)}</TableCell>
@@ -110,7 +118,7 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
             {row.counterparty_name}
           </Box>
           <Box component="span" sx={{ typography: 'caption', color: 'text.disabled' }}>
-            {row.category}
+            {categoryMap[row.category] || row.category}
           </Box>
         </Box>
       </TableCell>

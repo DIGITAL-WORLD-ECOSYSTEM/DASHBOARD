@@ -20,7 +20,7 @@ export function SearchNotFound({ query, sx, slotProps, ...other }: SearchNotFoun
   if (!query) {
     return (
       <Typography variant="body2" {...slotProps?.description}>
-        Please enter keywords
+        Por favor, digite os termos da pesquisa
       </Typography>
     );
   }
@@ -47,14 +47,14 @@ export function SearchNotFound({ query, sx, slotProps, ...other }: SearchNotFoun
           ...(Array.isArray(slotProps?.title?.sx) ? slotProps.title.sx : [slotProps?.title?.sx]),
         ]}
       >
-        Not found
+        Não encontrado
       </Typography>
 
       <Typography variant="body2" {...slotProps?.description}>
-        No results found for &nbsp;
+        Nenhum resultado encontrado para &nbsp;
         <strong>{`"${query}"`}</strong>
         .
-        <br /> Try checking for typos or using complete words.
+        <br /> Tente verificar erros de digitação ou usar palavras completas.
       </Typography>
     </Box>
   );

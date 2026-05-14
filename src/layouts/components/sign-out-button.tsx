@@ -31,7 +31,7 @@ export function SignOutButton({ onClose, sx, ...other }: Props) {
       router.replace('/login');
     } catch (error) {
       console.error(error);
-      toast.error('Unable to logout!');
+      toast.error('Não foi possível sair!');
     }
   }, [checkUserSession, onClose, router]);
 
@@ -45,7 +45,7 @@ export function SignOutButton({ onClose, sx, ...other }: Props) {
       sx={sx}
       {...other}
     >
-      Logout
+      Sair
     </Button>
   );
 }

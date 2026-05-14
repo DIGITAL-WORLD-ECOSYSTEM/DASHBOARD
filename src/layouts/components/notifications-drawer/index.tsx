@@ -25,9 +25,9 @@ import { NotificationItem } from './notification-item';
 // ----------------------------------------------------------------------
 
 const TABS = [
-  { value: 'all', label: 'All', count: 22 },
-  { value: 'unread', label: 'Unread', count: 12 },
-  { value: 'archived', label: 'Archived', count: 10 },
+  { value: 'all', label: 'Todas', count: 22 },
+  { value: 'unread', label: 'Não lidas', count: 12 },
+  { value: 'archived', label: 'Arquivadas', count: 10 },
 ];
 
 // ----------------------------------------------------------------------
@@ -65,11 +65,11 @@ export function NotificationsDrawer({ data = [], sx, ...other }: NotificationsDr
       }}
     >
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Notifications
+        Notificações
       </Typography>
 
       {!!totalUnRead && (
-        <Tooltip title="Mark all as read">
+        <Tooltip title="Marcar todas como lidas">
           <IconButton color="primary" onClick={handleMarkAllAsRead}>
             <Iconify icon="eva:done-all-fill" />
           </IconButton>
@@ -130,7 +130,7 @@ export function NotificationsDrawer({ data = [], sx, ...other }: NotificationsDr
         whileTap={varTap(0.96)}
         whileHover={varHover(1.04)}
         transition={transitionTap()}
-        aria-label="Notifications button"
+        aria-label="Botão de notificações"
         onClick={onOpen}
         sx={sx}
         {...other}
@@ -155,7 +155,7 @@ export function NotificationsDrawer({ data = [], sx, ...other }: NotificationsDr
 
         <Box sx={{ p: 1 }}>
           <Button fullWidth size="large">
-            View all
+            Ver todas
           </Button>
         </Box>
       </Drawer>
