@@ -21,7 +21,7 @@ import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
-  const [selectedYear, setSelectedYear] = useState('All');
+  const [selectedYear, setSelectedYear] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
   
   const { analytics, analyticsLoading } = useGetTreasuryAnalytics(selectedYear);
@@ -61,7 +61,7 @@ export function OverviewAnalyticsView() {
             Vincit Ledger
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Financial Intelligence for Andressa de Lima Ferreira
+            Inteligência Financeira para Andressa de Lima Ferreira
           </Typography>
         </Box>
 
@@ -109,7 +109,7 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="TICKET MEDIUM"
+            title="TICKET MÉDIO"
             percent={2.8}
             total={`R$ ${summary.avgTicket.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="info"
@@ -119,9 +119,9 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="FREQUENCY"
+            title="FREQUÊNCIA"
             percent={3.6}
-            total={`${summary.count} txs`}
+            total={`${summary.count} trans.`}
             color="success"
             icon={<Iconify icon={"solar:chart-2-bold-duotone" as any} width={32} />}
           />
@@ -129,12 +129,12 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsWebsiteVisits
-            title="Monthly Trend (BRL)"
+            title="Tendência Mensal (R$)"
             chart={{
               categories: monthlyTrend.map((m: any) => m.month),
               series: [
                 {
-                  name: 'Flow',
+                  name: 'Entradas',
                   data: monthlyTrend.map((m: any) => m.total),
                 },
               ],
@@ -144,7 +144,7 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentVisits
-            title="Recipient Distribution"
+            title="Distribuição por Favorecido"
             chart={{
               series: distribution,
             }}
@@ -152,7 +152,7 @@ export function OverviewAnalyticsView() {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <AnalyticsTable title="Digital Receipt Ledger" tableData={dataFiltered} />
+          <AnalyticsTable title="Ledger de Recebimentos Digitais" tableData={dataFiltered} />
         </Grid>
 
         <Grid size={{ xs: 12 }}>
