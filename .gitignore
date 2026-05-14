@@ -114,5 +114,8 @@ dist
 # Qodou files
 .qodo/
 
-# PNPM lock file
-pnpm-lock.yaml
+# Production
+dist
+dist-ssr
+.vercel
+.output
