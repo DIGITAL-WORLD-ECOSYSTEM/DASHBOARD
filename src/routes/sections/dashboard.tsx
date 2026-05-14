@@ -1,8 +1,11 @@
+import type { RouteObject } from 'react-router';
+
+import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
-import { Outlet, type RouteObject } from 'react-router';
 
 import { CONFIG } from 'src/global-config';
 import { DashboardLayout } from 'src/layouts/dashboard';
+import OverviewAnalyticsPage from 'src/pages/dashboard/analytics';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
@@ -12,12 +15,9 @@ import { AuthGuard } from 'src/auth/guard';
 
 import { usePathname } from '../hooks';
 
-// ----------------------------------------------------------------------
-
 // Overview
 const IndexPage = lazy(() => import('src/pages/dashboard'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
-const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
 const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
 // Product

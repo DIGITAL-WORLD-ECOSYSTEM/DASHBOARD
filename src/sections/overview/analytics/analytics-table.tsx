@@ -1,3 +1,5 @@
+import type { ITreasuryTransaction } from 'src/actions/treasury';
+
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -8,14 +10,11 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import CardHeader from '@mui/material/CardHeader';
-import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import { fDate } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
-
-import { ITreasuryTransaction } from 'src/actions/treasury';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
