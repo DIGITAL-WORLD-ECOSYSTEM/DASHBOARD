@@ -11,59 +11,55 @@ import { Iconify } from 'src/components/iconify';
 type Props = {
   years: string[];
   selectedYear: string;
-  onSearch: (value: string) => void;
   onSelectYear: (year: string) => void;
+  onSearch: (value: string) => void;
 };
 
-export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch }: Props) {
+export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch, ...other }: Props) {
   return (
     <Box
       sx={{
         gap: 3,
+        mb: 5,
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        alignItems: { md: 'center' },
-        justifyContent: 'space-between',
-        mb: { xs: 3, md: 5 },
+        alignItems: { xs: 'flex-start', md: 'center' },
       }}
+      {...other}
     >
       <Tabs
         value={selectedYear}
-        onChange={(e, value) => onSelectYear(value)}
+        onChange={(e, newValue) => onSelectYear(newValue)}
         sx={{
-          px: 1,
-          bgcolor: 'background.neutral',
-          borderRadius: 1.5,
           '& .MuiTabs-indicator': {
-            height: '80%',
-            bottom: '10%',
-            borderRadius: 1,
-            bgcolor: 'primary.main',
+            display: 'none',
           },
           '& .MuiTab-root': {
-            minHeight: 48,
-            zIndex: 1,
-            color: 'text.secondary',
+            borderRadius: 1,
+            mr: 1,
+            typography: 'subtitle2',
             '&.Mui-selected': {
-              color: 'common.white',
+              bgcolor: 'text.primary',
+              color: 'background.paper',
             },
           },
         }}
       >
+        <Tab key="all" label="Todos os Anos" value="all" disableRipple />
         {years.map((year) => (
           <Tab key={year} label={year} value={year} disableRipple />
         ))}
       </Tabs>
 
       <TextField
-        placeholder="Search favored or institution..."
+        placeholder="Pesquisar por favorecido ou banco..."
         onChange={(e) => onSearch(e.target.value)}
         sx={{
           maxWidth: { md: 440 },
           width: 1,
           '& .MuiOutlinedInput-root': {
             bgcolor: 'background.paper',
-            borderRadius: 10,
+            borderRadius: 1.5,
           },
         }}
         slotProps={{

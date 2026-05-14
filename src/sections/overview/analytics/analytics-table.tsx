@@ -46,14 +46,14 @@ export function AnalyticsTable({ title, subheader, tableData, headLabel, ...othe
   const dataFiltered = tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const TABLE_HEAD = headLabel || [
-    { id: 'date', label: 'Date' },
-    { id: 'counterparty', label: 'Counterparty' },
-    { id: 'origin_institution', label: 'Origin Bank' },
-    { id: 'destination_institution', label: 'Dest. Bank' },
-    { id: 'amount', label: 'Value' },
-    { id: 'payment_method', label: 'Method' },
+    { id: 'date', label: 'Data' },
+    { id: 'counterparty', label: 'Contraparte' },
+    { id: 'origin_institution', label: 'Banco Origem' },
+    { id: 'destination_institution', label: 'Banco Destino' },
+    { id: 'amount', label: 'Valor' },
+    { id: 'payment_method', label: 'Método' },
     { id: 'status', label: 'Status' },
-    { id: 'insights', label: 'Insights', align: 'right' },
+    { id: 'insights', label: 'Análise/IA', align: 'right' },
   ];
 
   return (
@@ -84,6 +84,7 @@ export function AnalyticsTable({ title, subheader, tableData, headLabel, ...othe
         rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
         rowsPerPageOptions={[5, 10, 25]}
+        labelRowsPerPage="Linhas por página:"
       />
     </Card>
   );
@@ -149,7 +150,9 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
             'default'
           }
         >
-          {row.status}
+          {row.status === 'confirmed' ? 'Confirmado' : 
+           row.status === 'pending' ? 'Pendente' : 
+           row.status === 'failed' ? 'Falhou' : row.status}
         </Label>
       </TableCell>
 

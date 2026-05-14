@@ -66,12 +66,12 @@ export function OverviewAnalyticsView() {
         </Box>
 
         <Button
-          variant="outlined"
+          variant="contained"
           color="inherit"
           startIcon={<Iconify icon={"eva:file-text-fill" as any} />}
           sx={{ borderRadius: 1.5 }}
         >
-          Export PDF
+          Exportar PDF
         </Button>
       </Box>
 
@@ -85,13 +85,13 @@ export function OverviewAnalyticsView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="TOTAL INFLOW"
+            title="TOTAL RECEBIDO"
             percent={+2.6}
             total={`R$ ${summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="success"
             icon={<Iconify icon={"solar:round-arrow-right-up-bold-duotone" as any} width={32} />}
             chart={{
-              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [22, 33, 54, 12, 12, 43, 33, 20],
             }}
           />
@@ -99,7 +99,7 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="TOP RECIPIENT"
+            title="MAIOR PAGADOR"
             percent={0.1}
             total={summary.topRecipient}
             color="primary"
