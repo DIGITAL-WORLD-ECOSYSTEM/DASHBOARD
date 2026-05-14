@@ -35,7 +35,7 @@ export function OverviewAnalyticsView() {
   }
 
   const { summary, monthlyTrend, distribution, transactions, availableYears } = analytics || {
-    summary: { totalOutflow: 0, topRecipient: 'N/A', avgTicket: 0, count: 0 },
+    summary: { totalInflow: 0, topRecipient: 'N/A', avgTicket: 0, count: 0 },
     monthlyTrend: [],
     distribution: [],
     availableYears: ['All'],
@@ -85,11 +85,15 @@ export function OverviewAnalyticsView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="TOTAL OUTFLOW"
-            percent={-2.6}
-            total={`R$ ${summary.totalOutflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            color="error"
-            icon={<Iconify icon={"solar:round-arrow-left-down-bold-duotone" as any} width={32} />}
+            title="TOTAL INFLOW"
+            percent={+2.6}
+            total={`R$ ${summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+            color="success"
+            icon={<Iconify icon={"solar:round-arrow-right-up-bold-duotone" as any} width={32} />}
+            chart={{
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [22, 33, 54, 12, 12, 43, 33, 20],
+            }}
           />
         </Grid>
 

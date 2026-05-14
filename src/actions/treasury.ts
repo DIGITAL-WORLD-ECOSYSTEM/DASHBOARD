@@ -48,7 +48,7 @@ export interface ITreasuryTransaction {
 
 export interface ITreasuryAnalytics {
   summary: {
-    totalOutflow: number;
+    totalInflow: number;
     avgTicket: number;
     count: number;
     topRecipient: string;
