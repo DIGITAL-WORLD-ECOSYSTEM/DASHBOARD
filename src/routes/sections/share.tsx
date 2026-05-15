@@ -20,14 +20,16 @@ const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics')
 const shareLayout = () => (
   <Box
     sx={{
-      py: 10,
-      textAlign: 'center',
-      bgcolor: 'background.default',
+      py: 5,
+      px: { xs: 2, md: 5 },
+      width: 1,
       minHeight: '100vh',
+      bgcolor: 'background.default',
     }}
   >
-    <Typography variant="h2">PÁGINA PÚBLICA DE TESTE</Typography>
-    <Typography variant="body1">Se você está vendo isso, a rota pública está funcionando sem login.</Typography>
+    <Suspense fallback={<LoadingScreen />}>
+      <OverviewAnalyticsPage />
+    </Suspense>
   </Box>
 );
 
