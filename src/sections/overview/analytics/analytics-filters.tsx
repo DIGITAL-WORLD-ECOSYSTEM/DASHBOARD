@@ -19,11 +19,15 @@ export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch, 
   return (
     <Box
       sx={{
+        p: 2.5,
         gap: 3,
         mb: 5,
         display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        alignItems: { xs: 'flex-start', md: 'center' },
+        borderRadius: 2,
+        flexDirection: 'column',
+        bgcolor: 'background.paper',
+        boxShadow: (theme) => theme.vars.customShadows.z1,
+        border: (theme) => `solid 1px ${theme.vars.palette.divider}`,
       }}
       {...other}
     >
@@ -31,16 +35,19 @@ export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch, 
         value={selectedYear}
         onChange={(e, newValue) => onSelectYear(newValue)}
         sx={{
+          minHeight: 40,
           '& .MuiTabs-indicator': {
             display: 'none',
           },
           '& .MuiTab-root': {
+            minHeight: 40,
             borderRadius: 1,
             mr: 1,
+            color: 'text.secondary',
             typography: 'subtitle2',
             '&.Mui-selected': {
-              bgcolor: 'text.primary',
-              color: 'background.paper',
+              bgcolor: 'grey.900',
+              color: 'common.white',
             },
           },
         }}
@@ -52,14 +59,16 @@ export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch, 
       </Tabs>
 
       <TextField
+        fullWidth
         placeholder="Pesquisar por favorecido ou banco..."
         onChange={(e) => onSearch(e.target.value)}
         sx={{
-          maxWidth: { md: 440 },
-          width: 1,
           '& .MuiOutlinedInput-root': {
-            bgcolor: 'background.paper',
+            bgcolor: 'grey.50',
             borderRadius: 1.5,
+            '& fieldset': {
+              borderColor: 'grey.200',
+            },
           },
         }}
         slotProps={{
