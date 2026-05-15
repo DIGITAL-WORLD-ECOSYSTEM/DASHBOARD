@@ -112,9 +112,27 @@ export function AnalyticsFilters({
             </Label>
           </Box>
 
-          <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36', mb: 1.5 }}>
-            {displayName}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, gap: 1.5 }}>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36' }}>
+              {displayName}
+            </Typography>
+
+            <Label
+              variant="filled"
+              sx={{
+                bgcolor: '#00a76f',
+                color: 'common.white',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                px: 1,
+                height: 22,
+                fontSize: 10,
+                borderRadius: 0.75,
+              }}
+            >
+              Conta Ativa
+            </Label>
+          </Box>
 
           <Box sx={{ display: 'flex', gap: 1.5 }}>
             <Box
