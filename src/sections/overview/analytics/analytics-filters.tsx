@@ -33,7 +33,10 @@ export function AnalyticsFilters({
   summary,
   ...other 
 }: Props) {
-  const hasSearch = !!searchQuery;
+  const displayName = searchQuery || 'Andressa de Lima Ferreira';
+  const avatarInitials = searchQuery 
+    ? (searchQuery.charAt(0).toUpperCase() + (searchQuery.split(' ')[1]?.charAt(0).toUpperCase() || searchQuery.charAt(1)?.toLowerCase()))
+    : 'Ad';
 
   return (
     <Box
@@ -49,110 +52,107 @@ export function AnalyticsFilters({
       }}
       {...other}
     >
-      {/* Header do Perfil Selecionado */}
-      {hasSearch && (
-        <Box
+      {/* Header do Perfil Selecionado (Sempre Visível) */}
+      <Box
+        sx={{
+          p: 3,
+          display: 'flex',
+          position: 'relative',
+          alignItems: 'center',
+          bgcolor: '#e6f7f1',
+          borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}`,
+          overflow: 'hidden',
+        }}
+      >
+        {/* Silhueta decorativa de fundo */}
+        <Iconify
+          icon={"solar:user-bold-duotone" as any}
           sx={{
-            p: 3,
-            display: 'flex',
-            position: 'relative',
-            alignItems: 'center',
-            bgcolor: '#e6f7f1', // Tom menta bem clarinho conforme o print
-            borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}`,
-            overflow: 'hidden',
+            position: 'absolute',
+            right: -20,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: 140,
+            height: 140,
+            opacity: 0.05,
+            color: 'primary.main',
+          }}
+        />
+
+        <Avatar
+          sx={{
+            width: 80,
+            height: 80,
+            mr: 3,
+            bgcolor: '#00a76f',
+            fontWeight: 'bold',
+            fontSize: 28,
+            boxShadow: (theme) => theme.vars.customShadows.z8,
           }}
         >
-          {/* Silhueta decorativa de fundo */}
-          <Iconify
-            icon={"solar:user-bold-duotone" as any}
-            sx={{
-              position: 'absolute',
-              right: -20,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: 140,
-              height: 140,
-              opacity: 0.05,
-              color: 'primary.main',
-            }}
-          />
+          {avatarInitials}
+        </Avatar>
 
-          <Avatar
-            sx={{
-              width: 80,
-              height: 80,
-              mr: 3,
-              bgcolor: '#00a76f',
-              fontWeight: 'bold',
-              fontSize: 28,
-              boxShadow: (theme) => theme.vars.customShadows.z8,
-            }}
-          >
-            {searchQuery.charAt(0).toUpperCase()}
-            {searchQuery.split(' ')[1]?.charAt(0).toUpperCase() || searchQuery.charAt(1)?.toLowerCase()}
-          </Avatar>
+        <Box sx={{ zIndex: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Label
+              variant="soft"
+              color="primary"
+              startIcon={<Iconify icon="eva:checkmark-fill" />}
+              sx={{ 
+                textTransform: 'uppercase', 
+                height: 24, 
+                fontSize: 11,
+                bgcolor: '#c8fad6',
+                color: '#007b55',
+                fontWeight: 800,
+              }}
+            >
+              Perfil Selecionado
+            </Label>
+          </Box>
 
-          <Box sx={{ zIndex: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-              <Label
-                variant="soft"
-                color="primary"
-                startIcon={<Iconify icon="eva:checkmark-fill" />}
-                sx={{ 
-                  textTransform: 'uppercase', 
-                  height: 24, 
-                  fontSize: 11,
-                  bgcolor: '#c8fad6',
-                  color: '#007b55',
-                  fontWeight: 800,
-                }}
-              >
-                Perfil Selecionado
-              </Label>
+          <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36', mb: 1.5 }}>
+            {displayName}
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 1.5 }}>
+            <Box
+              sx={{
+                py: 0.75,
+                px: 1.5,
+                display: 'flex',
+                borderRadius: 1,
+                bgcolor: 'common.white',
+                alignItems: 'center',
+                boxShadow: (theme) => theme.vars.customShadows.z1,
+              }}
+            >
+              <Iconify icon={"solar:pulse-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
+              <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
+                {summary.count} transações
+              </Typography>
             </Box>
 
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36', mb: 1.5 }}>
-              {searchQuery}
-            </Typography>
-
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
-              <Box
-                sx={{
-                  py: 0.75,
-                  px: 1.5,
-                  display: 'flex',
-                  borderRadius: 1,
-                  bgcolor: 'common.white',
-                  alignItems: 'center',
-                  boxShadow: (theme) => theme.vars.customShadows.z1,
-                }}
-              >
-                <Iconify icon={"solar:pulse-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
-                <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
-                  {summary.count} transações
-                </Typography>
-              </Box>
-
-              <Box
-                sx={{
-                  py: 0.75,
-                  px: 1.5,
-                  display: 'flex',
-                  borderRadius: 1,
-                  bgcolor: 'common.white',
-                  alignItems: 'center',
-                  boxShadow: (theme) => theme.vars.customShadows.z1,
-                }}
-              >
-                <Iconify icon={"solar:dollar-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
-                <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
-                  R$ {summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </Typography>
-              </Box>
+            <Box
+              sx={{
+                py: 0.75,
+                px: 1.5,
+                display: 'flex',
+                borderRadius: 1,
+                bgcolor: 'common.white',
+                alignItems: 'center',
+                boxShadow: (theme) => theme.vars.customShadows.z1,
+              }}
+            >
+              <Iconify icon={"solar:dollar-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
+              <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
+                R$ {summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </Typography>
             </Box>
           </Box>
         </Box>
-      )}
+      </Box>
 
       <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 3 }}>
         <Tabs
