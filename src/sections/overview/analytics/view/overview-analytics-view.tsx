@@ -106,7 +106,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="JUROS POR ATRASO"
             percent={+0.5}
-            total="R$ 1.240,00"
+            total="1% ao MÊS"
             color="info"
             icon={<Iconify icon={"solar:reorder-bold-duotone" as any} width={32} />}
             chart={{
@@ -120,7 +120,7 @@ export function OverviewAnalyticsView() {
           <AnalyticsWidgetSummary
             title="DATA DE PAGAMENTO"
             percent={-1.2}
-            total="Dia 10 (Méd.)"
+            total="Dia 20"
             color="warning"
             icon={<Iconify icon={"solar:calendar-date-bold-duotone" as any} width={32} />}
             chart={{
