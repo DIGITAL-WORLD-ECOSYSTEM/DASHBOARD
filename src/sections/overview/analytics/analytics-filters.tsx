@@ -52,7 +52,6 @@ export function AnalyticsFilters({ years, selectedYear, onSelectYear, onSearch, 
           },
         }}
       >
-        <Tab key="Todos" label="Todos" value="Todos" disableRipple />
         {years.map((year) => (
           <Tab key={year} label={year} value={year} disableRipple />
         ))}
