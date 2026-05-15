@@ -1,15 +1,18 @@
 import type { ITreasuryTransaction } from 'src/actions/treasury';
 
 import { useState, useCallback } from 'react';
+import { varAlpha } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
+import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
@@ -20,8 +23,6 @@ import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { TableHeadCustom } from 'src/components/table';
-
-// ----------------------------------------------------------------------
 
 type Props = {
   title?: string;
@@ -48,17 +49,27 @@ export function AnalyticsTable({ title, subheader, tableData, headLabel, ...othe
   const TABLE_HEAD = headLabel || [
     { id: 'date', label: 'Data' },
     { id: 'counterparty', label: 'Contraparte' },
-    { id: 'origin_institution', label: 'Banco Origem' },
-    { id: 'destination_institution', label: 'Banco Destino' },
+    { id: 'origin_institution', label: 'Origem' },
+    { id: 'destination_institution', label: 'Destino' },
     { id: 'amount', label: 'Valor' },
-    { id: 'payment_method', label: 'Método' },
     { id: 'status', label: 'Status' },
-    { id: 'insights', label: 'Análise/IA', align: 'right' },
+    { id: 'insights', label: 'Análise', align: 'right' },
   ];
 
   return (
-    <Card {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 3 }} />
+    <Card 
+      sx={{ 
+        boxShadow: (theme) => theme.customShadows.z1,
+        border: (theme) => `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
+      }} 
+      {...other}
+    >
+      <CardHeader 
+        title={title} 
+        subheader={subheader} 
+        sx={{ mb: 3 }}
+        titleTypographyProps={{ typography: 'h6', fontWeight: 800 }}
+      />
 
       <TableContainer sx={{ overflow: 'unset' }}>
         <Scrollbar>
@@ -109,54 +120,70 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
   };
 
   return (
-    <TableRow>
-      <TableCell>{fDate(row.created_at)}</TableCell>
+    <TableRow hover>
+      <TableCell sx={{ whiteSpace: 'nowrap', typography: 'body2', color: 'text.secondary' }}>
+        {fDate(row.created_at)}
+      </TableCell>
 
       <TableCell>
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Box component="span" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-            {row.counterparty_name}
-          </Box>
-          <Box component="span" sx={{ typography: 'caption', color: 'text.disabled' }}>
-            {categoryMap[row.category] || row.category}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Avatar 
+            sx={{ 
+              width: 36, 
+              height: 36, 
+              fontSize: 14, 
+              fontWeight: 800,
+              bgcolor: isOutbound ? 'warning.lighter' : 'success.lighter',
+              color: isOutbound ? 'warning.dark' : 'success.dark',
+            }}
+          >
+            {row.counterparty_name?.charAt(0) || '?'}
+          </Avatar>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary' }}>
+              {row.counterparty_name}
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 600 }}>
+              {categoryMap[row.category] || row.category}
+            </Typography>
           </Box>
         </Box>
       </TableCell>
 
       <TableCell>
-        <Label variant="soft" color="default" sx={{ textTransform: 'uppercase' }}>
-          {row.origin_institution}
-        </Label>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Iconify icon={"solar:bank-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>{row.origin_institution}</Typography>
+        </Box>
       </TableCell>
 
       <TableCell>
-        <Label variant="soft" color="info" sx={{ textTransform: 'uppercase' }}>
-          {row.destination_institution}
-        </Label>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Iconify icon={"solar:card-transfer-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>{row.destination_institution}</Typography>
+        </Box>
       </TableCell>
 
       <TableCell
         sx={{
           color: isAudit ? 'error.main' : (isOutbound ? 'error.main' : 'success.main'),
-          fontWeight: 'bold',
         }}
       >
-        {isOutbound || isAudit ? '-' : '+'} {fCurrency(row.amount / 100)}
-      </TableCell>
-
-      <TableCell sx={{ textTransform: 'uppercase', typography: 'caption', fontWeight: 'bold' }}>
-        {row.payment_method}
+        <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+          {isOutbound || isAudit ? '-' : '+'} {fCurrency(row.amount / 100)}
+        </Typography>
       </TableCell>
 
       <TableCell>
         <Label
-          variant="filled"
+          variant="soft"
           color={
             (row.status === 'confirmed' && 'success') ||
             (row.status === 'pending' && 'warning') ||
             (row.status === 'failed' && 'error') ||
             'default'
           }
+          sx={{ fontWeight: 800, textTransform: 'uppercase' }}
         >
           {row.status === 'confirmed' ? 'Confirmado' : 
            row.status === 'pending' ? 'Pendente' : 
@@ -165,15 +192,15 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
       </TableCell>
 
       <TableCell align="right">
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
           {row.documents && row.documents.length > 0 && (
-            <Iconify icon={"eva:attach-2-fill" as any} sx={{ color: 'text.secondary', width: 20 }} />
+            <Iconify icon={"solar:document-bold-duotone" as any} sx={{ color: 'text.secondary', width: 20 }} />
           )}
           {row.ai_flags && row.ai_flags.length > 0 && (
-            <Iconify icon={"eva:clock-outline" as any} sx={{ color: 'info.main', width: 20 }} />
+            <Iconify icon={"solar:magic-stick-3-bold-duotone" as any} sx={{ color: 'info.main', width: 20 }} />
           )}
           {row.risk_score.level !== 'low' && (
-            <Iconify icon={"eva:alert-triangle-outline" as any} sx={{ color: 'error.main', width: 20 }} />
+            <Iconify icon={"solar:shield-warning-bold-duotone" as any} sx={{ color: 'error.main', width: 20 }} />
           )}
         </Box>
       </TableCell>
