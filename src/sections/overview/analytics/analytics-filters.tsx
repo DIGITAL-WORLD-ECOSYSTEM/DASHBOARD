@@ -112,7 +112,7 @@ export function AnalyticsFilters({
             </Label>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, gap: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5, gap: 1.5 }}>
             <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36' }}>
               {displayName}
             </Typography>
@@ -133,6 +133,10 @@ export function AnalyticsFilters({
               Conta Ativa
             </Label>
           </Box>
+
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', mb: 2, display: 'block' }}>
+            Matrícula: {searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}
+          </Typography>
 
           <Box sx={{ display: 'flex', gap: 1.5 }}>
             <Box
