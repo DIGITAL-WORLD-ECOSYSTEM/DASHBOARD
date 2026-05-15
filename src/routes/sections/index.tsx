@@ -13,6 +13,9 @@ import { componentsRoutes } from './components';
 const Page404 = lazy(() => import('src/pages/error/404'));
 
 export const routesSection: RouteObject[] = [
+  // Share
+  ...shareRoutes,
+
   {
     path: '/',
     element: <Navigate to="/login" replace />,
@@ -20,9 +23,6 @@ export const routesSection: RouteObject[] = [
 
   // Auth
   ...authRoutes,
-
-  // Share
-  ...shareRoutes,
 
   // Dashboard
   ...dashboardRoutes,
