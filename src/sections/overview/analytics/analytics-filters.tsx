@@ -81,77 +81,95 @@ export function AnalyticsFilters({
 
         <Avatar
           sx={{
-            width: 80,
-            height: 80,
+            width: 88,
+            height: 88,
             mr: 3,
             bgcolor: '#00a76f',
-            fontWeight: 'bold',
-            fontSize: 28,
-            boxShadow: (theme) => theme.vars.customShadows.z8,
+            fontWeight: 800,
+            fontSize: 32,
+            border: (theme) => `solid 4px ${theme.vars.palette.common.white}`,
+            boxShadow: (theme) => theme.vars.customShadows.z12,
           }}
         >
           {avatarInitials}
         </Avatar>
 
-        <Box sx={{ zIndex: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <Label
-              variant="soft"
-              color="primary"
-              startIcon={<Iconify icon="eva:checkmark-fill" />}
-              sx={{ 
-                textTransform: 'uppercase', 
-                height: 24, 
-                fontSize: 11,
-                bgcolor: '#c8fad6',
-                color: '#007b55',
-                fontWeight: 800,
-              }}
-            >
-              Perfil Selecionado
-            </Label>
+        <Box sx={{ flexGrow: 1, zIndex: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+              <Label
+                variant="soft"
+                sx={{ 
+                  height: 20, 
+                  fontSize: 10,
+                  bgcolor: '#c8fad6',
+                  color: '#007b55',
+                  fontWeight: 900,
+                  px: 1,
+                  borderRadius: 0.5,
+                  letterSpacing: 0.5,
+                  textTransform: 'uppercase'
+                }}
+              >
+                Associado Vincit
+              </Label>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+              <Typography variant="h3" sx={{ fontWeight: 800, color: '#1c252e', letterSpacing: -1 }}>
+                {displayName}
+              </Typography>
+
+              <Label
+                variant="filled"
+                sx={{
+                  bgcolor: '#00a76f',
+                  color: 'common.white',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  px: 1.5,
+                  height: 24,
+                  fontSize: 11,
+                  borderRadius: 1,
+                  boxShadow: (theme) => `0 8px 16px 0 rgba(0, 167, 111, 0.24)`,
+                }}
+              >
+                CONTA ATIVA
+              </Label>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.25 }}>
+              <Iconify icon={"solar:user-id-bold-duotone" as any} width={18} sx={{ color: 'text.disabled' }} />
+              <Typography 
+                variant="subtitle2" 
+                sx={{ 
+                  color: 'text.secondary', 
+                  fontWeight: 700,
+                  fontFamily: 'monospace',
+                  fontSize: 13,
+                  letterSpacing: 1
+                }}
+              >
+                ID: {searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}
+              </Typography>
+            </Box>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5, gap: 1.5 }}>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36' }}>
-              {displayName}
-            </Typography>
-
-            <Label
-              variant="filled"
-              sx={{
-                bgcolor: '#00a76f',
-                color: 'common.white',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                px: 1,
-                height: 22,
-                fontSize: 10,
-                borderRadius: 0.75,
-              }}
-            >
-              Conta Ativa
-            </Label>
-          </Box>
-
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'bold', mb: 2, display: 'block' }}>
-            Matrícula: {searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}
-          </Typography>
-
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <Box sx={{ display: 'flex', gap: 1.5, mt: 2.5 }}>
             <Box
               sx={{
                 py: 0.75,
                 px: 1.5,
                 display: 'flex',
-                borderRadius: 1,
+                borderRadius: 1.25,
                 bgcolor: 'common.white',
                 alignItems: 'center',
+                border: (theme) => `solid 1px ${theme.vars.palette.divider}`,
                 boxShadow: (theme) => theme.vars.customShadows.z1,
               }}
             >
-              <Iconify icon={"solar:pulse-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
-              <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
+              <Iconify icon={"solar:playlist-2-bold-duotone" as any} width={22} sx={{ mr: 1, color: '#00a76f' }} />
+              <Typography variant="subtitle2" sx={{ color: 'text.primary', fontWeight: 800 }}>
                 {summary.count} transações
               </Typography>
             </Box>
@@ -161,14 +179,15 @@ export function AnalyticsFilters({
                 py: 0.75,
                 px: 1.5,
                 display: 'flex',
-                borderRadius: 1,
+                borderRadius: 1.25,
                 bgcolor: 'common.white',
                 alignItems: 'center',
+                border: (theme) => `solid 1px ${theme.vars.palette.divider}`,
                 boxShadow: (theme) => theme.vars.customShadows.z1,
               }}
             >
-              <Iconify icon={"solar:dollar-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
-              <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
+              <Iconify icon={"solar:dollar-minimalistic-bold-duotone" as any} width={22} sx={{ mr: 1, color: '#00a76f' }} />
+              <Typography variant="subtitle2" sx={{ color: 'text.primary', fontWeight: 800 }}>
                 R$ {summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </Typography>
             </Box>
