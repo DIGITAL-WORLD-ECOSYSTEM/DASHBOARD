@@ -69,17 +69,25 @@ export function AnalyticsWidgetSummary({
   const renderTrending = () => (
     <Box
       sx={{
-        gap: 0.5,
+        py: 0.25,
+        px: 0.75,
+        gap: 0.25,
+        mt: 0.75,
+        width: 'fit-content',
         display: 'flex',
+        borderRadius: 0.75,
         alignItems: 'center',
         color: percent < 0 ? 'error.main' : 'success.main',
+        bgcolor: varAlpha(theme.vars.palette[percent < 0 ? 'error' : 'success'].mainChannel, 0.08),
+        typography: 'caption',
+        fontWeight: 'bold',
       }}
     >
       <Iconify
-        width={16}
+        width={14}
         icon={percent < 0 ? 'solar:double-alt-arrow-down-bold-duotone' : 'solar:double-alt-arrow-up-bold-duotone'}
       />
-      <Box component="span" sx={{ typography: 'subtitle2' }}>
+      <Box component="span">
         {percent > 0 && '+'}
         {fPercent(percent)}
       </Box>
@@ -91,12 +99,20 @@ export function AnalyticsWidgetSummary({
       sx={[
         () => ({
           p: 2.5,
-          boxShadow: theme.customShadows.card,
+          boxShadow: theme.customShadows.z1,
+          border: `solid 1px ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)}`,
           position: 'relative',
           backgroundColor: 'common.white',
           display: 'flex',
           alignItems: 'center',
           gap: 2,
+          transition: theme.transitions.create(['box-shadow', 'transform'], {
+            duration: theme.transitions.duration.shorter,
+          }),
+          '&:hover': {
+            boxShadow: theme.customShadows.z8,
+            transform: 'translateY(-2px)',
+          },
         }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
@@ -113,14 +129,28 @@ export function AnalyticsWidgetSummary({
           justifyContent: 'center',
           color: `${color}.main`,
           bgcolor: varAlpha(theme.vars.palette[color].mainChannel, 0.08),
+          border: `solid 1px ${varAlpha(theme.vars.palette[color].mainChannel, 0.16)}`,
         }}
       >
         {icon}
       </Box>
 
       <Box sx={{ flexGrow: 1 }}>
-        <Box sx={{ typography: 'subtitle2', color: 'text.secondary', mb: 0.5 }}>{title}</Box>
-        <Box sx={{ typography: 'h5', fontWeight: 'fontWeightBold' }}>{typeof total === 'number' ? fShortenNumber(total) : total}</Box>
+        <Box 
+          sx={{ 
+            typography: 'overline', 
+            color: 'text.secondary', 
+            mb: 0.5, 
+            fontWeight: 800,
+            letterSpacing: 1.2,
+            lineHeight: 1.5,
+          }}
+        >
+          {title}
+        </Box>
+        <Box sx={{ typography: 'h4', fontWeight: 800, color: 'text.primary', letterSpacing: -0.5 }}>
+          {typeof total === 'number' ? fShortenNumber(total) : total}
+        </Box>
         {renderTrending()}
       </Box>
 
@@ -128,7 +158,10 @@ export function AnalyticsWidgetSummary({
         <Chart
           type="line"
           series={[{ data: chart.series }]}
-          options={chartOptions}
+          options={{
+            ...chartOptions,
+            stroke: { width: 3, curve: 'smooth' },
+          }}
           sx={{ width: 60, height: 40 }}
         />
       )}

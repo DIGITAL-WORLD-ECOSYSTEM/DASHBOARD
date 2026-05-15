@@ -108,7 +108,7 @@ export function OverviewAnalyticsView() {
             percent={+0.5}
             total="1% ao MÊS"
             color="info"
-            icon={<Iconify icon={"solar:reorder-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={"solar:ticket-percent-bold-duotone" as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [5, 18, 12, 51, 68, 11, 39, 37],
@@ -122,7 +122,7 @@ export function OverviewAnalyticsView() {
             percent={-1.2}
             total="Dia 20"
             color="warning"
-            icon={<Iconify icon={"solar:calendar-date-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={"solar:calendar-mark-bold-duotone" as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [20, 41, 63, 33, 28, 35, 50, 46],
@@ -136,7 +136,7 @@ export function OverviewAnalyticsView() {
             percent={+2.6}
             total={`R$ ${summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="success"
-            icon={<Iconify icon={"solar:hand-money-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={"solar:wad-of-money-bold-duotone" as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [22, 33, 54, 12, 12, 43, 33, 20],
