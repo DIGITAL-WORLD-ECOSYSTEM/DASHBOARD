@@ -87,11 +87,39 @@ export function OverviewAnalyticsView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="TOTAL RECEBIDO"
+            title="JUROS POR ATRASO"
+            percent={+0.5}
+            total="R$ 1.240,00"
+            color="info"
+            icon={<Iconify icon={"solar:reorder-bold-duotone" as any} width={32} />}
+            chart={{
+              categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
+              series: [5, 18, 12, 51, 68, 11, 39, 37],
+            }}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <AnalyticsWidgetSummary
+            title="DATA DE PAGAMENTO"
+            percent={-1.2}
+            total="Dia 10 (Méd.)"
+            color="warning"
+            icon={<Iconify icon={"solar:calendar-date-bold-duotone" as any} width={32} />}
+            chart={{
+              categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
+              series: [20, 41, 63, 33, 28, 35, 50, 46],
+            }}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <AnalyticsWidgetSummary
+            title="VALOR TOTAL PAGO"
             percent={+2.6}
             total={`R$ ${summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="success"
-            icon={<Iconify icon={"solar:round-arrow-right-up-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={"solar:hand-money-bold-duotone" as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [22, 33, 54, 12, 12, 43, 33, 20],
@@ -101,31 +129,15 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="MAIOR PAGADOR"
-            percent={0.1}
-            total={summary.topRecipient}
-            color="primary"
-            icon={<Iconify icon={"solar:user-bold-duotone" as any} width={32} />}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="TICKET MÉDIO"
-            percent={2.8}
-            total={`R$ ${summary.avgTicket.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            color="info"
-            icon={<Iconify icon={"solar:ticket-bold-duotone" as any} width={32} />}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="FREQUÊNCIA"
-            percent={3.6}
-            total={`${summary.count} trans.`}
-            color="success"
-            icon={<Iconify icon={"solar:chart-2-bold-duotone" as any} width={32} />}
+            title="ENCARGOS DE IMPOSTOS"
+            percent={+1.1}
+            total={`R$ ${(summary.totalInflow * 0.06).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+            color="error"
+            icon={<Iconify icon={"solar:bill-list-bold-duotone" as any} width={32} />}
+            chart={{
+              categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
+              series: [15, 25, 45, 10, 10, 30, 25, 15],
+            }}
           />
         </Grid>
 
