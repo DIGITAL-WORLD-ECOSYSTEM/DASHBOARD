@@ -9,6 +9,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 
 import { AnalyticsTable } from '../analytics-table';
@@ -65,14 +66,30 @@ export function OverviewAnalyticsView() {
           </Typography>
         </Box>
 
-        <Button
-          variant="contained"
-          color="inherit"
-          startIcon={<Iconify icon={"eva:file-text-fill" as any} />}
-          sx={{ borderRadius: 1.5 }}
-        >
-          Exportar PDF
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <Button
+            variant="soft"
+            color="primary"
+            startIcon={<Iconify icon={"solar:share-bold-duotone" as any} />}
+            onClick={() => {
+              const url = `${window.location.origin}/share/analytics`;
+              navigator.clipboard.writeText(url);
+              toast.success('Link público copiado para a área de transferência!');
+            }}
+            sx={{ borderRadius: 1.5 }}
+          >
+            Compartilhar
+          </Button>
+
+          <Button
+            variant="contained"
+            color="inherit"
+            startIcon={<Iconify icon={"eva:file-text-fill" as any} />}
+            sx={{ borderRadius: 1.5 }}
+          >
+            Exportar PDF
+          </Button>
+        </Box>
       </Box>
 
       <AnalyticsFilters

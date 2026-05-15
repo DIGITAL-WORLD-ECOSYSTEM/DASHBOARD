@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import { Navigate } from 'react-router';
 
 import { authRoutes } from './auth';
+import { shareRoutes } from './share';
 import { dashboardRoutes } from './dashboard';
 import { componentsRoutes } from './components';
 
@@ -19,6 +20,9 @@ export const routesSection: RouteObject[] = [
 
   // Auth
   ...authRoutes,
+
+  // Share
+  ...shareRoutes,
 
   // Dashboard
   ...dashboardRoutes,
