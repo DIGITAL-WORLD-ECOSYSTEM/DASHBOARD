@@ -2,7 +2,8 @@ import type { RouteObject } from 'react-router';
 
 import { lazy, Suspense } from 'react';
 
-import { DashboardLayout } from 'src/layouts/dashboard';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
@@ -13,25 +14,21 @@ const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics')
 // ----------------------------------------------------------------------
 
 /**
- * Layout minimalista para compartilhamento público
- * Esconde sidebar e header para focar nos dados
+ * Layout ultra-minimalista para compartilhamento público
+ * Totalmente isolado para evitar redirecionamentos de autenticação
  */
 const shareLayout = () => (
-  <DashboardLayout
-    slotProps={{
-      header: { sx: { display: 'none' } },
-    }}
+  <Box
     sx={{
-      [`& .MuiDrawer-root`]: { display: 'none' },
-      [`& .MuiAppBar-root`]: { display: 'none' },
-      [`& #main-content`]: { p: 0, pt: 0, pl: 0, transition: 'none' },
-      [`& .layout-sidebar-container`]: { pl: 0, transition: 'none' },
+      py: 10,
+      textAlign: 'center',
+      bgcolor: 'background.default',
+      minHeight: '100vh',
     }}
   >
-    <Suspense fallback={<LoadingScreen />}>
-      <OverviewAnalyticsPage />
-    </Suspense>
-  </DashboardLayout>
+    <Typography variant="h2">PÁGINA PÚBLICA DE TESTE</Typography>
+    <Typography variant="body1">Se você está vendo isso, a rota pública está funcionando sem login.</Typography>
+  </Box>
 );
 
 export const shareRoutes: RouteObject[] = [
