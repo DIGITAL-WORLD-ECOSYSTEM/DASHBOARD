@@ -81,6 +81,7 @@ export function OverviewAnalyticsView() {
         onSelectYear={setSelectedYear}
         onSearch={setSearchQuery}
         searchQuery={searchQuery}
+        summary={summary}
       />
 
       <Grid container spacing={3}>

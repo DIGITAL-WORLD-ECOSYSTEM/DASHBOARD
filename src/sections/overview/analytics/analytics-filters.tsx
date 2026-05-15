@@ -18,6 +18,10 @@ type Props = {
   onSelectYear: (year: string) => void;
   onSearch: (value: string) => void;
   searchQuery: string;
+  summary: {
+    totalInflow: number;
+    count: number;
+  };
 };
 
 export function AnalyticsFilters({ 
@@ -26,6 +30,7 @@ export function AnalyticsFilters({
   onSelectYear, 
   onSearch, 
   searchQuery,
+  summary,
   ...other 
 }: Props) {
   const hasSearch = !!searchQuery;
@@ -48,41 +53,103 @@ export function AnalyticsFilters({
       {hasSearch && (
         <Box
           sx={{
-            p: 2.5,
+            p: 3,
             display: 'flex',
+            position: 'relative',
             alignItems: 'center',
-            bgcolor: 'rgba(0, 167, 111, 0.08)',
+            bgcolor: '#e6f7f1', // Tom menta bem clarinho conforme o print
             borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}`,
+            overflow: 'hidden',
           }}
         >
+          {/* Silhueta decorativa de fundo */}
+          <Iconify
+            icon={"solar:user-bold-duotone" as any}
+            sx={{
+              position: 'absolute',
+              right: -20,
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: 140,
+              height: 140,
+              opacity: 0.05,
+              color: 'primary.main',
+            }}
+          />
+
           <Avatar
             sx={{
-              width: 56,
-              height: 56,
-              mr: 2,
-              bgcolor: 'primary.main',
+              width: 80,
+              height: 80,
+              mr: 3,
+              bgcolor: '#00a76f',
               fontWeight: 'bold',
-              fontSize: 20,
+              fontSize: 28,
+              boxShadow: (theme) => theme.vars.customShadows.z8,
             }}
           >
             {searchQuery.charAt(0).toUpperCase()}
             {searchQuery.split(' ')[1]?.charAt(0).toUpperCase() || searchQuery.charAt(1)?.toLowerCase()}
           </Avatar>
 
-          <Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+          <Box sx={{ zIndex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
               <Label
                 variant="soft"
                 color="primary"
                 startIcon={<Iconify icon="eva:checkmark-fill" />}
-                sx={{ textTransform: 'uppercase', height: 22, fontSize: 10 }}
+                sx={{ 
+                  textTransform: 'uppercase', 
+                  height: 24, 
+                  fontSize: 11,
+                  bgcolor: '#c8fad6',
+                  color: '#007b55',
+                  fontWeight: 800,
+                }}
               >
                 Perfil Selecionado
               </Label>
             </Box>
-            <Typography variant="h5" sx={{ fontWeight: 800 }}>
+
+            <Typography variant="h4" sx={{ fontWeight: 800, color: '#212b36', mb: 1.5 }}>
               {searchQuery}
             </Typography>
+
+            <Box sx={{ display: 'flex', gap: 1.5 }}>
+              <Box
+                sx={{
+                  py: 0.75,
+                  px: 1.5,
+                  display: 'flex',
+                  borderRadius: 1,
+                  bgcolor: 'common.white',
+                  alignItems: 'center',
+                  boxShadow: (theme) => theme.vars.customShadows.z1,
+                }}
+              >
+                <Iconify icon={"solar:pulse-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
+                <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
+                  {summary.count} transações
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  py: 0.75,
+                  px: 1.5,
+                  display: 'flex',
+                  borderRadius: 1,
+                  bgcolor: 'common.white',
+                  alignItems: 'center',
+                  boxShadow: (theme) => theme.vars.customShadows.z1,
+                }}
+              >
+                <Iconify icon={"solar:dollar-bold-duotone" as any} width={20} sx={{ mr: 1, color: '#00a76f' }} />
+                <Typography variant="subtitle2" sx={{ color: '#454f5b' }}>
+                  R$ {summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </Typography>
+              </Box>
+            </Box>
           </Box>
         </Box>
       )}
@@ -103,7 +170,7 @@ export function AnalyticsFilters({
               color: 'text.secondary',
               typography: 'subtitle2',
               '&.Mui-selected': {
-                bgcolor: 'primary.main',
+                bgcolor: '#00a76f',
                 color: 'common.white',
               },
             },
@@ -114,7 +181,7 @@ export function AnalyticsFilters({
           ))}
         </Tabs>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <TextField
             fullWidth
             value={searchQuery}
@@ -122,10 +189,11 @@ export function AnalyticsFilters({
             onChange={(e) => onSearch(e.target.value)}
             sx={{
               '& .MuiOutlinedInput-root': {
-                bgcolor: 'grey.50',
+                bgcolor: 'common.white',
                 borderRadius: 1.5,
+                border: 'solid 1px #e0e0e0',
                 '& fieldset': {
-                  borderColor: 'grey.200',
+                  border: 'none',
                 },
               },
             }}
@@ -140,18 +208,19 @@ export function AnalyticsFilters({
             }}
           />
 
-          {hasSearch && (
-            <IconButton 
-              onClick={() => onSearch('')}
-              sx={{ 
-                bgcolor: 'rgba(0, 167, 111, 0.08)',
-                color: 'primary.main',
-                '&:hover': { bgcolor: 'rgba(0, 167, 111, 0.16)' }
-              }}
-            >
-              <Iconify icon="mingcute:close-line" />
-            </IconButton>
-          )}
+          <IconButton 
+            onClick={() => onSearch('')}
+            sx={{ 
+              width: 48,
+              height: 48,
+              borderRadius: 1.5,
+              bgcolor: '#e6f7f1',
+              color: '#00a76f',
+              '&:hover': { bgcolor: '#c8fad6' }
+            }}
+          >
+            <Iconify icon="mingcute:close-line" />
+          </IconButton>
         </Box>
       </Box>
     </Box>
