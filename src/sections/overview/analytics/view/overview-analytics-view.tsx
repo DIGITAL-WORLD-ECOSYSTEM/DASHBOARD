@@ -24,7 +24,7 @@ import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 export function OverviewAnalyticsView() {
   const [selectedYear, setSelectedYear] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   const { analytics, analyticsLoading } = useGetTreasuryAnalytics(selectedYear);
 
   if (analyticsLoading) {
@@ -104,28 +104,14 @@ export function OverviewAnalyticsView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="JUROS POR ATRASO"
-            percent={+0.5}
-            total="1% ao MÊS"
-            color="info"
-            icon={<Iconify icon={"solar:ticket-percent-bold-duotone" as any} width={32} />}
+            title="VALOR DO CONTRATO"
+            percent={100}
+            total="R$ 65.000,00"
+            color="primary"
+            icon={<Iconify icon={"solar:diploma-verified-bold-duotone" as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
-              series: [5, 18, 12, 51, 68, 11, 39, 37],
-            }}
-          />
-        </Grid>
-
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <AnalyticsWidgetSummary
-            title="DATA DE PAGAMENTO"
-            percent={-1.2}
-            total="Dia 20"
-            color="warning"
-            icon={<Iconify icon={"solar:calendar-mark-bold-duotone" as any} width={32} />}
-            chart={{
-              categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
-              series: [20, 41, 63, 33, 28, 35, 50, 46],
+              series: [100, 100, 100, 100, 100, 100, 100, 100],
             }}
           />
         </Grid>
@@ -133,7 +119,7 @@ export function OverviewAnalyticsView() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="VALOR TOTAL PAGO"
-            percent={+2.6}
+            percent={+((summary.totalInflow / 65000) * 100)}
             total={`R$ ${summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="success"
             icon={<Iconify icon={"solar:wad-of-money-bold-duotone" as any} width={32} />}
@@ -146,14 +132,28 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="ENCARGOS DE IMPOSTOS"
-            percent={+1.1}
-            total={`R$ ${(summary.totalInflow * 0.06).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-            color="error"
-            icon={<Iconify icon={"solar:bill-list-bold-duotone" as any} width={32} />}
+            title="SALDO PARA QUITAÇÃO"
+            percent={-(( (65000 - summary.totalInflow) / 65000) * 100)}
+            total={`R$ ${(65000 - summary.totalInflow).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+            color="info"
+            icon={<Iconify icon={"solar:calculator-minimalistic-bold-duotone" as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
-              series: [15, 25, 45, 10, 10, 30, 25, 15],
+              series: [80, 70, 60, 50, 45, 40, 35, 30],
+            }}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <AnalyticsWidgetSummary
+            title="REGRAS DO CONTRATO"
+            percent={0}
+            total="DIA 20 | 1%"
+            color="warning"
+            icon={<Iconify icon={"solar:document-text-bold-duotone" as any} width={32} />}
+            chart={{
+              categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
+              series: [20, 20, 20, 20, 20, 20, 20, 20],
             }}
           />
         </Grid>
