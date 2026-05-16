@@ -56,15 +56,7 @@ export function OverviewAnalyticsView() {
 
   return (
     <DashboardContent maxWidth="xl">
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 5 }}>
-        <Box>
-          <Typography variant="h4" sx={{ mb: 1, fontWeight: '700' }}>
-            Vincit Ledger
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Inteligência Financeira para Andressa de Lima Ferreira
-          </Typography>
-        </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', mb: 5 }}>
 
         <Box sx={{ display: 'flex', gap: 1.5 }}>
           <Button
@@ -133,7 +125,7 @@ export function OverviewAnalyticsView() {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="SALDO PARA QUITAÇÃO"
-            percent={-(( (65000 - summary.totalInflow) / 65000) * 100)}
+            percent={-(((65000 - summary.totalInflow) / 65000) * 100)}
             total={`R$ ${(65000 - summary.totalInflow).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="info"
             icon={<Iconify icon={"solar:calculator-minimalistic-bold-duotone" as any} width={32} />}

@@ -24,17 +24,17 @@ type Props = {
   };
 };
 
-export function AnalyticsFilters({ 
-  years, 
-  selectedYear, 
-  onSelectYear, 
-  onSearch, 
+export function AnalyticsFilters({
+  years,
+  selectedYear,
+  onSelectYear,
+  onSearch,
   searchQuery,
   summary,
-  ...other 
+  ...other
 }: Props) {
   const displayName = searchQuery || 'Andressa de Lima Ferreira';
-  const avatarInitials = searchQuery 
+  const avatarInitials = searchQuery
     ? (searchQuery.charAt(0).toUpperCase() + (searchQuery.split(' ')[1]?.charAt(0).toUpperCase() || searchQuery.charAt(1)?.toLowerCase()))
     : 'Ad';
 
@@ -99,8 +99,8 @@ export function AnalyticsFilters({
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
               <Label
                 variant="soft"
-                sx={{ 
-                  height: 20, 
+                sx={{
+                  height: 20,
                   fontSize: 10,
                   bgcolor: '#c8fad6',
                   color: '#007b55',
@@ -140,10 +140,10 @@ export function AnalyticsFilters({
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.25 }}>
               <Iconify icon={"solar:user-id-bold-duotone" as any} width={18} sx={{ color: 'text.disabled' }} />
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  color: 'text.secondary', 
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  color: 'text.secondary',
                   fontWeight: 700,
                   fontFamily: 'monospace',
                   fontSize: 13,
@@ -249,9 +249,9 @@ export function AnalyticsFilters({
             }}
           />
 
-          <IconButton 
+          <IconButton
             onClick={() => onSearch('')}
-            sx={{ 
+            sx={{
               width: 48,
               height: 48,
               borderRadius: 1.5,
