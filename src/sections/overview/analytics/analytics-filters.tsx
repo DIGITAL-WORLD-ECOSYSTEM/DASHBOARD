@@ -95,30 +95,26 @@ export function AnalyticsFilters({
         </Avatar>
 
         <Box sx={{ flexGrow: 1, zIndex: 1 }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+            <Typography variant="h3" sx={{ fontWeight: 800, color: '#1c252e', letterSpacing: -1 }}>
+              {displayName}
+            </Typography>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
               <Label
                 variant="soft"
                 sx={{
-                  height: 20,
+                  height: 22,
                   fontSize: 10,
-                  bgcolor: '#c8fad6',
-                  color: '#007b55',
-                  fontWeight: 900,
+                  bgcolor: '#e6f7f1',
+                  color: '#00a76f',
+                  fontWeight: 800,
                   px: 1,
-                  borderRadius: 0.5,
-                  letterSpacing: 0.5,
+                  borderRadius: 0.75,
                   textTransform: 'uppercase'
                 }}
               >
-                Associado Vincit
+                ASSOCIADO
               </Label>
-            </Box>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-              <Typography variant="h3" sx={{ fontWeight: 800, color: '#1c252e', letterSpacing: -1 }}>
-                {displayName}
-              </Typography>
 
               <Label
                 variant="filled"
@@ -127,34 +123,33 @@ export function AnalyticsFilters({
                   color: 'common.white',
                   fontWeight: 800,
                   textTransform: 'uppercase',
-                  px: 1.5,
-                  height: 24,
-                  fontSize: 11,
-                  borderRadius: 1,
-                  boxShadow: (theme) => `0 8px 16px 0 rgba(0, 167, 111, 0.24)`,
+                  px: 1,
+                  height: 22,
+                  fontSize: 10,
+                  borderRadius: 0.75,
+                  boxShadow: (theme) => `0 4px 12px 0 rgba(0, 167, 111, 0.32)`,
                 }}
               >
-                CONTA ATIVA
+                ATIVO
               </Label>
-            </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.25 }}>
-              <Iconify icon={"solar:user-id-bold-duotone" as any} width={18} sx={{ color: 'text.disabled' }} />
-              <Typography
-                variant="subtitle2"
-                sx={{
-                  color: 'text.secondary',
-                  fontWeight: 700,
-                  fontFamily: 'monospace',
-                  fontSize: 13,
-                  letterSpacing: 1
-                }}
-              >
-                ID: {searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 0.5 }}>
+                <Iconify icon={"solar:user-id-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: 'text.secondary',
+                    fontWeight: 700,
+                    fontFamily: 'monospace',
+                    fontSize: 12,
+                    letterSpacing: 0.5
+                  }}
+                >
+                  ID: {searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}
+                </Typography>
+              </Box>
             </Box>
           </Box>
-        </Box>
       </Box>
 
       <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 0 }}>
