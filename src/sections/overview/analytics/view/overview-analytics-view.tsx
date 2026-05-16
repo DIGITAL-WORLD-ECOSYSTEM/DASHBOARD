@@ -152,12 +152,13 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsWebsiteVisits
-            title="Tendência Mensal (R$)"
+            title="Fluxo de Quitação Mensal"
+            subheader="Evolução da amortização do contrato de 65k"
             chart={{
               categories: monthlyTrend.map((m: any) => m.month),
               series: [
                 {
-                  name: 'Entradas',
+                  name: 'Amortização Realizada',
                   data: monthlyTrend.map((m: any) => m.total),
                 },
               ],
@@ -167,7 +168,7 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsCurrentVisits
-            title="Distribuição por Favorecido"
+            title="Divisão de Custos do Contrato"
             chart={{
               series: distribution,
             }}

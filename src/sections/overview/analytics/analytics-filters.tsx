@@ -88,7 +88,7 @@ export function AnalyticsFilters({
             fontWeight: 800,
             fontSize: 32,
             border: (theme) => `solid 4px ${theme.vars.palette.common.white}`,
-            boxShadow: (theme) => theme.vars.customShadows.z12,
+            boxShadow: (theme) => `0 12px 24px -4px rgba(0, 167, 111, 0.42)`,
           }}
         >
           {avatarInitials}
@@ -101,11 +101,12 @@ export function AnalyticsFilters({
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
               <Label
-                variant="soft"
+                variant="outlined"
                 sx={{
                   height: 22,
                   fontSize: 10,
-                  bgcolor: '#e6f7f1',
+                  borderColor: 'rgba(0, 167, 111, 0.24)',
+                  bgcolor: 'rgba(0, 167, 111, 0.04)',
                   color: '#00a76f',
                   fontWeight: 800,
                   px: 1,
@@ -119,7 +120,7 @@ export function AnalyticsFilters({
               <Label
                 variant="filled"
                 sx={{
-                  bgcolor: '#00a76f',
+                  background: 'linear-gradient(135deg, #00a76f 0%, #007b55 100%)',
                   color: 'common.white',
                   fontWeight: 800,
                   textTransform: 'uppercase',
@@ -152,25 +153,29 @@ export function AnalyticsFilters({
           </Box>
       </Box>
 
-      <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 0 }}>
+      <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 0 }}>
         <Tabs
           value={selectedYear}
           onChange={(e, newValue) => onSelectYear(newValue)}
           sx={{
-            minHeight: 40,
-            '& .MuiTabs-indicator': {
-              display: 'none',
-            },
+            minHeight: 38,
+            '& .MuiTabs-indicator': { display: 'none' },
             '& .MuiTab-root': {
-              minHeight: 40,
-              borderRadius: 1,
+              minHeight: 38,
+              borderRadius: '20px',
               mr: 1,
               color: 'text.secondary',
-              typography: 'subtitle2',
+              typography: 'caption',
+              fontWeight: 700,
+              transition: (theme) => theme.transitions.create(['all']),
               '&.Mui-selected': {
                 bgcolor: '#00a76f',
                 color: 'common.white',
+                boxShadow: '0 4px 12px 0 rgba(0, 167, 111, 0.24)',
               },
+              '&:hover': {
+                bgcolor: 'rgba(0, 167, 111, 0.08)',
+              }
             },
           }}
         >
