@@ -154,48 +154,10 @@ export function AnalyticsFilters({
               </Typography>
             </Box>
           </Box>
-
-          <Box sx={{ display: 'flex', gap: 1.5, mt: 2.5 }}>
-            <Box
-              sx={{
-                py: 0.75,
-                px: 1.5,
-                display: 'flex',
-                borderRadius: 1.25,
-                bgcolor: 'common.white',
-                alignItems: 'center',
-                border: (theme) => `solid 1px ${theme.vars.palette.divider}`,
-                boxShadow: (theme) => theme.vars.customShadows.z1,
-              }}
-            >
-              <Iconify icon={"solar:playlist-2-bold-duotone" as any} width={22} sx={{ mr: 1, color: '#00a76f' }} />
-              <Typography variant="subtitle2" sx={{ color: 'text.primary', fontWeight: 800 }}>
-                {summary.count} transações
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                py: 0.75,
-                px: 1.5,
-                display: 'flex',
-                borderRadius: 1.25,
-                bgcolor: 'common.white',
-                alignItems: 'center',
-                border: (theme) => `solid 1px ${theme.vars.palette.divider}`,
-                boxShadow: (theme) => theme.vars.customShadows.z1,
-              }}
-            >
-              <Iconify icon={"solar:dollar-minimalistic-bold-duotone" as any} width={22} sx={{ mr: 1, color: '#00a76f' }} />
-              <Typography variant="subtitle2" sx={{ color: 'text.primary', fontWeight: 800 }}>
-                R$ {summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </Typography>
-            </Box>
-          </Box>
         </Box>
       </Box>
 
-      <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 0 }}>
         <Tabs
           value={selectedYear}
           onChange={(e, newValue) => onSelectYear(newValue)}
@@ -221,48 +183,6 @@ export function AnalyticsFilters({
             <Tab key={year} label={year} value={year} disableRipple />
           ))}
         </Tabs>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <TextField
-            fullWidth
-            value={searchQuery}
-            placeholder="Pesquisar por favorecido ou banco..."
-            onChange={(e) => onSearch(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                bgcolor: 'common.white',
-                borderRadius: 1.5,
-                border: 'solid 1px #e0e0e0',
-                '& fieldset': {
-                  border: 'none',
-                },
-              },
-            }}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon={"eva:search-fill" as any} sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
-
-          <IconButton
-            onClick={() => onSearch('')}
-            sx={{
-              width: 48,
-              height: 48,
-              borderRadius: 1.5,
-              bgcolor: '#e6f7f1',
-              color: '#00a76f',
-              '&:hover': { bgcolor: '#c8fad6' }
-            }}
-          >
-            <Iconify icon="mingcute:close-line" />
-          </IconButton>
-        </Box>
       </Box>
     </Box>
   );
