@@ -122,7 +122,7 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
   return (
     <TableRow hover>
       <TableCell sx={{ whiteSpace: 'nowrap', typography: 'body2', color: 'text.secondary' }}>
-        {fDate(row.created_at)}
+        {fDate(row.created_at, 'DD/MM/YYYY')}
       </TableCell>
 
       <TableCell>
