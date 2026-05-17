@@ -8,6 +8,7 @@ import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
+import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -19,7 +20,6 @@ import TablePagination from '@mui/material/TablePagination';
 import { fDate } from 'src/utils/format-time';
 import { fCurrency } from 'src/utils/format-number';
 
-import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { TableHeadCustom } from 'src/components/table';
@@ -52,7 +52,7 @@ export function AnalyticsTable({ title, subheader, tableData, headLabel, ...othe
     { id: 'origin_institution', label: 'Origem' },
     { id: 'destination_institution', label: 'Destino' },
     { id: 'amount', label: 'Valor' },
-    { id: 'status', label: 'Status' },
+    { id: 'status', label: 'Status', align: 'center' },
     { id: 'insights', label: 'Análise', align: 'right' },
   ];
 
@@ -174,21 +174,22 @@ function AnalyticsTableRow({ row }: AnalyticsTableRowProps) {
         </Typography>
       </TableCell>
 
-      <TableCell>
-        <Label
-          variant="soft"
-          color={
-            (row.status === 'confirmed' && 'success') ||
-            (row.status === 'pending' && 'warning') ||
-            (row.status === 'failed' && 'error') ||
-            'default'
-          }
-          sx={{ fontWeight: 800, textTransform: 'uppercase' }}
-        >
-          {row.status === 'confirmed' ? 'Confirmado' : 
-           row.status === 'pending' ? 'Pendente' : 
-           row.status === 'failed' ? 'Falhou' : row.status}
-        </Label>
+      <TableCell align="center">
+        {row.status === 'confirmed' && (
+          <Tooltip title="Confirmado" placement="top">
+            <Iconify icon={"solar:check-circle-bold-duotone" as any} width={24} sx={{ color: 'success.main' }} />
+          </Tooltip>
+        )}
+        {row.status === 'pending' && (
+          <Tooltip title="Pendente" placement="top">
+            <Iconify icon={"solar:clock-circle-bold-duotone" as any} width={24} sx={{ color: 'warning.main' }} />
+          </Tooltip>
+        )}
+        {row.status === 'failed' && (
+          <Tooltip title="Falhou" placement="top">
+            <Iconify icon={"solar:close-circle-bold-duotone" as any} width={24} sx={{ color: 'error.main' }} />
+          </Tooltip>
+        )}
       </TableCell>
 
       <TableCell align="right">

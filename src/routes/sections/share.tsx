@@ -3,7 +3,6 @@ import type { RouteObject } from 'react-router';
 import { lazy, Suspense } from 'react';
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
