@@ -147,6 +147,34 @@ export function AnalyticsFilters({
                 </Typography>
               </Box>
             </Box>
+
+            {/* Linha de Documentos e Contatos Secundários */}
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 2.5, mt: 1.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:card-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontFamily: 'monospace', letterSpacing: 0.5 }}>123.456.789-00</Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:document-text-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontFamily: 'monospace', letterSpacing: 0.5 }}>12.345.678-9</Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:phone-calling-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>+55 (11) 98765-4321</Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:letter-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>andressa.ferreira@email.com</Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:mention-circle-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>@andressa.ferreira</Typography>
+              </Box>
+            </Box>
           </Box>
       </Box>
 
