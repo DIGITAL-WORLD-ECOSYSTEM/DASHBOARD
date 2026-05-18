@@ -54,7 +54,8 @@ export function AnalyticsFilters({
       {/* Header Dark Finance */}
       <Box
         sx={{
-          p: 3,
+          px: { xs: 3, md: 4 },
+          py: 4,
           display: 'flex',
           flexDirection: 'column',
           bgcolor: '#161c24', // Dark mode background
@@ -149,14 +150,15 @@ export function AnalyticsFilters({
           </Box>
         </Box>
 
-        <Divider sx={{ my: 4, mx: -3, borderColor: 'rgba(255, 255, 255, 0.08)' }} />
+        <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.08)' }} />
 
         {/* CSS Grid para os Dados */}
         <Box 
           sx={{ 
             display: 'grid', 
             gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, 
-            gap: 3 
+            rowGap: 4,
+            columnGap: 3 
           }}
         >
           {/* Item 1: CPF */}
@@ -240,7 +242,7 @@ export function AnalyticsFilters({
       </Box>
 
       {/* Tabs / Barra Inferior */}
-      <Box sx={{ p: 2, bgcolor: 'common.white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box sx={{ px: { xs: 3, md: 4 }, py: 2, bgcolor: 'common.white', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Tabs
           value={selectedYear}
           onChange={(e, newValue) => onSelectYear(newValue)}
