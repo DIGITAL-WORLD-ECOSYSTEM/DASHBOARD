@@ -161,6 +161,16 @@ export function AnalyticsFilters({
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:global-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>Brasileira</Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                <Iconify icon={"solar:users-group-two-rounded-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
+                <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>Casada</Typography>
+              </Box>
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 <Iconify icon={"solar:phone-calling-bold-duotone" as any} width={16} sx={{ color: 'text.disabled' }} />
                 <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>+55 (11) 98765-4321</Typography>
               </Box>
