@@ -174,6 +174,17 @@ export function AnalyticsFilters({
             </Box>
           </Box>
 
+          {/* Item: Gênero */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:user-rounded-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>GÊNERO</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Feminino</Typography>
+            </Box>
+          </Box>
+
           {/* Item 3: Nacionalidade */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -193,6 +204,17 @@ export function AnalyticsFilters({
             <Box>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Estado Civil</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Casada</Typography>
+            </Box>
+          </Box>
+
+          {/* Item: Profissão */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:briefcase-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>PROFISSÃO</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Empresária</Typography>
             </Box>
           </Box>
 
