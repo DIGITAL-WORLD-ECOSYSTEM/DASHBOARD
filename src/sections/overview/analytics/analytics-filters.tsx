@@ -85,27 +85,6 @@ export function AnalyticsFilters({
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
               <Label
-                variant="outlined"
-                sx={{
-                  height: 24,
-                  fontSize: 10,
-                  borderColor: 'rgba(0, 167, 111, 0.48)',
-                  bgcolor: 'rgba(0, 167, 111, 0.08)',
-                  color: '#00a76f',
-                  fontWeight: 800,
-                  px: 1,
-                  borderRadius: 1,
-                  textTransform: 'uppercase',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5
-                }}
-              >
-                <Iconify icon={"solar:user-bold-duotone" as any} width={14} />
-                ASSOCIADO
-              </Label>
-
-              <Label
                 variant="filled"
                 sx={{
                   bgcolor: '#00a76f',
@@ -125,27 +104,6 @@ export function AnalyticsFilters({
                 <Iconify icon={"solar:shield-check-bold-duotone" as any} width={14} />
                 ATIVO
               </Label>
-
-              <Label
-                variant="outlined"
-                sx={{
-                  height: 24,
-                  fontSize: 10,
-                  borderColor: 'rgba(255, 255, 255, 0.16)',
-                  bgcolor: 'rgba(255, 255, 255, 0.04)',
-                  color: 'rgba(255, 255, 255, 0.8)',
-                  fontWeight: 800,
-                  px: 1,
-                  borderRadius: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5,
-                  fontFamily: 'monospace'
-                }}
-              >
-                <Iconify icon={"solar:user-id-bold-duotone" as any} width={14} />
-                ID: {searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}
-              </Label>
             </Box>
           </Box>
         </Box>
@@ -161,7 +119,29 @@ export function AnalyticsFilters({
             columnGap: 3 
           }}
         >
-          {/* Item 1: CPF */}
+          {/* Item: Categoria */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:user-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>CATEGORIA</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>ASSOCIADO</Typography>
+            </Box>
+          </Box>
+
+          {/* Item: ID */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:user-id-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>ID</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>{searchQuery.match(/^\d+$/) ? `#${searchQuery}` : '#2024001'}</Typography>
+            </Box>
+          </Box>
+
+          {/* Item: CPF */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Iconify icon={"solar:card-bold" as any} width={24} sx={{ color: '#00a76f' }} />
