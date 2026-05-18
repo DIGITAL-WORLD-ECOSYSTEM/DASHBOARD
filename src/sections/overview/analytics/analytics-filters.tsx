@@ -52,15 +52,15 @@ export function AnalyticsFilters({
     >
       {/* Header do Perfil Selecionado (Sempre Visível) */}
       {/* Header Dark Finance */}
-      <Box
-        sx={{
-          px: { xs: 3, md: 4 },
-          py: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          bgcolor: '#161c24', // Dark mode background
-        }}
-      >
+        <Box
+          sx={{
+            px: { xs: 3, md: 4 },
+            py: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            bgcolor: '#161c24', // Dark mode background
+          }}
+        >
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar
             sx={{
@@ -83,7 +83,7 @@ export function AnalyticsFilters({
               {displayName}
             </Typography>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
               <Label
                 variant="filled"
                 sx={{
@@ -108,7 +108,7 @@ export function AnalyticsFilters({
           </Box>
         </Box>
 
-        <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.08)' }} />
+        <Divider sx={{ my: 2.5, borderColor: 'rgba(255, 255, 255, 0.08)' }} />
 
         {/* CSS Grid para os Dados */}
         <Box 
@@ -122,7 +122,7 @@ export function AnalyticsFilters({
           {/* Item: Categoria */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:user-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:user-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
             </Box>
             <Box>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>CATEGORIA</Typography>
@@ -133,7 +133,7 @@ export function AnalyticsFilters({
           {/* Item: ID */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:user-id-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:user-id-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
             </Box>
             <Box>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>ID</Typography>
@@ -166,7 +166,7 @@ export function AnalyticsFilters({
           {/* Item: Data de Nascimento */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:calendar-date-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:calendar-date-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
             </Box>
             <Box>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>DATA DE NASC.</Typography>
@@ -177,7 +177,7 @@ export function AnalyticsFilters({
           {/* Item: Gênero */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:user-rounded-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:user-rounded-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
             </Box>
             <Box>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>GÊNERO</Typography>
@@ -210,7 +210,7 @@ export function AnalyticsFilters({
           {/* Item: Profissão */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:briefcase-bold" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:case-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
             </Box>
             <Box>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>PROFISSÃO</Typography>
