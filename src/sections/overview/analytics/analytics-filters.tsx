@@ -149,7 +149,7 @@ export function AnalyticsFilters({
           </Box>
         </Box>
 
-        <Divider sx={{ my: 3, borderColor: 'rgba(255, 255, 255, 0.08)' }} />
+        <Divider sx={{ my: 4, mx: -3, borderColor: 'rgba(255, 255, 255, 0.08)' }} />
 
         {/* CSS Grid para os Dados */}
         <Box 
@@ -162,10 +162,10 @@ export function AnalyticsFilters({
           {/* Item 1: CPF */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:card-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:card-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>CPF</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>CPF</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>123.456.789-00</Typography>
             </Box>
           </Box>
@@ -173,10 +173,10 @@ export function AnalyticsFilters({
           {/* Item 2: RG */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:document-text-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:document-text-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>RG</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>RG</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>12.345.678-9</Typography>
             </Box>
           </Box>
@@ -184,10 +184,10 @@ export function AnalyticsFilters({
           {/* Item 3: Nacionalidade */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:global-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:global-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>Nacionalidade</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Nacionalidade</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Brasileira</Typography>
             </Box>
           </Box>
@@ -195,10 +195,10 @@ export function AnalyticsFilters({
           {/* Item 4: Estado Civil */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:users-group-two-rounded-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:users-group-two-rounded-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>Estado Civil</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Estado Civil</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Casada</Typography>
             </Box>
           </Box>
@@ -206,10 +206,10 @@ export function AnalyticsFilters({
           {/* Item 5: Telefone */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:phone-calling-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:phone-calling-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>Telefone</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Telefone</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>+55 (11) 98765-4321</Typography>
             </Box>
           </Box>
@@ -217,10 +217,10 @@ export function AnalyticsFilters({
           {/* Item 6: E-mail */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:letter-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:letter-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>E-mail</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>E-mail</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>andressa.ferreira@email.com</Typography>
             </Box>
           </Box>
@@ -228,10 +228,10 @@ export function AnalyticsFilters({
           {/* Item 7: Social */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Iconify icon={"solar:mention-circle-bold-duotone" as any} width={24} sx={{ color: '#00a76f' }} />
+              <Iconify icon={"solar:mention-circle-bold" as any} width={24} sx={{ color: '#00a76f' }} />
             </Box>
             <Box>
-              <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1 }}>Social</Typography>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>Social</Typography>
               <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>@andressa.ferreira</Typography>
             </Box>
           </Box>
