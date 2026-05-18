@@ -114,7 +114,7 @@ export function AnalyticsFilters({
         <Box 
           sx={{ 
             display: 'grid', 
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, 
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, 
             rowGap: 4,
             columnGap: 3 
           }}
@@ -263,7 +263,7 @@ export function AnalyticsFilters({
         <Box 
           sx={{ 
             display: 'grid', 
-            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, 
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' }, 
             rowGap: 4,
             columnGap: 3 
           }}
@@ -319,6 +319,9 @@ export function AnalyticsFilters({
         <Tabs
           value={selectedYear}
           onChange={(e, newValue) => onSelectYear(newValue)}
+          variant="scrollable"
+          scrollButtons="auto"
+          allowScrollButtonsMobile
           sx={{
             minHeight: 32,
             '& .MuiTabs-indicator': { display: 'none' },
