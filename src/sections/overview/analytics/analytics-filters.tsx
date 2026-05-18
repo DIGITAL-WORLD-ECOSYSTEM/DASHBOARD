@@ -252,6 +252,66 @@ export function AnalyticsFilters({
           </Box>
 
         </Box>
+
+        {/* --- INICIO SESSAO ENDERECO --- */}
+        <Divider sx={{ mt: 5, mb: 4, '&::before, &::after': { borderColor: 'rgba(255, 255, 255, 0.08)' } }}>
+          <Typography variant="overline" sx={{ color: 'rgba(255, 255, 255, 0.24)', px: 2, letterSpacing: 1.5 }}>
+            ENDEREÇO E LOCALIZAÇÃO
+          </Typography>
+        </Divider>
+
+        <Box 
+          sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' }, 
+            rowGap: 4,
+            columnGap: 3 
+          }}
+        >
+          {/* CEP */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:mailbox-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>CEP</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>04538-133</Typography>
+            </Box>
+          </Box>
+
+          {/* LOGRADOURO */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:map-point-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>LOGRADOURO</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Av. Brigadeiro Faria Lima, 3477</Typography>
+            </Box>
+          </Box>
+
+          {/* BAIRRO */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:buildings-2-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>BAIRRO</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>Itaim Bibi</Typography>
+            </Box>
+          </Box>
+
+          {/* CIDADE / UF */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box sx={{ width: 40, height: 40, borderRadius: 1.5, bgcolor: 'rgba(0, 167, 111, 0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify icon={"solar:city-bold" as any} width={24} sx={{ color: '#00a76f', '& path': { fill: '#00a76f' } }} />
+            </Box>
+            <Box>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.48)', display: 'block', lineHeight: 1, mb: 0.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>CIDADE / UF</Typography>
+              <Typography variant="subtitle2" sx={{ color: 'common.white', fontWeight: 700 }}>São Paulo - SP</Typography>
+            </Box>
+          </Box>
+        </Box>
       </Box>
 
       {/* Tabs / Barra Inferior */}
