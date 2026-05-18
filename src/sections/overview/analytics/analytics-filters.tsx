@@ -260,24 +260,27 @@ export function AnalyticsFilters({
           value={selectedYear}
           onChange={(e, newValue) => onSelectYear(newValue)}
           sx={{
-            minHeight: 38,
+            minHeight: 32,
             '& .MuiTabs-indicator': { display: 'none' },
             '& .MuiTab-root': {
-              minHeight: 38,
-              borderRadius: '20px',
-              mr: 1,
+              minHeight: 32,
+              minWidth: 0,
+              px: 2.5,
+              py: 0.5,
+              borderRadius: 32,
+              mr: 1.5,
               color: 'text.secondary',
-              typography: 'caption',
+              typography: 'subtitle2',
               fontWeight: 700,
-              bgcolor: '#f4f6f8', // Fundo cápsula cinza claro (inativo)
+              bgcolor: 'rgba(145, 158, 171, 0.08)', // Fundo cápsula cinza super sutil (inativo)
               transition: (theme) => theme.transitions.create(['all']),
               '&.Mui-selected': {
                 bgcolor: '#00a76f',
                 color: 'common.white',
-                boxShadow: '0 4px 12px 0 rgba(0, 167, 111, 0.24)',
+                boxShadow: '0 8px 16px 0 rgba(0, 167, 111, 0.24)',
               },
-              '&:hover': {
-                bgcolor: 'rgba(0, 167, 111, 0.12)',
+              '&:hover:not(.Mui-selected)': {
+                bgcolor: 'rgba(145, 158, 171, 0.16)', // Escurece levemente no hover
               }
             },
           }}
