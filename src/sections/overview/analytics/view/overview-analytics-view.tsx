@@ -94,16 +94,7 @@ export function OverviewAnalyticsView() {
         </Box>
       </Box>
 
-      <AnalyticsFilters
-        years={availableYears}
-        selectedYear={selectedYear}
-        onSelectYear={setSelectedYear}
-        onSearch={setSearchQuery}
-        searchQuery={searchQuery}
-        summary={summary}
-      />
-
-      <Grid container spacing={3}>
+      <Grid container spacing={3} sx={{ mb: 5 }}>
         <Grid size={{ xs: 12, md: 8 }}>
           <AppWelcome
             title={`Welcome back 👋 \n ${user?.displayName}`}
@@ -158,6 +149,18 @@ export function OverviewAnalyticsView() {
             }}
           />
         </Grid>
+      </Grid>
+
+      <AnalyticsFilters
+        years={availableYears}
+        selectedYear={selectedYear}
+        onSelectYear={setSelectedYear}
+        onSearch={setSearchQuery}
+        searchQuery={searchQuery}
+        summary={summary}
+      />
+
+      <Grid container spacing={3}>
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
