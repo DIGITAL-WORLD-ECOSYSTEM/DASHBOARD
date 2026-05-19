@@ -54,9 +54,35 @@ export const navData: NavSectionProps['data'] = [
         path: paths.dashboard.general.analytics.root,
         icon: ICONS.analytics,
         children: [
+          {
+            title: 'Social Hub',
+            path: paths.dashboard.general.analytics.social.root,
+            children: [
+              { title: 'Redes Sociais', path: paths.dashboard.general.analytics.social.networks },
+              { title: 'Analytics', path: paths.dashboard.general.analytics.social.analytics },
+            ],
+          },
+          {
+            title: 'User Hub',
+            path: paths.dashboard.general.analytics.user.root,
+            children: [
+              { title: 'Associados', path: paths.dashboard.general.analytics.user.associates },
+              { title: 'Membros', path: paths.dashboard.general.analytics.user.members },
+              { title: 'Usuários', path: paths.dashboard.general.analytics.user.users },
+            ],
+          },
+          {
+            title: 'Finance Hub',
+            path: paths.dashboard.general.analytics.finance.root,
+            children: [
+              { title: 'Tesouraria', path: paths.dashboard.general.analytics.finance.treasury },
+              { title: 'Pagamentos', path: paths.dashboard.general.analytics.finance.payments },
+              { title: 'Finanças da DAO', path: paths.dashboard.general.analytics.finance.dao },
+              { title: 'Contrato', path: paths.dashboard.general.analytics.finance.contract },
+              { title: 'Auditoria', path: paths.dashboard.general.analytics.finance.ledger },
+            ],
+          },
           { title: 'Visão Global', path: paths.dashboard.general.analytics.global },
-          { title: 'Contrato', path: paths.dashboard.general.analytics.contract },
-          { title: 'Auditoria', path: paths.dashboard.general.analytics.ledger },
         ],
       },
       { title: 'Bancário', path: paths.dashboard.general.banking, icon: ICONS.banking },

@@ -66,8 +66,25 @@ export const paths = {
       analytics: {
         root: `${ROOTS.DASHBOARD}/analytics`,
         global: `${ROOTS.DASHBOARD}/analytics/global`,
-        contract: `${ROOTS.DASHBOARD}/analytics/contract`,
-        ledger: `${ROOTS.DASHBOARD}/analytics/ledger`,
+        social: {
+          root: `${ROOTS.DASHBOARD}/analytics/social`,
+          networks: '#',
+          analytics: '#',
+        },
+        user: {
+          root: `${ROOTS.DASHBOARD}/analytics/user`,
+          associates: '#',
+          members: '#',
+          users: '#',
+        },
+        finance: {
+          root: `${ROOTS.DASHBOARD}/analytics/finance`,
+          treasury: '#',
+          payments: '#',
+          dao: '#',
+          contract: `${ROOTS.DASHBOARD}/analytics/contract`,
+          ledger: `${ROOTS.DASHBOARD}/analytics/ledger`,
+        },
       },
       banking: `${ROOTS.DASHBOARD}/banking`,
       file: `${ROOTS.DASHBOARD}/file`,
