@@ -3,8 +3,12 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import Accordion from '@mui/material/Accordion';
 import { useTheme } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 
 import { _appFeatured } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
@@ -94,7 +98,12 @@ export function OverviewAnalyticsView() {
         </Box>
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 5 }}>
+      <Accordion defaultExpanded sx={{ mb: 3, borderRadius: 2, '&::before': { display: 'none' } }}>
+        <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+          <Typography variant="h6">Visão Global</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 8 }}>
           <AppWelcome
             title={`Welcome back 👋 \n ${user?.displayName}`}
@@ -150,17 +159,24 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
       </Grid>
+    </AccordionDetails>
+  </Accordion>
 
-      <AnalyticsFilters
-        years={availableYears}
-        selectedYear={selectedYear}
-        onSelectYear={setSelectedYear}
-        onSearch={setSearchQuery}
-        searchQuery={searchQuery}
-        summary={summary}
-      />
+      <Accordion sx={{ mb: 3, borderRadius: 2, '&::before': { display: 'none' } }}>
+        <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+          <Typography variant="h6">Gestão de Contrato</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <AnalyticsFilters
+            years={availableYears}
+            selectedYear={selectedYear}
+            onSelectYear={setSelectedYear}
+            onSearch={setSearchQuery}
+            searchQuery={searchQuery}
+            summary={summary}
+          />
 
-      <Grid container spacing={3}>
+          <Grid container spacing={3} sx={{ mt: 1 }}>
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
@@ -243,14 +259,26 @@ export function OverviewAnalyticsView() {
           />
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
-          <AnalyticsTable title="Ledger de Recebimentos Digitais" tableData={dataFiltered} />
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion sx={{ borderRadius: 2, '&::before': { display: 'none' } }}>
+        <AccordionSummary expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}>
+          <Typography variant="h6">Livro-Razão e Auditoria</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12 }}>
+              <AnalyticsTable title="Ledger de Recebimentos Digitais" tableData={dataFiltered} />
         </Grid>
 
-        <Grid size={{ xs: 12 }}>
-          <AnalyticsAIInsights />
-        </Grid>
-      </Grid>
+            <Grid size={{ xs: 12 }}>
+              <AnalyticsAIInsights />
+            </Grid>
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
     </DashboardContent>
   );
 }
