@@ -60,6 +60,7 @@ export const navData: NavSectionProps['data'] = [
             children: [
               { title: 'Redes Sociais', path: paths.dashboard.general.analytics.social.networks },
               { title: 'Analytics', path: paths.dashboard.general.analytics.social.analytics },
+              { title: 'API', path: paths.dashboard.general.analytics.social.api },
             ],
           },
           {
@@ -69,6 +70,7 @@ export const navData: NavSectionProps['data'] = [
               { title: 'Associados', path: paths.dashboard.general.analytics.user.associates },
               { title: 'Membros', path: paths.dashboard.general.analytics.user.members },
               { title: 'Usuários', path: paths.dashboard.general.analytics.user.users },
+              { title: 'API', path: paths.dashboard.general.analytics.user.api },
             ],
           },
           {
@@ -80,6 +82,7 @@ export const navData: NavSectionProps['data'] = [
               { title: 'Finanças da DAO', path: paths.dashboard.general.analytics.finance.dao },
               { title: 'Contrato', path: paths.dashboard.general.analytics.finance.contract },
               { title: 'Auditoria', path: paths.dashboard.general.analytics.finance.ledger },
+              { title: 'API', path: paths.dashboard.general.analytics.finance.api },
             ],
           },
           { title: 'Visão Global', path: paths.dashboard.general.analytics.global },

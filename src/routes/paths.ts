@@ -70,12 +70,14 @@ export const paths = {
           root: `${ROOTS.DASHBOARD}/analytics/social`,
           networks: '#',
           analytics: '#',
+          api: '#',
         },
         user: {
           root: `${ROOTS.DASHBOARD}/analytics/user`,
           associates: '#',
           members: '#',
           users: '#',
+          api: '#',
         },
         finance: {
           root: `${ROOTS.DASHBOARD}/analytics/finance`,
@@ -84,6 +86,7 @@ export const paths = {
           dao: '#',
           contract: `${ROOTS.DASHBOARD}/analytics/contract`,
           ledger: `${ROOTS.DASHBOARD}/analytics/ledger`,
+          api: '#',
         },
       },
       banking: `${ROOTS.DASHBOARD}/banking`,
