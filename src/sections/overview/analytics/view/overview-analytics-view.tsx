@@ -3,24 +3,35 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+import { useTheme } from '@mui/material/styles';
 import LinearProgress from '@mui/material/LinearProgress';
 
+import { _appFeatured } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { SeoIllustration } from 'src/assets/illustrations';
 import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 
+import { useMockedUser } from 'src/auth/hooks';
+
+import { AppWelcome } from '../../app/app-welcome';
 import { AnalyticsTable } from '../analytics-table';
+import { AppFeatured } from '../../app/app-featured';
 import { AnalyticsFilters } from '../analytics-filters';
 import { AnalyticsAIInsights } from '../analytics-ai-insights';
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
+import { AppWidgetSummary as AppWidgetSummaryHome } from '../../app/app-widget-summary';
 
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+  const { user } = useMockedUser();
+  const theme = useTheme();
+
   const [selectedYear, setSelectedYear] = useState('Todos');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -93,6 +104,61 @@ export function OverviewAnalyticsView() {
       />
 
       <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 8 }}>
+          <AppWelcome
+            title={`Welcome back 👋 \n ${user?.displayName}`}
+            description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
+            img={<SeoIllustration hideBackground />}
+            action={
+              <Button variant="contained" color="primary">
+                Go now
+              </Button>
+            }
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 4 }}>
+          <AppFeatured list={_appFeatured} />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 4 }}>
+          <AppWidgetSummaryHome
+            title="Total active users"
+            percent={2.6}
+            total={18765}
+            chart={{
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [15, 18, 12, 51, 68, 11, 39, 37],
+            }}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 4 }}>
+          <AppWidgetSummaryHome
+            title="Total installed"
+            percent={0.2}
+            total={4876}
+            chart={{
+              colors: [theme.palette.info.main],
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [20, 41, 63, 33, 28, 35, 50, 46],
+            }}
+          />
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 4 }}>
+          <AppWidgetSummaryHome
+            title="Total downloads"
+            percent={-0.1}
+            total={678}
+            chart={{
+              colors: [theme.palette.error.main],
+              categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+              series: [18, 19, 31, 8, 16, 37, 12, 33],
+            }}
+          />
+        </Grid>
+
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
             title="VALOR DO CONTRATO"
