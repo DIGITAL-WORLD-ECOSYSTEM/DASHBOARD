@@ -24,6 +24,7 @@ const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/glo
 const AnalyticsContractPage = lazy(() => import('src/pages/dashboard/analytics/contract'));
 const AnalyticsLedgerPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
 const AnalyticsSocialApiPage = lazy(() => import('src/pages/dashboard/analytics/social-api'));
+const AnalyticsUserListPage = lazy(() => import('src/pages/dashboard/analytics/user-list'));
 // Product
 const ProductDetailsPage = lazy(() => import('src/pages/dashboard/product/details'));
 const ProductListPage = lazy(() => import('src/pages/dashboard/product/list'));
@@ -106,6 +107,12 @@ export const dashboardRoutes: RouteObject[] = [
             path: 'social',
             children: [
               { path: 'api', element: <AnalyticsSocialApiPage /> },
+            ],
+          },
+          {
+            path: 'user',
+            children: [
+              { path: 'list', element: <AnalyticsUserListPage /> },
             ],
           },
         ],
