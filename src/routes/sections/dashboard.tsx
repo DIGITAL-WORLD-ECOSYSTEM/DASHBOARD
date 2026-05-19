@@ -23,6 +23,7 @@ const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
 const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/global'));
 const AnalyticsContractPage = lazy(() => import('src/pages/dashboard/analytics/contract'));
 const AnalyticsLedgerPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
+const AnalyticsSocialApiPage = lazy(() => import('src/pages/dashboard/analytics/social-api'));
 // Product
 const ProductDetailsPage = lazy(() => import('src/pages/dashboard/product/details'));
 const ProductListPage = lazy(() => import('src/pages/dashboard/product/list'));
@@ -101,6 +102,12 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'global', element: <AnalyticsGlobalPage /> },
           { path: 'contract', element: <AnalyticsContractPage /> },
           { path: 'ledger', element: <AnalyticsLedgerPage /> },
+          {
+            path: 'social',
+            children: [
+              { path: 'api', element: <AnalyticsSocialApiPage /> },
+            ],
+          },
         ],
       },
       { path: 'banking', element: <OverviewBankingPage /> },

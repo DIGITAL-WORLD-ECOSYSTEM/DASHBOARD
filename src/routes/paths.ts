@@ -70,7 +70,7 @@ export const paths = {
           root: `${ROOTS.DASHBOARD}/analytics/social`,
           networks: '#',
           analytics: '#',
-          api: '#',
+          api: `${ROOTS.DASHBOARD}/analytics/social/api`,
         },
         user: {
           root: `${ROOTS.DASHBOARD}/analytics/user`,
