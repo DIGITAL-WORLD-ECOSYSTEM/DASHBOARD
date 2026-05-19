@@ -75,7 +75,7 @@ export const paths = {
         user: {
           root: `${ROOTS.DASHBOARD}/analytics/user`,
           associates: '#',
-          members: '#',
+          members: `${ROOTS.DASHBOARD}/analytics/user/members`,
           users: `${ROOTS.DASHBOARD}/analytics/user/list`,
           api: '#',
         },
