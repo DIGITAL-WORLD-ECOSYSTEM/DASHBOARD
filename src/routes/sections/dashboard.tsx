@@ -5,7 +5,6 @@ import { lazy, Suspense } from 'react';
 
 import { CONFIG } from 'src/global-config';
 import { DashboardLayout } from 'src/layouts/dashboard';
-import OverviewAnalyticsPage from 'src/pages/dashboard/analytics';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
@@ -20,6 +19,10 @@ const IndexPage = lazy(() => import('src/pages/dashboard'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
 const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
+// Analytics
+const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/global'));
+const AnalyticsContractPage = lazy(() => import('src/pages/dashboard/analytics/contract'));
+const AnalyticsLedgerPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
 // Product
 const ProductDetailsPage = lazy(() => import('src/pages/dashboard/product/details'));
 const ProductListPage = lazy(() => import('src/pages/dashboard/product/list'));
@@ -91,7 +94,15 @@ export const dashboardRoutes: RouteObject[] = [
     children: [
       { index: true, element: <IndexPage /> },
       { path: 'ecommerce', element: <OverviewEcommercePage /> },
-      { path: 'analytics', element: <OverviewAnalyticsPage /> },
+      {
+        path: 'analytics',
+        children: [
+          { index: true, element: <AnalyticsGlobalPage /> },
+          { path: 'global', element: <AnalyticsGlobalPage /> },
+          { path: 'contract', element: <AnalyticsContractPage /> },
+          { path: 'ledger', element: <AnalyticsLedgerPage /> },
+        ],
+      },
       { path: 'banking', element: <OverviewBankingPage /> },
       { path: 'file', element: <OverviewFilePage /> },
       {

@@ -8,7 +8,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics'));
+const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
 
 // ----------------------------------------------------------------------
 

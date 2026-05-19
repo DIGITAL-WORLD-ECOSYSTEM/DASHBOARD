@@ -49,7 +49,16 @@ export const navData: NavSectionProps['data'] = [
     items: [
       { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard },
       { title: 'E-commerce', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce },
-      { title: 'Análise', path: paths.dashboard.general.analytics, icon: ICONS.analytics },
+      {
+        title: 'Análise',
+        path: paths.dashboard.general.analytics.root,
+        icon: ICONS.analytics,
+        children: [
+          { title: 'Visão Global', path: paths.dashboard.general.analytics.global },
+          { title: 'Contrato', path: paths.dashboard.general.analytics.contract },
+          { title: 'Auditoria', path: paths.dashboard.general.analytics.ledger },
+        ],
+      },
       { title: 'Bancário', path: paths.dashboard.general.banking, icon: ICONS.banking },
       { title: 'Arquivos', path: paths.dashboard.general.file, icon: ICONS.file },
     ],
