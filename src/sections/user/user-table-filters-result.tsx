@@ -54,13 +54,13 @@ export function UserTableFiltersResult({ filters, onResetPage, totalResults, sx 
         />
       </FiltersBlock>
 
-      <FiltersBlock label="Role:" isShow={!!currentFilters.role.length}>
+      <FiltersBlock label="Cargo:" isShow={!!currentFilters.role.length}>
         {currentFilters.role.map((item) => (
           <Chip {...chipProps} key={item} label={item} onDelete={() => handleRemoveRole(item)} />
         ))}
       </FiltersBlock>
 
-      <FiltersBlock label="Keyword:" isShow={!!currentFilters.name}>
+      <FiltersBlock label="Palavra-chave:" isShow={!!currentFilters.name}>
         <Chip {...chipProps} label={currentFilters.name} onDelete={handleRemoveKeyword} />
       </FiltersBlock>
     </FiltersResult>

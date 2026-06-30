@@ -26,15 +26,6 @@
   "engines": {
     "node": ">=20"
   },
-  "overrides": {
-    "@mui/material": "^9.0.0",
-    "zod": "3.25.76"
-  },
-  "pnpm": {
-    "overrides": {
-      "zod": "3.25.76"
-    }
-  },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "^1.7.7",
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "^2.1.2",

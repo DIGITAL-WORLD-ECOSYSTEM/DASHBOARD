@@ -1,8 +1,8 @@
 import type { TableHeadCellProps } from 'src/components/table';
 import type { IUserItem, IUserTableFilters } from 'src/types/user';
 
-import { useState, useCallback } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
+import { useState, useEffect, useCallback } from 'react';
 import { useBoolean, useSetState } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
@@ -18,8 +18,9 @@ import IconButton from '@mui/material/IconButton';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { _roles } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
+import { deleteCitizen, useGetCitizens, deleteCitizens } from 'src/actions/identity';
 
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
@@ -45,7 +46,13 @@ import { UserTableFiltersResult } from 'src/sections/user/user-table-filters-res
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'Todos' },
+  { value: 'active', label: 'Ativos' },
+  { value: 'pending', label: 'Pendentes' },
+  { value: 'banned', label: 'Banidos' },
+  { value: 'rejected', label: 'Rejeitados' },
+];
 
 const TABLE_HEAD: TableHeadCellProps[] = [
   { id: 'name', label: 'Nome' },
@@ -62,7 +69,14 @@ export function AnalyticsUserListView() {
   const table = useTable();
   const confirmDialog = useBoolean();
 
-  const [tableData, setTableData] = useState<IUserItem[]>(_userList);
+  const { citizens, mutate } = useGetCitizens();
+  const [tableData, setTableData] = useState<IUserItem[]>([]);
+
+  useEffect(() => {
+    if (citizens) {
+      setTableData(citizens);
+    }
+  }, [citizens]);
 
   const filters = useSetState<IUserTableFilters>({ name: '', role: [], status: 'all' });
   const { state: currentFilters, setState: updateFilters } = filters;
@@ -81,21 +95,29 @@ export function AnalyticsUserListView() {
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   const handleDeleteRow = useCallback(
-    (id: string) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-      toast.success('Usuário removido com sucesso!');
-      setTableData(deleteRow);
-      table.onUpdatePageDeleteRow(dataInPage.length);
+    async (id: string) => {
+      try {
+        await deleteCitizen(id);
+        toast.success('Usuário removido com sucesso!');
+        mutate();
+        table.onUpdatePageDeleteRow(dataInPage.length);
+      } catch {
+        toast.error('Erro ao remover usuário.');
+      }
     },
-    [dataInPage.length, table, tableData]
+    [dataInPage.length, table, mutate]
   );
 
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-    toast.success('Usuários removidos com sucesso!');
-    setTableData(deleteRows);
-    table.onUpdatePageDeleteRows(dataInPage.length, dataFiltered.length);
-  }, [dataFiltered.length, dataInPage.length, table, tableData]);
+  const handleDeleteRows = useCallback(async () => {
+    try {
+      await deleteCitizens(table.selected.map(Number));
+      toast.success('Usuários removidos com sucesso!');
+      mutate();
+      table.onUpdatePageDeleteRows(dataInPage.length, dataFiltered.length);
+    } catch {
+      toast.error('Erro ao remover usuários.');
+    }
+  }, [dataFiltered.length, dataInPage.length, table, mutate]);
 
   const handleFilterStatus = useCallback(
     (event: React.SyntheticEvent, newValue: string) => {
@@ -138,7 +160,7 @@ export function AnalyticsUserListView() {
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: 'Análise', href: paths.dashboard.general.analytics.root },
-            { name: 'User Hub' },
+            { name: 'Central de Cidadãos' },
             { name: 'Usuários' },
           ]}
           action={

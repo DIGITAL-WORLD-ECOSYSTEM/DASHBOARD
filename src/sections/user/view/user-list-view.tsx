@@ -1,8 +1,8 @@
 import type { TableHeadCellProps } from 'src/components/table';
 import type { IUserItem, IUserTableFilters } from 'src/types/user';
 
-import { useState, useCallback } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
+import { useState, useEffect, useCallback } from 'react';
 import { useBoolean, useSetState } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
@@ -18,8 +18,9 @@ import IconButton from '@mui/material/IconButton';
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
+import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _roles, _userList, USER_STATUS_OPTIONS } from 'src/_mock';
+import { deleteCitizen, useGetCitizens, deleteCitizens } from 'src/actions/identity';
 
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
@@ -63,7 +64,14 @@ export function UserListView() {
 
   const confirmDialog = useBoolean();
 
-  const [tableData, setTableData] = useState<IUserItem[]>(_userList);
+  const { citizens, mutate } = useGetCitizens();
+  const [tableData, setTableData] = useState<IUserItem[]>([]);
+
+  useEffect(() => {
+    if (citizens) {
+      setTableData(citizens);
+    }
+  }, [citizens]);
 
   const filters = useSetState<IUserTableFilters>({ name: '', role: [], status: 'all' });
   const { state: currentFilters, setState: updateFilters } = filters;
@@ -82,27 +90,29 @@ export function UserListView() {
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
   const handleDeleteRow = useCallback(
-    (id: string) => {
-      const deleteRow = tableData.filter((row) => row.id !== id);
-
-      toast.success('Delete success!');
-
-      setTableData(deleteRow);
-
-      table.onUpdatePageDeleteRow(dataInPage.length);
+    async (id: string) => {
+      try {
+        await deleteCitizen(id);
+        toast.success('Delete success!');
+        mutate();
+        table.onUpdatePageDeleteRow(dataInPage.length);
+      } catch {
+        toast.error('Error deleting user.');
+      }
     },
-    [dataInPage.length, table, tableData]
+    [dataInPage.length, table, mutate]
   );
 
-  const handleDeleteRows = useCallback(() => {
-    const deleteRows = tableData.filter((row) => !table.selected.includes(row.id));
-
-    toast.success('Delete success!');
-
-    setTableData(deleteRows);
-
-    table.onUpdatePageDeleteRows(dataInPage.length, dataFiltered.length);
-  }, [dataFiltered.length, dataInPage.length, table, tableData]);
+  const handleDeleteRows = useCallback(async () => {
+    try {
+      await deleteCitizens(table.selected.map(Number));
+      toast.success('Delete success!');
+      mutate();
+      table.onUpdatePageDeleteRows(dataInPage.length, dataFiltered.length);
+    } catch {
+      toast.error('Error deleting users.');
+    }
+  }, [dataFiltered.length, dataInPage.length, table, mutate]);
 
   const handleFilterStatus = useCallback(
     (event: React.SyntheticEvent, newValue: string) => {

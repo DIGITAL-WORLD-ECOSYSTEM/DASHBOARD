@@ -63,17 +63,17 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
       <MenuList>
         <MenuItem onClick={() => menuActions.onClose()}>
           <Iconify icon="solar:printer-minimalistic-bold" />
-          Print
+          Imprimir
         </MenuItem>
 
         <MenuItem onClick={() => menuActions.onClose()}>
           <Iconify icon="solar:import-bold" />
-          Import
+          Importar
         </MenuItem>
 
         <MenuItem onClick={() => menuActions.onClose()}>
           <Iconify icon="solar:export-bold" />
-          Export
+          Exportar
         </MenuItem>
       </MenuList>
     </CustomPopover>
@@ -92,10 +92,10 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
         }}
       >
         <FormControl sx={{ flexShrink: 0, width: { xs: 1, md: 200 } }}>
-          <InputLabel htmlFor="filter-role-select">Role</InputLabel>
+          <InputLabel htmlFor="filter-role-select">Cargo</InputLabel>
           <Select
             multiple
-            label="Role"
+            label="Cargo"
             value={currentFilters.role}
             onChange={handleFilterRole}
             renderValue={(selected) => selected.map((value) => value).join(', ')}
@@ -131,7 +131,7 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
             fullWidth
             value={currentFilters.name}
             onChange={handleFilterName}
-            placeholder="Search..."
+            placeholder="Pesquisar..."
             slotProps={{
               input: {
                 startAdornment: (

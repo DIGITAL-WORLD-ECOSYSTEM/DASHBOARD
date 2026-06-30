@@ -2,7 +2,7 @@ import { CONFIG } from 'src/global-config';
 
 import { AnalyticsUserListView } from 'src/sections/overview/analytics/view';
 
-const metadata = { title: `User Hub: Usuários | Dashboard - ${CONFIG.appName}` };
+const metadata = { title: `Central de Cidadãos | Dashboard - ${CONFIG.appName}` };
 
 export default function Page() {
   return (

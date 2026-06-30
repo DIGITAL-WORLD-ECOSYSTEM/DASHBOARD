@@ -109,5 +109,10 @@ export const endpoints = {
     treasury: {
       analytics: '/api/platform/treasury/analytics',
     },
+    identity: {
+      list: '/api/platform/identity/list',
+      base: '/api/platform/identity',
+      bulkDelete: '/api/platform/identity/bulk-delete',
+    },
   },
 } as const;

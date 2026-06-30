@@ -19,6 +19,8 @@ import { useRouter } from 'src/routes/hooks';
 
 import { fData } from 'src/utils/format-number';
 
+import { createCitizen, updateCitizen } from 'src/actions/identity';
+
 import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
@@ -28,7 +30,7 @@ import { Form, Field, schemaUtils } from 'src/components/hook-form';
 export type UserCreateSchemaType = z.infer<typeof UserCreateSchema>;
 
 export const UserCreateSchema = z.object({
-  avatarUrl: schemaUtils.file({ message: 'Avatar is required!' }),
+  avatarUrl: z.any().optional(),
   name: z.string().min(1, { message: 'Name is required!' }),
   email: schemaUtils.email(),
   phoneNumber: schemaUtils.phoneNumber({ isValid: isValidPhoneNumber }),
@@ -90,13 +92,38 @@ export function UserCreateEditForm({ currentUser }: Props) {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const nameParts = data.name.trim().split(/\s+/);
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      const payload = {
+        email: data.email,
+        firstName,
+        lastName,
+        cargoOsc: data.company,
+        phoneNumber: data.phoneNumber || '',
+        nacionalidade: data.country || 'Brasileira',
+        role: data.role || 'citizen',
+        kycStatus: data.isVerified ? 'approved' : 'pending',
+        avatarUrl: typeof data.avatarUrl === 'string' ? data.avatarUrl : '',
+      };
+
+      if (currentUser) {
+        await updateCitizen(currentUser.id, payload);
+      } else {
+        await createCitizen({
+          ...payload,
+          password: 'TemporaryPassword123!',
+          username: data.email.split('@')[0],
+        });
+      }
+
       reset();
       toast.success(currentUser ? 'Update success!' : 'Create success!');
       router.push(paths.dashboard.user.list);
-      console.info('DATA', data);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      toast.error(error.message || 'Something went wrong');
     }
   });
 
