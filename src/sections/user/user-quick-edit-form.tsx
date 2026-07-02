@@ -1,6 +1,7 @@
 import type { IUserItem } from 'src/types/user';
 
 import * as z from 'zod';
+import { mutate } from 'swr';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isValidPhoneNumber } from 'react-phone-number-input/input';
@@ -14,7 +15,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
+import { endpoints } from 'src/lib/axios';
 import { USER_STATUS_OPTIONS } from 'src/_mock';
+import { updateCitizen } from 'src/actions/identity';
 
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
@@ -24,19 +27,22 @@ import { Form, Field, schemaUtils } from 'src/components/hook-form';
 export type UserQuickEditSchemaType = z.infer<typeof UserQuickEditSchema>;
 
 export const UserQuickEditSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required!' }),
+  name: z.string().min(1, { message: 'Nome é obrigatório!' }),
   email: schemaUtils.email(),
-  phoneNumber: schemaUtils.phoneNumber({ isValid: isValidPhoneNumber }),
-  country: schemaUtils.nullableInput(z.string().min(1, { message: 'Country is required!' }), {
-    message: 'Country is required!',
-  }),
-  state: z.string().min(1, { message: 'State is required!' }),
-  city: z.string().min(1, { message: 'City is required!' }),
-  address: z.string().min(1, { message: 'Address is required!' }),
-  zipCode: z.string().min(1, { message: 'Zip code is required!' }),
-  company: z.string().min(1, { message: 'Company is required!' }),
-  role: z.string().min(1, { message: 'Role is required!' }),
-  // Not required
+  phoneNumber: z
+    .string()
+    .refine((val) => !val || !val.startsWith('+') || isValidPhoneNumber(val), {
+      message: 'Número de telefone inválido!',
+    })
+    .optional()
+    .or(z.literal('')),
+  country: z.string().optional().nullable(),
+  state: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  address: z.string().optional().nullable(),
+  zipCode: z.string().optional().nullable(),
+  company: z.string().min(1, { message: 'Organização/Cargo é obrigatório!' }),
+  role: z.string().min(1, { message: 'Função é obrigatória!' }),
   status: z.string(),
 });
 
@@ -71,31 +77,55 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
   });
 
   const {
-    reset,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = handleSubmit(async (data) => {
-    const promise = new Promise((resolve) => setTimeout(resolve, 1000));
+  const onSubmit = handleSubmit(
+    async (data) => {
+      try {
+        if (!currentUser) return;
 
-    try {
-      reset();
-      onClose();
+        const nameParts = data.name.trim().split(/\s+/);
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
 
-      toast.promise(promise, {
-        loading: 'Loading...',
-        success: 'Update success!',
-        error: 'Update error!',
-      });
+        const payload = {
+          firstName,
+          lastName,
+          cargoOsc: data.company,
+          phoneNumber: data.phoneNumber || '',
+          nacionalidade: data.country || 'Brasileira',
+          role: data.role || 'citizen',
+          kycStatus: data.status === 'active' ? 'approved' : data.status === 'rejected' ? 'rejected' : 'pending',
+        };
 
-      await promise;
+        const updatePromise = updateCitizen(currentUser.id, payload);
 
-      console.info('DATA', data);
-    } catch (error) {
-      console.error(error);
+        toast.promise(updatePromise, {
+          loading: 'Atualizando...',
+          success: 'Perfil atualizado com sucesso!',
+          error: 'Erro ao atualizar o perfil.',
+        });
+
+        await updatePromise;
+
+        await mutate(endpoints.platform.identity.list);
+        onClose();
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error.message || 'Erro ao salvar no servidor.');
+      }
+    },
+    (errors) => {
+      console.error('Validation errors:', errors);
+      const firstErrorKey = Object.keys(errors)[0];
+      if (firstErrorKey) {
+        const error = errors[firstErrorKey as keyof typeof errors];
+        toast.error(`Erro de Validação (${firstErrorKey}): ${error?.message}`);
+      }
     }
-  });
+  );
 
   return (
     <Dialog
@@ -109,12 +139,12 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
         },
       }}
     >
-      <DialogTitle>Quick update</DialogTitle>
+      <DialogTitle>Edição Rápida</DialogTitle>
 
       <Form methods={methods} onSubmit={onSubmit}>
         <DialogContent>
           <Alert variant="outlined" severity="info" sx={{ mb: 3 }}>
-            Account is waiting for confirmation
+            Perfil de cidadão ativo e registrado na rede soberana da DAO
           </Alert>
 
           <Box
@@ -125,42 +155,49 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
               gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
             }}
           >
-            <Field.Select name="status" label="Status">
-              {USER_STATUS_OPTIONS.map((status) => (
-                <MenuItem key={status.value} value={status.value}>
-                  {status.label}
-                </MenuItem>
-              ))}
+            <Field.Select name="status" label="Status da Conta">
+              {USER_STATUS_OPTIONS.map((status) => {
+                let label = status.label;
+                if (status.value === 'active') label = 'Ativo';
+                if (status.value === 'pending') label = 'Pendente';
+                if (status.value === 'banned') label = 'Bloqueado';
+                if (status.value === 'rejected') label = 'Rejeitado';
+                return (
+                  <MenuItem key={status.value} value={status.value}>
+                    {label}
+                  </MenuItem>
+                );
+              })}
             </Field.Select>
 
             <Box sx={{ display: { xs: 'none', sm: 'block' } }} />
 
-            <Field.Text name="name" label="Full name" />
-            <Field.Text name="email" label="Email address" />
-            <Field.Phone name="phoneNumber" label="Phone number" />
+            <Field.Text name="name" label="Nome Completo" />
+            <Field.Text name="email" label="Endereço de E-mail" disabled />
+            <Field.Phone name="phoneNumber" label="Número de Telefone" />
 
             <Field.CountrySelect
               fullWidth
               name="country"
-              label="Country"
-              placeholder="Choose a country"
+              label="Nacionalidade/País"
+              placeholder="Escolha um país"
             />
 
-            <Field.Text name="state" label="State/region" />
-            <Field.Text name="city" label="City" />
-            <Field.Text name="address" label="Address" />
-            <Field.Text name="zipCode" label="Zip/code" />
-            <Field.Text name="company" label="Company" />
-            <Field.Text name="role" label="Role" />
+            <Field.Text name="state" label="Estado/Região" />
+            <Field.Text name="city" label="Cidade" />
+            <Field.Text name="address" label="Endereço" />
+            <Field.Text name="zipCode" label="CEP" />
+            <Field.Text name="company" label="Organização/Cargo" />
+            <Field.Text name="role" label="Função (role)" />
           </Box>
         </DialogContent>
 
         <DialogActions>
           <Button variant="outlined" onClick={onClose}>
-            Cancel
+            Cancelar
           </Button>
           <Button type="submit" variant="contained" loading={isSubmitting}>
-            Update
+            Salvar
           </Button>
         </DialogActions>
       </Form>

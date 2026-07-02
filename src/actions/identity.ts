@@ -1,9 +1,9 @@
+import type { IUserItem } from 'src/types/user';
+
 import useSWR from 'swr';
 import { useMemo } from 'react';
 
 import axiosInstance, { fetcher, endpoints } from 'src/lib/axios';
-
-import type { IUserItem } from 'src/types/user';
 
 // ----------------------------------------------------------------------
 
