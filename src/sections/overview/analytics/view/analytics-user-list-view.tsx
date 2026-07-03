@@ -2,23 +2,27 @@ import type { TableHeadCellProps } from 'src/components/table';
 import type { IUserItem, IUserTableFilters } from 'src/types/user';
 
 import { varAlpha } from 'minimal-shared/utils';
-import { useState, useEffect, useCallback } from 'react';
 import { useBoolean, useSetState } from 'minimal-shared/hooks';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Tabs from '@mui/material/Tabs';
+import Grid from '@mui/material/Grid';
 import Table from '@mui/material/Table';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import { useTheme } from '@mui/material/styles';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { _roles } from 'src/_mock';
+import { _mock, _roles } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { deleteCitizen, useGetCitizens, deleteCitizens } from 'src/actions/identity';
 
@@ -28,6 +32,7 @@ import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+import { Carousel, useCarousel, CarouselArrowBasicButtons } from 'src/components/carousel';
 import {
   useTable,
   emptyRows,
@@ -40,8 +45,10 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 
+import { UserCard } from 'src/sections/user/user-card';
 import { UserTableRow } from 'src/sections/user/user-table-row';
 import { UserTableToolbar } from 'src/sections/user/user-table-toolbar';
+import { AppWidgetSummary } from 'src/sections/overview/app/app-widget-summary';
 import { UserTableFiltersResult } from 'src/sections/user/user-table-filters-result';
 
 // ----------------------------------------------------------------------
@@ -66,6 +73,7 @@ const TABLE_HEAD: TableHeadCellProps[] = [
 // ----------------------------------------------------------------------
 
 export function AnalyticsUserListView() {
+  const theme = useTheme();
   const table = useTable();
   const confirmDialog = useBoolean();
 
@@ -127,6 +135,33 @@ export function AnalyticsUserListView() {
     [updateFilters, table]
   );
 
+  // Map filtered data to IUserCard structures
+  const mappedUserCards = useMemo(
+    () =>
+      dataFiltered.map((citizen, index) => ({
+        id: citizen.id,
+        name: citizen.name,
+        role: citizen.role || 'Cidadão',
+        avatarUrl: citizen.avatarUrl || _mock.image.avatar(index % 20),
+        coverUrl: _mock.image.cover(index % 20),
+        totalFollowers: 0,
+        totalFollowing: 0,
+        totalPosts: 0,
+      })),
+    [dataFiltered]
+  );
+
+  // Initialize Carousel
+  const carousel = useCarousel({
+    align: 'start',
+    slideSpacing: '24px',
+    slidesToShow: {
+      xs: 1,
+      sm: 2,
+      md: 3,
+    },
+  });
+
   const renderConfirmDialog = () => (
     <ConfirmDialog
       open={confirmDialog.value}
@@ -157,33 +192,106 @@ export function AnalyticsUserListView() {
       <DashboardContent>
         <CustomBreadcrumbs
           heading="Usuários"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Análise', href: paths.dashboard.general.analytics.root },
-            { name: 'Central de Cidadãos' },
-            { name: 'Usuários' },
-          ]}
           action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.user.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
+            <Stack
+              direction="row"
+              spacing={1.5}
+              sx={{
+                flexWrap: 'wrap',
+                gap: 1.5,
+                justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+              }}
             >
-              Novo Usuário
-            </Button>
+              <Button
+                variant="outlined"
+                color="inherit"
+                startIcon={<Iconify icon="solar:printer-minimalistic-bold" />}
+                onClick={() => window.print()}
+              >
+                Imprimir
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="inherit"
+                startIcon={<Iconify icon="solar:import-bold" />}
+                onClick={() => toast.info('Importação iniciada')}
+              >
+                Importar
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="inherit"
+                startIcon={<Iconify icon="solar:export-bold" />}
+                onClick={() => toast.info('Exportação iniciada')}
+              >
+                Exportar
+              </Button>
+
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.user.new}
+                variant="contained"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+              >
+                Novo Usuário
+              </Button>
+            </Stack>
           }
           sx={{ mb: { xs: 3, md: 5 } }}
         />
 
-        <Card>
+        {/* Painel de Cartões de Resumo Analítico */}
+        <Grid container spacing={3} sx={{ mb: 5 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <AppWidgetSummary
+              title="Cidadãos Ativos"
+              percent={2.6}
+              total={tableData.filter((user) => user.status === 'active').length}
+              chart={{
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                series: [15, 18, 12, 51, 68, 11, 39, 37],
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <AppWidgetSummary
+              title="Total de Membros"
+              percent={0.2}
+              total={tableData.length}
+              chart={{
+                colors: [theme.palette.info.main],
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                series: [20, 41, 63, 33, 28, 35, 50, 46],
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <AppWidgetSummary
+              title="Pendentes KYC"
+              percent={-0.1}
+              total={tableData.filter((user) => user.status === 'pending').length}
+              chart={{
+                colors: [theme.palette.error.main],
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                series: [18, 19, 31, 8, 16, 37, 12, 33],
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        {/* Card 1: Filtros Globais */}
+        <Card sx={{ mb: 5 }}>
           <Tabs
             value={currentFilters.status}
             onChange={handleFilterStatus}
             sx={[
-              (theme) => ({
+              (t) => ({
                 px: { md: 2.5 },
-                boxShadow: `inset 0 -2px 0 0 ${varAlpha(theme.vars.palette.grey['500Channel'], 0.08)}`,
+                boxShadow: `inset 0 -2px 0 0 ${varAlpha(t.vars.palette.grey['500Channel'], 0.08)}`,
               }),
             ]}
           >
@@ -229,7 +337,26 @@ export function AnalyticsUserListView() {
               sx={{ p: 2.5, pt: 0 }}
             />
           )}
+        </Card>
 
+        {/* Card 2: Galeria de Membros em Carrossel */}
+        {mappedUserCards.length > 0 && (
+          <Box sx={{ mb: 5, position: 'relative' }}>
+            <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+              <Typography variant="h5">Galeria de Membros ({mappedUserCards.length})</Typography>
+              <CarouselArrowBasicButtons {...carousel.arrows} options={carousel.options} />
+            </Stack>
+
+            <Carousel carousel={carousel}>
+              {mappedUserCards.map((user) => (
+                <UserCard key={user.id} user={user} />
+              ))}
+            </Carousel>
+          </Box>
+        )}
+
+        {/* Card 3: Planilha Analítica de Usuários */}
+        <Card>
           <Box sx={{ position: 'relative' }}>
             <TableSelectedAction
               dense={table.dense}

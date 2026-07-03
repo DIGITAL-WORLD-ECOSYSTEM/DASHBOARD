@@ -3,21 +3,17 @@ import type { UseSetStateReturn } from 'minimal-shared/hooks';
 import type { IUserTableFilters } from 'src/types/user';
 
 import { useCallback } from 'react';
-import { usePopover } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
-import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { Iconify } from 'src/components/iconify';
-import { CustomPopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
@@ -30,8 +26,6 @@ type Props = {
 };
 
 export function UserTableToolbar({ filters, options, onResetPage }: Props) {
-  const menuActions = usePopover();
-
   const { state: currentFilters, setState: updateFilters } = filters;
 
   const handleFilterName = useCallback(
@@ -53,35 +47,8 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
     [onResetPage, updateFilters]
   );
 
-  const renderMenuActions = () => (
-    <CustomPopover
-      open={menuActions.open}
-      anchorEl={menuActions.anchorEl}
-      onClose={menuActions.onClose}
-      slotProps={{ arrow: { placement: 'right-top' } }}
-    >
-      <MenuList>
-        <MenuItem onClick={() => menuActions.onClose()}>
-          <Iconify icon="solar:printer-minimalistic-bold" />
-          Imprimir
-        </MenuItem>
-
-        <MenuItem onClick={() => menuActions.onClose()}>
-          <Iconify icon="solar:import-bold" />
-          Importar
-        </MenuItem>
-
-        <MenuItem onClick={() => menuActions.onClose()}>
-          <Iconify icon="solar:export-bold" />
-          Exportar
-        </MenuItem>
-      </MenuList>
-    </CustomPopover>
-  );
-
   return (
-    <>
-      <Box
+    <Box
         sx={{
           p: 2.5,
           gap: 2,
@@ -143,13 +110,8 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
             }}
           />
 
-          <IconButton onClick={menuActions.onOpen}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
+          
         </Box>
       </Box>
-
-      {renderMenuActions()}
-    </>
   );
 }

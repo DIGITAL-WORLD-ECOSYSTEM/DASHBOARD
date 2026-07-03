@@ -67,8 +67,6 @@ export const navData: NavSectionProps['data'] = [
             title: 'User Hub',
             path: paths.dashboard.general.analytics.user.root,
             children: [
-              { title: 'Associados', path: paths.dashboard.general.analytics.user.associates },
-              { title: 'Membros', path: paths.dashboard.general.analytics.user.members },
               { title: 'Usuários', path: paths.dashboard.general.analytics.user.users },
               { title: 'API', path: paths.dashboard.general.analytics.user.api },
             ],
