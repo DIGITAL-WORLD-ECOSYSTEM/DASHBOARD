@@ -9,7 +9,7 @@ const MOCK_TITLE = _postTitles[2];
 
 const ROOTS = {
   AUTH: '',
-  DASHBOARD: '/dashboard',
+  DASHBOARD: '',
 };
 
 // ----------------------------------------------------------------------
@@ -55,7 +55,7 @@ export const paths = {
   },
   // DASHBOARD
   dashboard: {
-    root: ROOTS.DASHBOARD,
+    root: '/',
     mail: `${ROOTS.DASHBOARD}/mail`,
     chat: `${ROOTS.DASHBOARD}/chat`,
     calendar: `${ROOTS.DASHBOARD}/calendar`,
@@ -81,8 +81,8 @@ export const paths = {
         },
         finance: {
           root: `${ROOTS.DASHBOARD}/analytics/finance`,
-          treasury: '#',
-          payments: '#',
+          treasury: `${ROOTS.DASHBOARD}/analytics/finance/treasury`,
+          payments: `${ROOTS.DASHBOARD}/analytics/finance/payments`,
           dao: '#',
           contract: `${ROOTS.DASHBOARD}/analytics/contract`,
           ledger: `${ROOTS.DASHBOARD}/analytics/ledger`,

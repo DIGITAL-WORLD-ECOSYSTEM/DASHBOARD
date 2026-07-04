@@ -23,6 +23,8 @@ const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
 const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/global'));
 const AnalyticsContractPage = lazy(() => import('src/pages/dashboard/analytics/contract'));
 const AnalyticsLedgerPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
+const AnalyticsTreasuryPage = lazy(() => import('src/pages/dashboard/analytics/finance/treasury'));
+const AnalyticsPaymentsPage = lazy(() => import('src/pages/dashboard/analytics/finance/payments'));
 const AnalyticsSocialApiPage = lazy(() => import('src/pages/dashboard/analytics/social-api'));
 const AnalyticsUserListPage = lazy(() => import('src/pages/dashboard/analytics/user-list'));
 const AnalyticsUserMembersPage = lazy(() => import('src/pages/dashboard/analytics/user-members'));
@@ -92,7 +94,6 @@ const accountLayout = () => (
 
 export const dashboardRoutes: RouteObject[] = [
   {
-    path: 'dashboard',
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
       { index: true, element: <IndexPage /> },
@@ -104,6 +105,13 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'global', element: <AnalyticsGlobalPage /> },
           { path: 'contract', element: <AnalyticsContractPage /> },
           { path: 'ledger', element: <AnalyticsLedgerPage /> },
+          {
+            path: 'finance',
+            children: [
+              { path: 'treasury', element: <AnalyticsTreasuryPage /> },
+              { path: 'payments', element: <AnalyticsPaymentsPage /> },
+            ],
+          },
           {
             path: 'social',
             children: [

@@ -16,11 +16,6 @@ export const routesSection: RouteObject[] = [
   // Share
   ...shareRoutes,
 
-  {
-    path: '/',
-    element: <Navigate to="/login" replace />,
-  },
-
   // Auth
   ...authRoutes,
 

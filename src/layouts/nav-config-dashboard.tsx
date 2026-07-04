@@ -47,12 +47,13 @@ export const navData: NavSectionProps['data'] = [
   {
     subheader: 'Visão Geral',
     items: [
-      { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard },
-      { title: 'E-commerce', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce },
+      { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard, allowedRoles: ['admin'] },
+      { title: 'E-commerce', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce, allowedRoles: ['admin'] },
       {
         title: 'Análise',
         path: paths.dashboard.general.analytics.root,
         icon: ICONS.analytics,
+        allowedRoles: ['admin'],
         children: [
           {
             title: 'Social Hub',
@@ -76,7 +77,7 @@ export const navData: NavSectionProps['data'] = [
             path: paths.dashboard.general.analytics.finance.root,
             children: [
               { title: 'Tesouraria', path: paths.dashboard.general.analytics.finance.treasury },
-              { title: 'Pagamentos', path: paths.dashboard.general.analytics.finance.payments },
+              { title: 'Cobranças & Boletos', path: paths.dashboard.general.analytics.finance.payments },
               { title: 'Finanças da DAO', path: paths.dashboard.general.analytics.finance.dao },
               { title: 'Contrato', path: paths.dashboard.general.analytics.finance.contract },
               { title: 'Auditoria', path: paths.dashboard.general.analytics.finance.ledger },
@@ -86,8 +87,64 @@ export const navData: NavSectionProps['data'] = [
           { title: 'Visão Global', path: paths.dashboard.general.analytics.global },
         ],
       },
-      { title: 'Bancário', path: paths.dashboard.general.banking, icon: ICONS.banking },
-      { title: 'Arquivos', path: paths.dashboard.general.file, icon: ICONS.file },
+      {
+        title: 'Faturas',
+        path: paths.dashboard.invoice.root,
+        icon: ICONS.invoice,
+        allowedRoles: ['admin'],
+        children: [
+          { title: 'Lista', path: paths.dashboard.invoice.root },
+          { title: 'Detalhes', path: paths.dashboard.invoice.demo.details },
+          { title: 'Criar', path: paths.dashboard.invoice.new },
+          { title: 'Editar', path: paths.dashboard.invoice.demo.edit },
+        ],
+      },
+      {
+        title: 'Blog',
+        path: paths.dashboard.post.root,
+        icon: ICONS.blog,
+        allowedRoles: ['admin'],
+        children: [
+          { title: 'Lista', path: paths.dashboard.post.root },
+          { title: 'Detalhes', path: paths.dashboard.post.demo.details },
+          { title: 'Criar', path: paths.dashboard.post.new },
+          { title: 'Editar', path: paths.dashboard.post.demo.edit },
+        ],
+      },
+      {
+        title: 'E-mail',
+        path: paths.dashboard.mail,
+        icon: ICONS.mail,
+        allowedRoles: ['admin'],
+        info: (
+          <Label color="error" variant="inverted">
+            +32
+          </Label>
+        ),
+      },
+      { title: 'Calendário', path: paths.dashboard.calendar, icon: ICONS.calendar, allowedRoles: ['admin'] },
+      {
+        title: 'Produto',
+        path: paths.dashboard.product.root,
+        icon: ICONS.product,
+        allowedRoles: ['admin'],
+        children: [
+          { title: 'Lista', path: paths.dashboard.product.root },
+          { title: 'Detalhes', path: paths.dashboard.product.demo.details },
+          { title: 'Criar', path: paths.dashboard.product.new },
+          { title: 'Editar', path: paths.dashboard.product.demo.edit },
+        ],
+      },
+      {
+        title: 'Pedido',
+        path: paths.dashboard.order.root,
+        icon: ICONS.order,
+        allowedRoles: ['admin'],
+        children: [
+          { title: 'Lista', path: paths.dashboard.order.root },
+          { title: 'Detalhes', path: paths.dashboard.order.demo.details },
+        ],
+      },
     ],
   },
   /**
@@ -109,61 +166,10 @@ export const navData: NavSectionProps['data'] = [
           { title: 'Conta', path: paths.dashboard.user.account, deepMatch: true },
         ],
       },
-      {
-        title: 'Produto',
-        path: paths.dashboard.product.root,
-        icon: ICONS.product,
-        children: [
-          { title: 'Lista', path: paths.dashboard.product.root },
-          { title: 'Detalhes', path: paths.dashboard.product.demo.details },
-          { title: 'Criar', path: paths.dashboard.product.new },
-          { title: 'Editar', path: paths.dashboard.product.demo.edit },
-        ],
-      },
-      {
-        title: 'Pedido',
-        path: paths.dashboard.order.root,
-        icon: ICONS.order,
-        children: [
-          { title: 'Lista', path: paths.dashboard.order.root },
-          { title: 'Detalhes', path: paths.dashboard.order.demo.details },
-        ],
-      },
-      {
-        title: 'Faturas',
-        path: paths.dashboard.invoice.root,
-        icon: ICONS.invoice,
-        children: [
-          { title: 'Lista', path: paths.dashboard.invoice.root },
-          { title: 'Detalhes', path: paths.dashboard.invoice.demo.details },
-          { title: 'Criar', path: paths.dashboard.invoice.new },
-          { title: 'Editar', path: paths.dashboard.invoice.demo.edit },
-        ],
-      },
-      {
-        title: 'Blog',
-        path: paths.dashboard.post.root,
-        icon: ICONS.blog,
-        children: [
-          { title: 'Lista', path: paths.dashboard.post.root },
-          { title: 'Detalhes', path: paths.dashboard.post.demo.details },
-          { title: 'Criar', path: paths.dashboard.post.new },
-          { title: 'Editar', path: paths.dashboard.post.demo.edit },
-        ],
-      },
+      { title: 'Bancário', path: paths.dashboard.general.banking, icon: ICONS.banking },
+      { title: 'Arquivos', path: paths.dashboard.general.file, icon: ICONS.file },
       { title: 'Gestor de Arquivos', path: paths.dashboard.fileManager, icon: ICONS.folder },
-      {
-        title: 'E-mail',
-        path: paths.dashboard.mail,
-        icon: ICONS.mail,
-        info: (
-          <Label color="error" variant="inverted">
-            +32
-          </Label>
-        ),
-      },
       { title: 'Chat', path: paths.dashboard.chat, icon: ICONS.chat },
-      { title: 'Calendário', path: paths.dashboard.calendar, icon: ICONS.calendar },
     ],
   },
 ];
