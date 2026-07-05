@@ -9,6 +9,8 @@ import { ForbiddenIllustration } from 'src/assets/illustrations';
 
 import { varBounce, MotionContainer } from 'src/components/animate';
 
+import { useAuthContext } from 'src/auth/hooks';
+
 // ----------------------------------------------------------------------
 
 /**
@@ -19,7 +21,7 @@ import { varBounce, MotionContainer } from 'src/components/animate';
 
 export type RoleBasedGuardProp = {
   sx?: SxProps<Theme>;
-  currentRole: string;
+  currentRole?: string;
   hasContent?: boolean;
   allowedRoles: string | string[];
   children: React.ReactNode;
@@ -32,7 +34,16 @@ export function RoleBasedGuard({
   currentRole,
   allowedRoles,
 }: RoleBasedGuardProp) {
-  if (currentRole && allowedRoles && !allowedRoles.includes(currentRole)) {
+  const { user } = useAuthContext();
+  const activeRole = currentRole || user?.role;
+
+  if (activeRole === 'dev') {
+    return <> {children} </>;
+  }
+
+  const rolesArray = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+  if (activeRole && allowedRoles && !rolesArray.includes(activeRole)) {
     return hasContent ? (
       <Container
         component={MotionContainer}

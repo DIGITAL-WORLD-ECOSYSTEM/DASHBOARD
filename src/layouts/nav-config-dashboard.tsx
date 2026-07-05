@@ -42,10 +42,10 @@ const ICONS = {
 
 export const navData: NavSectionProps['data'] = [
   /**
-   * Visão Geral
+   * 📂 GRUPO 1: ADMIN
    */
   {
-    subheader: 'Visão Geral',
+    subheader: '📂 GRUPO 1: ADMIN',
     items: [
       { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard, allowedRoles: ['admin'] },
       { title: 'E-commerce', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce, allowedRoles: ['admin'] },
@@ -148,10 +148,10 @@ export const navData: NavSectionProps['data'] = [
     ],
   },
   /**
-   * Gestão
+   * 📂 GRUPO 2: USUÁRIOS
    */
   {
-    subheader: 'Gestão',
+    subheader: '📂 GRUPO 2: USUÁRIOS',
     items: [
       {
         title: 'Usuário',
@@ -170,6 +170,20 @@ export const navData: NavSectionProps['data'] = [
       { title: 'Arquivos', path: paths.dashboard.general.file, icon: ICONS.file },
       { title: 'Gestor de Arquivos', path: paths.dashboard.fileManager, icon: ICONS.folder },
       { title: 'Chat', path: paths.dashboard.chat, icon: ICONS.chat },
+    ],
+  },
+  /**
+   * 🛠️ DEVELOPER
+   */
+  {
+    subheader: '🛠️ DEVELOPER',
+    items: [
+      {
+        title: 'Painel Dev',
+        path: paths.dashboard.devPanel,
+        icon: ICONS.params,
+        allowedRoles: ['dev'],
+      },
     ],
   },
 ];

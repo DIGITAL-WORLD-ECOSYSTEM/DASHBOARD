@@ -10,12 +10,13 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 import { AccountLayout } from 'src/sections/account/account-layout';
 
-import { AuthGuard } from 'src/auth/guard';
+import { AuthGuard, RoleBasedGuard } from 'src/auth/guard';
 
 import { usePathname } from '../hooks';
 
 // Overview
 const IndexPage = lazy(() => import('src/pages/dashboard'));
+const DevPanelPage = lazy(() => import('src/pages/dashboard/dev-panel'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
 const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
@@ -97,6 +98,14 @@ export const dashboardRoutes: RouteObject[] = [
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
       { index: true, element: <IndexPage /> },
+      {
+        path: 'dev-panel',
+        element: (
+          <RoleBasedGuard allowedRoles={['dev']} hasContent>
+            <DevPanelPage />
+          </RoleBasedGuard>
+        ),
+      },
       { path: 'ecommerce', element: <OverviewEcommercePage /> },
       {
         path: 'analytics',

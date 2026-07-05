@@ -56,6 +56,7 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: '/',
+    devPanel: `${ROOTS.DASHBOARD}/dev-panel`,
     mail: `${ROOTS.DASHBOARD}/mail`,
     chat: `${ROOTS.DASHBOARD}/chat`,
     calendar: `${ROOTS.DASHBOARD}/calendar`,

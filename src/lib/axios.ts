@@ -10,6 +10,7 @@ import { CONFIG } from 'src/global-config';
 
 const axiosInstance = axios.create({
   baseURL: CONFIG.serverUrl,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -48,7 +49,28 @@ axiosInstance.interceptors.request.use(async (config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Se o erro for 401 e não tentamos refazer a requisição
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const res = await axiosInstance.post('/api/core/identity/refresh');
+        const { accessToken } = res.data;
+        if (accessToken) {
+          localStorage.setItem('dao_access_token', accessToken);
+          axiosInstance.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return axiosInstance(originalRequest);
+        }
+      } catch (refreshError) {
+        console.error('Session refresh failed:', refreshError);
+        localStorage.removeItem('dao_access_token');
+        delete axiosInstance.defaults.headers.common.Authorization;
+      }
+    }
+
     const message = error?.response?.data?.message || error?.message || 'Something went wrong!';
     console.error('Axios message:', message);
     return Promise.reject(new Error(message));

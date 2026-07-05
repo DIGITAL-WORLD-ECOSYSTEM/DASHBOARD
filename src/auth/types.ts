@@ -11,4 +11,5 @@ export type AuthContextValue = {
   authenticated: boolean;
   unauthenticated: boolean;
   checkUserSession?: () => Promise<void>;
+  updateSimulatedRole?: (role: string | null) => void;
 };
