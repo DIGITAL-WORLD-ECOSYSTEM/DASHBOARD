@@ -62,9 +62,22 @@ function Group({
 }: NavGroupProps) {
   const groupOpen = useBoolean(true);
 
+  // Pre-filter items to see if this group has any visible items
+  const allowedItems = items.filter((item) => {
+    if (item.allowedRoles && checkPermissions && checkPermissions(item.allowedRoles)) {
+      return false; // Hidden by role
+    }
+    return true; // Allowed
+  });
+
+  // If all items are hidden, hide the entire group (including subheader)
+  if (allowedItems.length === 0) {
+    return null;
+  }
+
   const renderContent = () => (
     <NavUl sx={{ gap: 'var(--nav-item-gap)' }}>
-      {items.map((list) => (
+      {allowedItems.map((list) => (
         <NavList
           key={list.title}
           data={list}

@@ -58,10 +58,21 @@ function Group({
   checkPermissions,
   enabledRootRedirect,
 }: NavGroupProps) {
+  const allowedItems = items.filter((item) => {
+    if (item.allowedRoles && checkPermissions && checkPermissions(item.allowedRoles)) {
+      return false; // Hidden
+    }
+    return true; // Allowed
+  });
+
+  if (allowedItems.length === 0) {
+    return null;
+  }
+
   return (
     <NavLi>
       <NavUl sx={{ gap: 'var(--nav-item-gap)' }}>
-        {items.map((list) => (
+        {allowedItems.map((list) => (
           <NavList
             key={list.title}
             depth={1}
