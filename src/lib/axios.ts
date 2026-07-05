@@ -6,7 +6,8 @@ import { CryptoCore } from 'src/utils/crypto';
 
 import { CONFIG } from 'src/global-config';
 
-import { JWT_STORAGE_KEY } from 'src/auth/context/jwt/constant';
+// Must match JWT_STORAGE_KEY in src/auth/context/jwt/constant.ts
+const JWT_STORAGE_KEY = 'dao_access_token';
 
 // ----------------------------------------------------------------------
 
