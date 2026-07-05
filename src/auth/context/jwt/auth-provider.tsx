@@ -71,6 +71,17 @@ export function AuthProvider({ children }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Listen for axios interceptor signal that session is unrecoverable
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setSession(null);
+      setState({ user: null, loading: false });
+    };
+    window.addEventListener('auth:session-expired', handleSessionExpired);
+    return () => window.removeEventListener('auth:session-expired', handleSessionExpired);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // ----------------------------------------------------------------------
 
   const checkAuthenticated = state.user ? 'authenticated' : 'unauthenticated';
