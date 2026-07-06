@@ -52,7 +52,7 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
   // Format Subtext (Email/DID): Hide ugly generated web3 emails
   let displayEmail = user?.email || 'Sem email';
   if (displayEmail.includes('@web3') || displayEmail.includes('@eth')) {
-     displayEmail = user?.did ? `Conta Web3` : 'Conta Descentralizada';
+     displayEmail = 'Wallet';
   }
 
   return (
