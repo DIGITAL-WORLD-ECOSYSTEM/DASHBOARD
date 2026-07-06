@@ -21,7 +21,7 @@ import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 export function NavUpgrade({ sx, ...other }: BoxProps) {
   const { user } = useAuthContext();
-  const { displayName, displayEmail } = useUserProfile();
+  const { displayName, displayEmail, photoURL } = useUserProfile();
 
   return (
     <Box
@@ -30,7 +30,7 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
     >
       <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <Box sx={{ position: 'relative' }}>
-          <Avatar src={user?.photoURL} alt={displayName} sx={{ width: 48, height: 48 }}>
+          <Avatar src={photoURL} alt={displayName} sx={{ width: 48, height: 48 }}>
             {displayName.charAt(0).toUpperCase()}
           </Avatar>
 

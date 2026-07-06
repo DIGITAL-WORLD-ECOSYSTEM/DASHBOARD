@@ -42,7 +42,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
   const pathname = usePathname();
 
   const { user } = useAuthContext();
-  const { displayName, displayEmail } = useUserProfile();
+  const { displayName, displayEmail, photoURL } = useUserProfile();
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
 
@@ -53,7 +53,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
         primaryBorder: { size: 120, sx: { color: 'primary.main' } },
       }}
     >
-      <Avatar src={user?.photoURL || ''} alt={displayName} sx={{ width: 1, height: 1 }}>
+      <Avatar src={photoURL} alt={displayName} sx={{ width: 1, height: 1 }}>
         {displayName.charAt(0).toUpperCase()}
       </Avatar>
     </AnimateBorder>
@@ -117,7 +117,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
     <>
       <AccountButton
         onClick={onOpen}
-        photoURL={user?.photoURL || ''}
+        photoURL={photoURL || ''}
         displayName={displayName}
         sx={sx}
         {...other}

@@ -42,12 +42,20 @@ const ICONS = {
 
 export const navData: NavSectionProps['data'] = [
   /**
+   * 🌐 OVERVIEW GLOBAL
+   */
+  {
+    subheader: 'OVERVIEW',
+    items: [
+      { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard },
+    ],
+  },
+  /**
    * 📂 GRUPO 1: ADMIN
    */
   {
     subheader: '📂 GRUPO 1: ADMIN',
     items: [
-      { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard, allowedRoles: ['admin'] },
       { title: 'E-commerce', path: paths.dashboard.general.ecommerce, icon: ICONS.ecommerce, allowedRoles: ['admin'] },
       {
         title: 'Análise',

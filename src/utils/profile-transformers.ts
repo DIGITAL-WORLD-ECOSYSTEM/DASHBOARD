@@ -1,5 +1,7 @@
 import type { AuthUser, UserProfileViewModel } from 'src/auth/types';
 
+import { CONFIG } from 'src/global-config';
+
 // ======================================================================
 // === TRANSFORMADORES PURAS (VIEW MODEL)                             ===
 // === Isola as regras de negócio visuais de reconstrução Web3        ===
@@ -26,7 +28,7 @@ export function extractWalletAddress(did?: string): string | undefined {
  */
 export function formatWalletAddress(address?: string): string {
   if (!address || address.length !== 42) return 'Wallet Desconhecida';
-  return `${address.slice(0, 7)}...${address.slice(-4)}`;
+  return `${address.slice(0, 6)}...${address.slice(-6)}`;
 }
 
 /**
@@ -40,21 +42,32 @@ export function formatWalletAddress(address?: string): string {
 export function buildDisplayName(user: AuthUser | null): string {
   if (!user) return 'Usuário';
 
-  // Se o backend gerou um nome no padrão Web3 (ou se o firstName começa com web3)
-  // E o usuário tem um DID com uma carteira válida, extraímos a carteira.
-  const walletAddress = extractWalletAddress(user.did);
+  let resolvedName = 'Usuário';
+
+  // 1. Tenta extrair a carteira de todos os possíveis campos (inclusive user.address enviado pelo backend web3)
+  const walletAddress = extractWalletAddress(user.address) || extractWalletAddress(user.did) || extractWalletAddress(user.email);
   const isSyntheticWeb3Name = user.firstName?.toLowerCase().startsWith('web3 0x');
 
   if (walletAddress && (!user.firstName || isSyntheticWeb3Name)) {
-    return formatWalletAddress(walletAddress);
+    resolvedName = formatWalletAddress(walletAddress);
+  }
+  // 2. Tenta usar o Nome (Web2)
+  else if (user.firstName) {
+    resolvedName = `${user.firstName} ${user.lastName || ''}`.trim();
+  }
+  // 3. Fallback para o email
+  else if (user.email) {
+    resolvedName = user.email.split('@')[0];
   }
 
-  // Nome convencional Web2
-  if (user.firstName) {
-    return `${user.firstName} ${user.lastName || ''}`.trim();
+  // INTERCEPTADOR DE EMERGÊNCIA:
+  // Se o nome resolvido for uma carteira crua (ex: 42 caracteres começando com 0x)
+  // vinda do banco de dados ou do email, aplicamos a formatação.
+  if (resolvedName.length === 42 && resolvedName.startsWith('0x')) {
+    return formatWalletAddress(resolvedName);
   }
 
-  return user.email ? user.email.split('@')[0] : 'Usuário';
+  return resolvedName;
 }
 
 /**
@@ -82,6 +95,17 @@ export function checkIsWeb3Account(user: AuthUser | null): boolean {
 }
 
 /**
+ * Determina o avatar do usuário.
+ * Retorna a foto do banco se existir, ou o Fallback padrão do sistema.
+ */
+export function buildDisplayAvatar(user: AuthUser | null): string {
+  if (user?.photoURL) {
+    return user.photoURL;
+  }
+  return `${CONFIG.assetsDir}/assets/images/avatar/default-avatar.png`;
+}
+
+/**
  * Cria a View Model completa do perfil do usuário para os componentes visuais.
  */
 export function transformUserProfile(user: AuthUser | null): UserProfileViewModel {
@@ -90,6 +114,6 @@ export function transformUserProfile(user: AuthUser | null): UserProfileViewMode
     displayEmail: buildDisplayEmail(user),
     walletAddress: extractWalletAddress(user?.did),
     isWeb3Account: checkIsWeb3Account(user),
-    photoURL: user?.photoURL,
+    photoURL: buildDisplayAvatar(user),
   };
 }

@@ -39,7 +39,7 @@ export function FileManagerView() {
   const confirmDialog = useBoolean();
   const newFilesDialog = useBoolean();
 
-  const [displayMode, setDisplayMode] = useState('list');
+  const [displayMode, setDisplayMode] = useState('grid');
   const [tableData, setTableData] = useState<IFile[]>(_allFiles);
 
   const pathname = usePathname();
