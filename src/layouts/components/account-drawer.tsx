@@ -44,20 +44,38 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
 
   const { user } = useAuthContext();
   
-  // Format Name: Web3 Market Standard (0x12...34) or real name
   let displayName = user?.firstName 
     ? `${user.firstName} ${user.lastName || ''}`.trim() 
     : user?.username || 'Usuário';
 
-  // If the backend generated a "Web3 0x..." name, format it to just "0x..."
-  if (displayName.toLowerCase().startsWith('web3 0x')) {
-    displayName = displayName.replace(/web3 /i, '').trim();
+  // RECONSTRUCTION: The backend splits the wallet address for some reason.
+  // firstName = "Web3 0xDfcE" (first 6 chars)
+  // email = "227bf1ffbbbec6410c2c2e22873293e6b56f@web3..." (remaining 36 chars)
+  if (displayName.toLowerCase().startsWith('web3 0x') && user?.email?.includes('@web3')) {
+    const firstPart = displayName.replace(/web3 /i, '').trim(); // e.g. "0xDfcE"
+    const secondPart = user.email.split('@')[0]; // e.g. "227bf..."
+    
+    const fullAddress = firstPart + secondPart;
+    
+    if (fullAddress.length === 42) {
+      // Format as 0x12345...67890 (7 chars start, 5 chars end)
+      displayName = `${fullAddress.slice(0, 7)}...${fullAddress.slice(-5)}`;
+    } else {
+      // Fallback if lengths are weird
+      displayName = `${firstPart}...${secondPart.slice(-5)}`;
+    }
+  } else if (user?.did) {
+    const match = user.did.match(/0x[a-fA-F0-9]{40}/i);
+    if (match && (!user?.firstName || displayName.toLowerCase().startsWith('web3 '))) {
+      const addr = match[0];
+      displayName = `${addr.slice(0, 7)}...${addr.slice(-5)}`;
+    }
   }
-  
+
   // Format Subtext (Email/DID): Hide ugly generated web3 emails
   let displayEmail = user?.email || 'Sem email';
   if (displayEmail.includes('@web3') || displayEmail.includes('@eth')) {
-     displayEmail = user?.did ? `DID: ${user.did.slice(0, 16)}...` : 'Conta Web3';
+     displayEmail = user?.did ? `Conta Web3` : 'Conta Descentralizada';
   }
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
