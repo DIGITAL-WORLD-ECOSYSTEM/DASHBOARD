@@ -7,6 +7,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { SeoIllustration } from 'src/assets/illustrations';
 import { _userFeeds, _appAuthors, _appFeatured, _appInstalled } from 'src/_mock';
 
+import { Scrollbar } from 'src/components/scrollbar';
 import { svgColorClasses } from 'src/components/svg-color';
 
 import { ProfilePostItem } from 'src/sections/user/profile-post-item';
@@ -31,30 +32,38 @@ export function OverviewAppView() {
   return (
     <DashboardContent maxWidth="xl">
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <AppWelcome
-            title={`Welcome back 👋 \n ${displayName}`}
-            description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
-            img={<SeoIllustration hideBackground />}
-            action={
-              <Button variant="contained" color="primary">
-                Go now
-              </Button>
+        <Grid size={{ xs: 12 }}>
+          <AppFeatured 
+            list={_appFeatured}
+            welcomeNode={
+              <Box sx={{ width: 1, position: 'relative' }}>
+                <AppWelcome
+                  title={`Welcome back 👋 \n ${displayName}`}
+                  description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
+                  img={<SeoIllustration hideBackground />}
+                  action={
+                    <Button variant="contained" color="primary">
+                      Go now
+                    </Button>
+                  }
+                  sx={{ borderRadius: 0, height: { xs: 288, xl: 320 } }}
+                />
+              </Box>
             }
           />
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 4 }}>
-          <AppFeatured list={_appFeatured} />
         </Grid>
 
         {/* FEED - ESQUERDA */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
             <AppPostInput />
-            {_userFeeds.map((post) => (
-              <ProfilePostItem key={post.id} post={post} />
-            ))}
+            <Scrollbar sx={{ maxHeight: 800, pr: 1.5 }}>
+              <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
+                {_userFeeds.map((post) => (
+                  <ProfilePostItem key={post.id} post={post} />
+                ))}
+              </Box>
+            </Scrollbar>
           </Box>
         </Grid>
 
@@ -62,7 +71,7 @@ export function OverviewAppView() {
         <Grid size={{ xs: 12, md: 4 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
             <AppTopInstalledCountries title="Top installed countries" list={_appInstalled} />
-            
+
             <AppTopAuthors title="Top authors" list={_appAuthors} />
 
             <AppWidget

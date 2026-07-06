@@ -19,6 +19,7 @@ import {
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
+  welcomeNode?: React.ReactNode;
   list: {
     id: string;
     title: string;
@@ -27,7 +28,7 @@ type Props = CardProps & {
   }[];
 };
 
-export function AppFeatured({ list, sx, ...other }: Props) {
+export function AppFeatured({ list, welcomeNode, sx, ...other }: Props) {
   const carousel = useCarousel({ loop: true }, [Autoplay({ playOnInit: true, delay: 8000 })]);
 
   return (
@@ -56,6 +57,7 @@ export function AppFeatured({ list, sx, ...other }: Props) {
       />
 
       <Carousel carousel={carousel}>
+        {welcomeNode}
         {list.map((item) => (
           <CarouselItem key={item.id} item={item} />
         ))}
