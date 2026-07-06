@@ -24,7 +24,7 @@ import { fShortenNumber } from 'src/utils/format-number';
 import { Image } from 'src/components/image';
 import { Iconify } from 'src/components/iconify';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 // ----------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ type Props = {
 };
 
 export function ProfilePostItem({ post }: Props) {
-  const { user } = useMockedUser();
+  const { displayName } = useUserProfile();
 
   const fileRef = useRef<HTMLInputElement>(null);
   const commentRef = useRef<HTMLInputElement>(null);
@@ -60,13 +60,13 @@ export function ProfilePostItem({ post }: Props) {
     <CardHeader
       disableTypography
       avatar={
-        <Avatar src={user?.photoURL} alt={user?.displayName}>
-          {user?.displayName?.charAt(0).toUpperCase()}
+        <Avatar src={undefined} alt={displayName}>
+          {displayName.charAt(0).toUpperCase()}
         </Avatar>
       }
       title={
         <Link color="inherit" variant="subtitle1">
-          {user?.displayName}
+          {displayName}
         </Link>
       }
       subheader={
@@ -123,8 +123,8 @@ export function ProfilePostItem({ post }: Props) {
         }),
       ]}
     >
-      <Avatar src={user?.photoURL} alt={user?.displayName}>
-        {user?.displayName?.charAt(0).toUpperCase()}
+      <Avatar src={undefined} alt={displayName}>
+        {displayName.charAt(0).toUpperCase()}
       </Avatar>
 
       <InputBase

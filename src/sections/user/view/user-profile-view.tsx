@@ -15,7 +15,7 @@ import { _userAbout, _userFeeds, _userFriends, _userGallery, _userFollowers } fr
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 import { ProfileHome } from '../profile-home';
 import { ProfileCover } from '../profile-cover';
@@ -57,7 +57,7 @@ export function UserProfileView() {
   const searchParams = useSearchParams();
   const selectedTab = searchParams.get(TAB_PARAM) ?? '';
 
-  const { user } = useMockedUser();
+  const { displayName, photoURL } = useUserProfile();
 
   const [searchFriends, setSearchFriends] = useState('');
 
@@ -77,7 +77,7 @@ export function UserProfileView() {
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'User', href: paths.dashboard.user.root },
-          { name: user?.displayName },
+          { name: displayName },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
@@ -85,8 +85,8 @@ export function UserProfileView() {
       <Card sx={{ height: 290 }}>
         <ProfileCover
           role={_userAbout.role}
-          name={user?.displayName}
-          avatarUrl={user?.photoURL}
+          name={displayName}
+          avatarUrl={photoURL || ''}
           coverUrl={_userAbout.coverUrl}
         />
 

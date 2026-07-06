@@ -81,7 +81,8 @@ export function DashboardLayout({
     if (user?.role === 'dev') {
       return false;
     }
-    return !allowedRoles.includes(user?.role);
+    if (!user?.role) return false;
+    return !allowedRoles.includes(user.role);
   };
 
   const renderHeader = () => {

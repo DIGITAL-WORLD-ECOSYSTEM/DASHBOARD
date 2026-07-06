@@ -6,7 +6,7 @@ import { _appFeatured } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { SeoIllustration } from 'src/assets/illustrations';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 import { AppWelcome } from '../../app/app-welcome';
 import { AppFeatured } from '../../app/app-featured';
@@ -15,7 +15,7 @@ import { AppWidgetSummary as AppWidgetSummaryHome } from '../../app/app-widget-s
 // ----------------------------------------------------------------------
 
 export function AnalyticsGlobalView() {
-  const { user } = useMockedUser();
+  const { displayName } = useUserProfile();
   const theme = useTheme();
 
   return (
@@ -23,7 +23,7 @@ export function AnalyticsGlobalView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 8 }}>
           <AppWelcome
-            title={`Welcome back 👋 \n ${user?.displayName}`}
+            title={`Welcome back 👋 \n ${displayName}`}
             description="Acompanhe as métricas globais e volume de instalações da plataforma."
             img={<SeoIllustration hideBackground />}
             action={

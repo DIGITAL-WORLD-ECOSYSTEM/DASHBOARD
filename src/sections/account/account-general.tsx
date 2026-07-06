@@ -15,7 +15,8 @@ import { fData } from 'src/utils/format-number';
 import { toast } from 'src/components/snackbar';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useAuthContext } from 'src/auth/hooks/use-auth-context';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 // ----------------------------------------------------------------------
 
@@ -41,20 +42,21 @@ export const UpdateUserSchema = z.object({
 // ----------------------------------------------------------------------
 
 export function AccountGeneral() {
-  const { user } = useMockedUser();
+  const { user } = useAuthContext();
+  const { displayName, displayEmail } = useUserProfile();
 
   const currentUser: UpdateUserSchemaType = {
-    displayName: user?.displayName,
-    email: user?.email,
-    photoURL: user?.photoURL,
-    phoneNumber: user?.phoneNumber,
-    country: user?.country,
-    address: user?.address,
-    state: user?.state,
-    city: user?.city,
-    zipCode: user?.zipCode,
-    about: user?.about,
-    isPublic: user?.isPublic,
+    displayName,
+    email: displayEmail,
+    photoURL: user?.photoURL || null,
+    phoneNumber: user?.phoneNumber || '',
+    country: user?.country || '',
+    address: user?.address || '',
+    state: user?.state || '',
+    city: user?.city || '',
+    zipCode: user?.zipCode || '',
+    about: user?.about || '',
+    isPublic: user?.isPublic || false,
   };
 
   const defaultValues: UpdateUserSchemaType = {

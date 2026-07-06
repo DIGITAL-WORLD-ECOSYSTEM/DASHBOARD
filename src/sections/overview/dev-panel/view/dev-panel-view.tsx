@@ -14,11 +14,13 @@ import Typography from '@mui/material/Typography';
 import { CONFIG } from 'src/global-config';
 
 import { useAuthContext } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 // ----------------------------------------------------------------------
 
 export function DevPanelView() {
   const { user, updateSimulatedRole } = useAuthContext();
+  const viewModel = useUserProfile();
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   // Carrega o cargo nativo do localStorage para mostrar o estado inicial

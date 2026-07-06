@@ -1,7 +1,6 @@
 import type { RouteObject } from 'react-router';
 
 import { lazy } from 'react';
-import { Navigate } from 'react-router';
 
 import { authRoutes } from './auth';
 import { shareRoutes } from './share';

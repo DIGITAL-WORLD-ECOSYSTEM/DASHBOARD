@@ -1,13 +1,11 @@
 import type { IconButtonProps } from '@mui/material/IconButton';
 
-import { varAlpha } from 'minimal-shared/utils';
 import { useBoolean } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Avatar from '@mui/material/Avatar';
 import Drawer from '@mui/material/Drawer';
-import Tooltip from '@mui/material/Tooltip';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
@@ -23,6 +21,7 @@ import { Scrollbar } from 'src/components/scrollbar';
 import { AnimateBorder } from 'src/components/animate';
 
 import { useAuthContext } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 import { UpgradeBlock } from './nav-upgrade';
 import { AccountButton } from './account-button';
@@ -43,40 +42,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
   const pathname = usePathname();
 
   const { user } = useAuthContext();
-  
-  let displayName = user?.firstName 
-    ? `${user.firstName} ${user.lastName || ''}`.trim() 
-    : user?.username || 'Usuário';
-
-  // RECONSTRUCTION: The backend splits the wallet address for some reason.
-  // firstName = "Web3 0xDfcE" (first 6 chars)
-  // email = "227bf1ffbbbec6410c2c2e22873293e6b56f@web3..." (remaining 36 chars)
-  if (displayName.toLowerCase().startsWith('web3 0x') && user?.email?.includes('@web3')) {
-    const firstPart = displayName.replace(/web3 /i, '').trim(); // e.g. "0xDfcE"
-    const secondPart = user.email.split('@')[0]; // e.g. "227bf..."
-    
-    const fullAddress = firstPart + secondPart;
-    
-    if (fullAddress.length === 42) {
-      // Format as 0x12345...67890 (7 chars start, 5 chars end)
-      displayName = `${fullAddress.slice(0, 7)}...${fullAddress.slice(-5)}`;
-    } else {
-      // Fallback if lengths are weird
-      displayName = `${firstPart}...${secondPart.slice(-5)}`;
-    }
-  } else if (user?.did) {
-    const match = user.did.match(/0x[a-fA-F0-9]{40}/i);
-    if (match && (!user?.firstName || displayName.toLowerCase().startsWith('web3 '))) {
-      const addr = match[0];
-      displayName = `${addr.slice(0, 7)}...${addr.slice(-5)}`;
-    }
-  }
-
-  // Format Subtext (Email/DID): Hide ugly generated web3 emails
-  let displayEmail = user?.email || 'Sem email';
-  if (displayEmail.includes('@web3') || displayEmail.includes('@eth')) {
-     displayEmail = 'Wallet';
-  }
+  const { displayName, displayEmail } = useUserProfile();
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
 
@@ -87,7 +53,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
         primaryBorder: { size: 120, sx: { color: 'primary.main' } },
       }}
     >
-      <Avatar src={user?.photoURL} alt={displayName} sx={{ width: 1, height: 1 }}>
+      <Avatar src={user?.photoURL || ''} alt={displayName} sx={{ width: 1, height: 1 }}>
         {displayName.charAt(0).toUpperCase()}
       </Avatar>
     </AnimateBorder>
@@ -151,7 +117,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
     <>
       <AccountButton
         onClick={onOpen}
-        photoURL={user?.photoURL}
+        photoURL={user?.photoURL || ''}
         displayName={displayName}
         sx={sx}
         {...other}

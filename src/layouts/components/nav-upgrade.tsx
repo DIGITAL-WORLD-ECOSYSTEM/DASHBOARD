@@ -15,45 +15,13 @@ import { CONFIG } from 'src/global-config';
 import { Label } from 'src/components/label';
 
 import { useAuthContext } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/hooks/use-user-profile';
 
 // ----------------------------------------------------------------------
 
 export function NavUpgrade({ sx, ...other }: BoxProps) {
   const { user } = useAuthContext();
-  
-  let displayName = user?.firstName 
-    ? `${user.firstName} ${user.lastName || ''}`.trim() 
-    : user?.username || 'Usuário';
-
-  // RECONSTRUCTION: The backend splits the wallet address for some reason.
-  // firstName = "Web3 0xDfcE" (first 6 chars)
-  // email = "227bf1ffbbbec6410c2c2e22873293e6b56f@web3..." (remaining 36 chars)
-  if (displayName.toLowerCase().startsWith('web3 0x') && user?.email?.includes('@web3')) {
-    const firstPart = displayName.replace(/web3 /i, '').trim(); // e.g. "0xDfcE"
-    const secondPart = user.email.split('@')[0]; // e.g. "227bf..."
-    
-    const fullAddress = firstPart + secondPart;
-    
-    if (fullAddress.length === 42) {
-      // Format as 0x12345...67890 (7 chars start, 5 chars end)
-      displayName = `${fullAddress.slice(0, 7)}...${fullAddress.slice(-5)}`;
-    } else {
-      // Fallback if lengths are weird
-      displayName = `${firstPart}...${secondPart.slice(-5)}`;
-    }
-  } else if (user?.did) {
-    const match = user.did.match(/0x[a-fA-F0-9]{40}/i);
-    if (match && (!user?.firstName || displayName.toLowerCase().startsWith('web3 '))) {
-      const addr = match[0];
-      displayName = `${addr.slice(0, 7)}...${addr.slice(-5)}`;
-    }
-  }
-
-  // Format Subtext (Email/DID): Hide ugly generated web3 emails
-  let displayEmail = user?.email || 'Sem email';
-  if (displayEmail.includes('@web3') || displayEmail.includes('@eth')) {
-     displayEmail = 'Wallet';
-  }
+  const { displayName, displayEmail } = useUserProfile();
 
   return (
     <Box
