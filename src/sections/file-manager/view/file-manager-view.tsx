@@ -10,6 +10,8 @@ import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+import { usePathname } from 'src/routes/hooks';
+
 import { fIsAfter, fIsBetween } from 'src/utils/format-time';
 
 import { DashboardContent } from 'src/layouts/dashboard';
@@ -40,9 +42,17 @@ export function FileManagerView() {
   const [displayMode, setDisplayMode] = useState('list');
   const [tableData, setTableData] = useState<IFile[]>(_allFiles);
 
+  const pathname = usePathname();
+  const getInitialType = () => {
+    if (pathname.includes('/image')) return ['image'];
+    if (pathname.includes('/video')) return ['video'];
+    if (pathname.includes('/document')) return ['word', 'excel', 'powerpoint', 'pdf', 'txt'];
+    return [];
+  };
+
   const filters = useSetState<IFileFilters>({
     name: '',
-    type: [],
+    type: getInitialType(),
     startDate: null,
     endDate: null,
   });

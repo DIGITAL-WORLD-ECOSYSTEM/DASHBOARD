@@ -198,7 +198,15 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'new', element: <BlogNewPostPage /> },
         ],
       },
-      { path: 'file-manager', element: <FileManagerPage /> },
+      {
+        path: 'file-manager',
+        children: [
+          { index: true, element: <FileManagerPage /> },
+          { path: 'image', element: <FileManagerPage /> },
+          { path: 'video', element: <FileManagerPage /> },
+          { path: 'document', element: <FileManagerPage /> },
+        ],
+      },
       { path: 'mail', element: <MailPage /> },
       { path: 'chat', element: <ChatPage /> },
       { path: 'calendar', element: <CalendarPage /> },
