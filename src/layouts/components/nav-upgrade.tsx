@@ -21,9 +21,19 @@ import { useAuthContext } from 'src/auth/hooks';
 export function NavUpgrade({ sx, ...other }: BoxProps) {
   const { user } = useAuthContext();
   
-  const displayName = user?.firstName 
+  let displayName = user?.firstName 
     ? `${user.firstName} ${user.lastName || ''}`.trim() 
     : user?.username || 'Usuário';
+
+  if (displayName.toLowerCase().startsWith('web3 0x')) {
+    displayName = displayName.replace(/web3 /i, '').trim();
+  }
+
+  // Format Subtext (Email/DID): Hide ugly generated web3 emails
+  let displayEmail = user?.email || 'Sem email';
+  if (displayEmail.includes('@web3') || displayEmail.includes('@eth')) {
+     displayEmail = user?.did ? `DID: ${user.did.slice(0, 16)}...` : 'Conta Web3';
+  }
 
   return (
     <Box
@@ -66,7 +76,7 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
             noWrap
             sx={{ color: 'var(--layout-nav-text-disabled-color)' }}
           >
-            {user?.email}
+            {displayEmail}
           </Typography>
         </Box>
 

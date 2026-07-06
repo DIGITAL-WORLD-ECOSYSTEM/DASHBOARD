@@ -44,9 +44,21 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
 
   const { user } = useAuthContext();
   
-  const displayName = user?.firstName 
+  // Format Name: Web3 Market Standard (0x12...34) or real name
+  let displayName = user?.firstName 
     ? `${user.firstName} ${user.lastName || ''}`.trim() 
     : user?.username || 'Usuário';
+
+  // If the backend generated a "Web3 0x..." name, format it to just "0x..."
+  if (displayName.toLowerCase().startsWith('web3 0x')) {
+    displayName = displayName.replace(/web3 /i, '').trim();
+  }
+  
+  // Format Subtext (Email/DID): Hide ugly generated web3 emails
+  let displayEmail = user?.email || 'Sem email';
+  if (displayEmail.includes('@web3') || displayEmail.includes('@eth')) {
+     displayEmail = user?.did ? `DID: ${user.did.slice(0, 16)}...` : 'Conta Web3';
+  }
 
   const { value: open, onFalse: onClose, onTrue: onOpen } = useBoolean();
 
@@ -165,7 +177,7 @@ export function AccountDrawer({ data = [], sx, ...other }: AccountDrawerProps) {
             </Typography>
 
             <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }} noWrap>
-              {user?.email || (user?.did ? `DID: ${user.did.slice(0, 15)}...` : 'Sem email')}
+              {displayEmail}
             </Typography>
           </Box>
 
