@@ -14,90 +14,22 @@ import { CONFIG } from 'src/global-config';
 
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';
-import { Carousel, useCarousel, CarouselDotButtons } from 'src/components/carousel';
 
 // ----------------------------------------------------------------------
 
 type Props = BoxProps & {
-  list: {
+  item: {
     id: string;
     cardType: string;
     balance: number;
     cardHolder: string;
     cardNumber: string;
     cardValid: string;
-  }[];
+  };
 };
 
-export function BankingCurrentBalance({ list, sx, ...other }: Props) {
+export function BankingCurrentBalance({ item, sx, ...other }: Props) {
   const showCurrency = useBoolean();
-
-  const carousel = useCarousel();
-
-  return (
-    <Box
-      sx={[
-        (theme) => ({
-          ...theme.mixins.bgGradient({
-            images: [`url(${CONFIG.assetsDir}/assets/background/background-4.jpg)`],
-          }),
-          mb: 2,
-          borderRadius: 2,
-          position: 'relative',
-          '&::before, &::after': {
-            left: 0,
-            right: 0,
-            mx: '28px',
-            zIndex: -2,
-            height: 40,
-            bottom: -16,
-            content: "''",
-            opacity: 0.16,
-            borderRadius: 1.5,
-            bgcolor: 'grey.500',
-            position: 'absolute',
-          },
-          '&::after': { mx: '16px', bottom: -8, opacity: 0.32 },
-        }),
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
-    >
-      <CarouselDotButtons
-        scrollSnaps={carousel.dots.scrollSnaps}
-        selectedIndex={carousel.dots.selectedIndex}
-        onClickDot={carousel.dots.onClickDot}
-        sx={{
-          right: 16,
-          bottom: 16,
-          position: 'absolute',
-          color: 'primary.main',
-        }}
-      />
-
-      <Carousel carousel={carousel} sx={{ color: 'common.white' }}>
-        {list.map((item) => (
-          <CarouselItem
-            item={item}
-            key={item.id}
-            showCurrency={showCurrency.value}
-            onToggleCurrency={showCurrency.onToggle}
-          />
-        ))}
-      </Carousel>
-    </Box>
-  );
-}
-
-// ----------------------------------------------------------------------
-
-type CarouselItemProps = {
-  item: Props['list'][number];
-  showCurrency: boolean;
-  onToggleCurrency: () => void;
-};
-
-function CarouselItem({ item, showCurrency, onToggleCurrency }: CarouselItemProps) {
   const menuActions = usePopover();
 
   const handleDelete = useCallback(() => {
@@ -131,85 +63,128 @@ function CarouselItem({ item, showCurrency, onToggleCurrency }: CarouselItemProp
   );
 
   return (
-    <>
-      <Box sx={{ p: 3, width: 1 }}>
-        <IconButton
-          color="inherit"
-          onClick={menuActions.onOpen}
-          sx={{
-            top: 8,
-            right: 8,
-            zIndex: 9,
-            opacity: 0.48,
+    <Box
+      sx={[
+        (theme) => ({
+          ...theme.mixins.bgGradient({
+            images: [`url(${CONFIG.assetsDir}/assets/background/background-4.jpg)`],
+          }),
+          mb: 2,
+          borderRadius: 2,
+          position: 'relative',
+          color: 'common.white',
+          '&::before, &::after': {
+            left: 0,
+            right: 0,
+            mx: '28px',
+            zIndex: -2,
+            height: 40,
+            bottom: -16,
+            content: "''",
+            opacity: 0.16,
+            borderRadius: 1.5,
+            bgcolor: 'grey.500',
             position: 'absolute',
-            ...(menuActions.open && { opacity: 1 }),
-          }}
-        >
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
-
-        <div>
-          <Box sx={{ mb: 1.5, typography: 'subtitle2', opacity: 0.48 }}>Saldo atual</Box>
-
-          <Box sx={{ gap: 1, display: 'flex', alignItems: 'center' }}>
-            <Box component="span" sx={{ typography: 'h4' }}>
-              {showCurrency ? '********' : fCurrency(item.balance)}
+          },
+          '&::after': { mx: '16px', bottom: -8, opacity: 0.32 },
+        }),
+        ...(Array.isArray(sx) ? sx : [sx]),
+      ]}
+      {...other}
+    >
+      <Box sx={{ p: 3, width: 1, height: 240, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        {/* Top Row: Balance & Icons */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <Box sx={{ mb: 0.5, typography: 'subtitle2', opacity: 0.7, textTransform: 'uppercase', fontSize: 11, letterSpacing: 1 }}>
+              Saldo atual
             </Box>
-
-            <IconButton color="inherit" onClick={onToggleCurrency} sx={{ opacity: 0.48 }}>
-              <Iconify icon={showCurrency ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+            <Box sx={{ gap: 1, display: 'flex', alignItems: 'center' }}>
+              <Box component="span" sx={{ typography: 'h4', fontFamily: 'var(--font-orbitron), sans-serif', letterSpacing: 1 }}>
+                {showCurrency.value ? '********' : fCurrency(item.balance)}
+              </Box>
+              <IconButton size="small" color="inherit" onClick={showCurrency.onToggle} sx={{ opacity: 0.48 }}>
+                <Iconify icon={showCurrency.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
+              </IconButton>
+            </Box>
+          </div>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <Iconify icon={"solar:wireless-charge-bold" as any} sx={{ width: 28, height: 28, opacity: 0.6, transform: 'rotate(90deg)' }} />
+            <IconButton color="inherit" onClick={menuActions.onOpen} sx={{ opacity: 0.48, mr: -1 }}>
+              <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
           </Box>
-        </div>
-
-        <Box
-          sx={{
-            my: 3,
-            gap: 1,
-            display: 'flex',
-            alignItems: 'center',
-            typography: 'subtitle1',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Box
-            sx={{
-              py: 0.15,
-              px: 0.25,
-              borderRadius: 0.5,
-              display: 'inline-flex',
-              bgcolor: 'common.white',
-            }}
-          >
-            {item.cardType === 'visa' && <Iconify width={32} height="auto" icon="payments:visa" />}
-            {item.cardType === 'mastercard' && (
-              <Iconify width={32} height="auto" icon="payments:mastercard" />
-            )}
-            {item.cardType === 'blockchain' && (
-              <Iconify width={32} height="auto" icon="solar:atom-bold-duotone" sx={{ color: 'primary.main' }} />
-            )}
-          </Box>
-
-          {item.cardNumber}
         </Box>
 
-        <Box sx={{ gap: 5, display: 'flex', typography: 'subtitle1' }}>
-          <div>
-            <Box sx={{ mb: 1, opacity: 0.48, typography: 'caption' }}>
-              {item.cardType === 'blockchain' ? 'Titular da conta' : 'Titular do cartão'}
-            </Box>
-            <Box component="span">{item.cardHolder}</Box>
-          </div>
-          <div>
-            <Box sx={{ mb: 1, opacity: 0.48, typography: 'caption' }}>
-              {item.cardType === 'blockchain' ? 'Rede / Protocolo' : 'Data de validade'}
-            </Box>
-            <Box component="span">{item.cardValid}</Box>
-          </div>
+        {/* Middle Row: Chip & Card Number */}
+        <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          <Iconify 
+            icon={"solar:sim-card-bold" as any} 
+            sx={{ 
+              width: 40, 
+              height: 40, 
+              color: '#FFD700', 
+              opacity: 0.85, 
+              transform: 'rotate(90deg)',
+              filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.4))'
+            }} 
+          />
+          <Box
+            sx={{
+              typography: 'h5',
+              fontFamily: 'monospace',
+              letterSpacing: 6,
+              textShadow: '0px 2px 4px rgba(0,0,0,0.6)',
+              opacity: 0.9,
+            }}
+          >
+            {item.cardNumber}
+          </Box>
+        </Box>
+
+        {/* Bottom Row: Details & Logo */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 'auto' }}>
+          <Box sx={{ gap: 4, display: 'flex', typography: 'subtitle1' }}>
+            <div>
+              <Box sx={{ mb: 0.5, opacity: 0.6, typography: 'caption', textTransform: 'uppercase', fontSize: 10, letterSpacing: 0.5 }}>
+                {item.cardType === 'blockchain' ? 'Titular da conta' : 'Titular do cartão'}
+              </Box>
+              <Box component="span" sx={{ textTransform: 'uppercase', fontFamily: 'monospace', fontSize: 14, letterSpacing: 1, textShadow: '0px 1px 2px rgba(0,0,0,0.5)' }}>
+                {item.cardHolder}
+              </Box>
+            </div>
+            <div>
+              <Box sx={{ mb: 0.5, opacity: 0.6, typography: 'caption', textTransform: 'uppercase', fontSize: 10, letterSpacing: 0.5 }}>
+                {item.cardType === 'blockchain' ? 'Rede' : 'Validade'}
+              </Box>
+              <Box component="span" sx={{ fontFamily: 'monospace', fontSize: 14, letterSpacing: 1, textShadow: '0px 1px 2px rgba(0,0,0,0.5)' }}>
+                {item.cardValid}
+              </Box>
+            </div>
+          </Box>
+
+          <Box
+            sx={{
+              py: 0.5,
+              px: 1,
+              borderRadius: 1,
+              display: 'inline-flex',
+              bgcolor: 'common.white',
+              boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
+            }}
+          >
+            {item.cardType === 'visa' && <Iconify width={36} height="auto" icon="payments:visa" />}
+            {item.cardType === 'mastercard' && (
+              <Iconify width={36} height="auto" icon="payments:mastercard" />
+            )}
+            {item.cardType === 'blockchain' && (
+              <Iconify width={36} height="auto" icon="solar:atom-bold-duotone" sx={{ color: 'primary.main' }} />
+            )}
+          </Box>
         </Box>
       </Box>
 
       {renderMenuActions()}
-    </>
+    </Box>
   );
 }

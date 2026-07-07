@@ -174,7 +174,18 @@ export const navData: NavSectionProps['data'] = [
           { title: 'Conta', path: paths.dashboard.user.account, deepMatch: true },
         ],
       },
-      { title: 'Bancário', path: paths.dashboard.general.banking, icon: ICONS.banking },
+      {
+        title: 'Bancário',
+        path: paths.dashboard.general.banking,
+        icon: ICONS.banking,
+        children: [
+          { title: 'Visão Geral', path: paths.dashboard.general.banking },
+          { title: 'Transações', path: `${paths.dashboard.general.banking}/transacoes` },
+          { title: 'Cartões', path: `${paths.dashboard.general.banking}/cartoes` },
+          { title: 'Sua Rede', path: `${paths.dashboard.general.banking}/rede` },
+          { title: 'Conta', path: `${paths.dashboard.general.banking}/conta` },
+        ],
+      },
       {
         title: 'Gestor de Arquivos',
         path: paths.dashboard.fileManager,

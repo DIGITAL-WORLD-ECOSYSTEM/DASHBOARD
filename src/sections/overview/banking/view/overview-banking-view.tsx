@@ -21,6 +21,14 @@ import { BankingExpensesCategories } from '../banking-expenses-categories';
 export function OverviewBankingView() {
   return (
     <DashboardContent maxWidth="xl">
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        {_bankingCreditCard.map((card) => (
+          <Grid size={{ xs: 12, md: 4 }} key={card.id}>
+            <BankingCurrentBalance item={card} />
+          </Grid>
+        ))}
+      </Grid>
+
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 7, lg: 8 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
@@ -104,8 +112,6 @@ export function OverviewBankingView() {
 
         <Grid size={{ xs: 12, md: 5, lg: 4 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-            <BankingCurrentBalance list={_bankingCreditCard} />
-
             <BankingQuickTransfer title="Transferência Rápida" list={_bankingContacts} />
 
             <BankingContacts

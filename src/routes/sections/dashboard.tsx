@@ -19,6 +19,8 @@ const IndexPage = lazy(() => import('src/pages/dashboard'));
 const DevPanelPage = lazy(() => import('src/pages/dashboard/dev-panel'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
+const OverviewBankingContaPage = lazy(() => import('src/pages/dashboard/banking/conta'));
+const OverviewBankingTransacoesPage = lazy(() => import('src/pages/dashboard/banking/transacoes'));
 const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
 // Analytics
 const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/global'));
@@ -136,7 +138,14 @@ export const dashboardRoutes: RouteObject[] = [
           },
         ],
       },
-      { path: 'banking', element: <OverviewBankingPage /> },
+      {
+        path: 'banking',
+        children: [
+          { element: <OverviewBankingPage />, index: true },
+          { path: 'conta', element: <OverviewBankingContaPage /> },
+          { path: 'transacoes', element: <OverviewBankingTransacoesPage /> },
+        ]
+      },
       { path: 'file', element: <OverviewFilePage /> },
       {
         path: 'user',
