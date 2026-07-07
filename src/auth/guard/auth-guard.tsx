@@ -33,14 +33,22 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
     if (!authenticated) {
       const { method } = CONFIG.auth;
-
       const signInPath = paths.auth[method].signIn;
 
-      const searchParams = new URLSearchParams({
-        returnTo: window.location.pathname,
-      }).toString();
+      // Prevent race conditions where window.location.pathname is already signInPath
+      if (window.location.pathname === signInPath) {
+        return;
+      }
 
-      const href = `${signInPath}?${searchParams}`;
+      let href = signInPath;
+
+      // Only append returnTo if it's a deep link (not the root path) to keep the login URL clean
+      if (window.location.pathname !== '/') {
+        const searchParams = new URLSearchParams({
+          returnTo: window.location.pathname,
+        }).toString();
+        href = `${signInPath}?${searchParams}`;
+      }
 
       router.replace(href);
 

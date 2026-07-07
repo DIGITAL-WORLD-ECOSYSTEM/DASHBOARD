@@ -102,18 +102,18 @@ export function JwtSignInView() {
 
   const renderForm = () => (
     <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-      <Field.Text 
-        name="email" 
-        label="E-mail" 
+      <Field.Text
+        name="email"
+        label="E-mail"
         placeholder="usuario@mundodigital.com"
-        slotProps={{ 
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main'
+            }
           },
           input: {
             sx: {
@@ -132,7 +132,7 @@ export function JwtSignInView() {
               '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
             }
           }
-        }} 
+        }}
       />
 
       <Box sx={{ gap: 1.5, display: 'flex', flexDirection: 'column' }}>
@@ -141,13 +141,13 @@ export function JwtSignInView() {
           label="Senha"
           type={showPassword.value ? 'text' : 'password'}
           slotProps={{
-            inputLabel: { 
-              shrink: true, 
-              sx: { 
+            inputLabel: {
+              shrink: true,
+              sx: {
                 fontFamily: 'var(--font-orbitron), sans-serif',
                 fontWeight: 600,
-                color: 'info.main' 
-              } 
+                color: 'info.main'
+              }
             },
             input: {
               sx: {
@@ -200,7 +200,7 @@ export function JwtSignInView() {
         fullWidth
         size="large"
         type="submit"
-        variant="contained"
+        variant="outlined"
         loading={isSubmitting}
         sx={{
           height: 60,
@@ -209,31 +209,17 @@ export function JwtSignInView() {
           fontWeight: 900,
           letterSpacing: '0.15em',
           textTransform: 'uppercase',
-          bgcolor: alpha('#020817', 0.9),
-          color: 'common.white',
-          position: 'relative',
-          border: 'none',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            inset: 0,
-            borderRadius: 'inherit',
-            padding: '1.5px',
-            background: `linear-gradient(180deg, 
-              ${alpha(theme.palette.info.main, 1)} 0%, 
-              ${alpha(theme.palette.common.white, 0.05)} 50%, 
-              ${alpha(theme.palette.warning.main, 1)} 100%
-            )`,
-            WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-            WebkitMaskComposite: 'xor',
-            maskComposite: 'exclude',
-            pointerEvents: 'none',
-          },
+          bgcolor: alpha('#020817', 0.6),
+          backdropFilter: 'blur(8px)',
+          color: 'info.main',
+          borderColor: alpha(theme.palette.info.main, 0.5),
+          boxShadow: `0 0 15px ${alpha(theme.palette.info.main, 0.2)}`,
           transition: theme.transitions.create(['all']),
           '&:hover': {
             bgcolor: alpha(theme.palette.info.main, 0.1),
-            transform: 'scale(1.03)',
-            boxShadow: `0 0 25px ${alpha(theme.palette.info.main, 0.4)}`,
+            borderColor: 'info.main',
+            transform: 'translateY(-2px)',
+            boxShadow: `0 5px 25px ${alpha(theme.palette.info.main, 0.5)}`,
           },
         }}
       >
@@ -273,8 +259,8 @@ export function JwtSignInView() {
           variant="outlined"
           onClick={() => handleSocialLogin('google')}
           startIcon={<Iconify icon="logos:google-icon" />}
-          sx={{ 
-            color: 'white', 
+          sx={{
+            color: 'white',
             borderColor: alpha(theme.palette.info.main, 0.1),
             fontFamily: 'var(--font-orbitron), sans-serif',
             fontWeight: 700,
@@ -294,8 +280,8 @@ export function JwtSignInView() {
           variant="outlined"
           onClick={() => handleSocialLogin('github')}
           startIcon={<Iconify icon="logos:github-icon" />}
-          sx={{ 
-            color: 'white', 
+          sx={{
+            color: 'white',
             borderColor: alpha(theme.palette.info.main, 0.1),
             fontFamily: 'var(--font-orbitron), sans-serif',
             fontWeight: 700,
@@ -316,13 +302,13 @@ export function JwtSignInView() {
         fullWidth
         variant="soft"
         onClick={handleWeb3Login}
-        startIcon={<Iconify icon="logos:metamask-icon" />}
-        sx={{ 
+        startIcon={<Box component="img" src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" sx={{ width: 24, height: 24 }} />}
+        sx={{
           height: 54,
           fontFamily: 'var(--font-orbitron), sans-serif',
           fontWeight: 900,
           letterSpacing: 1.5,
-          color: 'info.main', 
+          color: 'info.main',
           bgcolor: alpha('#020817', 0.8),
           border: `1px solid ${alpha(theme.palette.info.main, 0.4)}`,
           position: 'relative',
@@ -350,7 +336,7 @@ export function JwtSignInView() {
           }
         }}
       >
-        WEB3 WALLET (SIWE)
+        WALLET
       </Button>
     </Box>
   );
