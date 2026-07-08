@@ -1,96 +1,101 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import { SeoIllustration } from 'src/assets/illustrations';
-import { _userFeeds, _appAuthors, _appFeatured, _appInstalled } from 'src/_mock';
+import { useMockedUser } from 'src/auth/hooks';
 
-import { Scrollbar } from 'src/components/scrollbar';
-import { svgColorClasses } from 'src/components/svg-color';
+// Mocks Data
+import { 
+  _homeAnnouncements, 
+  _homeFeeds, 
+  _activeProjects, 
+  _opportunities, 
+  _weeklyRecognitions 
+} from 'src/_mock/_home';
 
-import { ProfilePostItem } from 'src/sections/user/profile-post-item';
+// Novos Componentes da Comunidade
+import { AppCommunicationCarousel } from '../app-communication-carousel';
+import { AppPriorityAlerts } from '../app-priority-alerts';
+import { AppMyActions } from '../app-my-actions';
+import { AppOnboarding } from '../app-onboarding';
+import { AppCommunityFeed } from '../app-community-feed';
 
-import { useUserProfile } from 'src/auth/hooks/use-user-profile';
-
-import { AppWidget } from '../app-widget';
-import { AppWelcome } from '../app-welcome';
-import { AppFeatured } from '../app-featured';
-import { AppPostInput } from '../app-post-input';
-import { AppTopAuthors } from '../app-top-authors';
-import { AppTopInstalledCountries } from '../app-top-installed-countries';
-
+import { AppChatHubSummary } from '../app-chat-hub-summary';
+import { AppGovernanceHighlight } from '../app-governance-highlight';
+import { AppActiveProjects } from '../app-active-projects';
+import { AppOpportunities } from '../app-opportunities';
+import { AppUpcomingEvents } from '../app-upcoming-events';
+import { AppWeeklyRecognition } from '../app-weekly-recognition';
+import { AppNetworkGrowth, AppEcosystemNumbers } from '../app-ecosystem-numbers';
 
 // ----------------------------------------------------------------------
 
 export function OverviewAppView() {
-  const { displayName } = useUserProfile();
-
+  const { user } = useMockedUser();
   const theme = useTheme();
+
+  // Exemplo de Role Based Dashboard Rendering
+  // admin, user, partner, etc.
+  const role = user?.role || 'user';
+  
+  const isAdmin = role === 'admin';
+  const isPartner = role === 'partner';
+  const isMember = role === 'user';
 
   return (
     <DashboardContent maxWidth="xl">
       <Grid container spacing={3}>
+        {/* CAROUSEL INSTITUCIONAL (100% da largura útil) */}
         <Grid size={{ xs: 12 }}>
-          <AppFeatured 
-            list={_appFeatured}
-            welcomeNode={
-              <Box sx={{ width: 1, position: 'relative' }}>
-                <AppWelcome
-                  title={`Welcome back 👋 \n ${displayName}`}
-                  description="If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything."
-                  img={<SeoIllustration hideBackground />}
-                  action={
-                    <Button variant="contained" color="primary">
-                      Go now
-                    </Button>
-                  }
-                  sx={{ borderRadius: 0, height: { xs: 288, xl: 320 } }}
-                />
-              </Box>
-            }
-          />
+          <AppCommunicationCarousel list={_homeAnnouncements} />
         </Grid>
 
-        {/* FEED - ESQUERDA */}
+        {/* COLUNA ESQUERDA (Principal 8/12) */}
         <Grid size={{ xs: 12, md: 8 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-            <AppPostInput />
-            <Scrollbar sx={{ maxHeight: 800, pr: 1.5 }}>
-              <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-                {_userFeeds.map((post) => (
-                  <ProfilePostItem key={post.id} post={post} />
-                ))}
-              </Box>
-            </Scrollbar>
+            
+            {/* Alertas Prioritários */}
+            <AppPriorityAlerts />
+
+            {/* Ações Pendentes */}
+            {isMember && <AppMyActions />}
+            {isAdmin && <AppMyActions />} {/* Admin poderia ver aprovações aqui */}
+
+            {/* Primeiros Passos / Onboarding */}
+            {isMember && <AppOnboarding />}
+
+            {/* Feed Institucional */}
+            <AppCommunityFeed list={_homeFeeds} />
+
           </Box>
         </Grid>
 
-        {/* WIDGETS - DIREITA */}
+        {/* COLUNA DIREITA (Secundária 4/12) */}
         <Grid size={{ xs: 12, md: 4 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
-            <AppTopInstalledCountries title="Top installed countries" list={_appInstalled} />
+            
+            {/* Parceiros priorizam Oportunidades no topo */}
+            {isPartner && <AppOpportunities list={_opportunities} />}
 
-            <AppTopAuthors title="Top authors" list={_appAuthors} />
+            {/* Ecossistema e Rede */}
+            <AppEcosystemNumbers />
+            <AppNetworkGrowth />
 
-            <AppWidget
-              title="Conversion"
-              total={38566}
-              icon="solar:user-rounded-bold"
-              chart={{ series: 48 }}
-            />
+            {/* Destaques e Chat */}
+            <AppGovernanceHighlight />
+            <AppChatHubSummary />
 
-            <AppWidget
-              title="Applications"
-              total={55566}
-              icon="solar:letter-bold"
-              chart={{
-                series: 75,
-                colors: [theme.vars.palette.info.light, theme.vars.palette.info.main],
-              }}
-              sx={{ bgcolor: 'info.dark', [`& .${svgColorClasses.root}`]: { color: 'info.light' } }}
-            />
+            {/* Projetos */}
+            <AppActiveProjects list={_activeProjects} />
+
+            {/* Eventos e Reconhecimentos */}
+            <AppUpcomingEvents />
+            <AppWeeklyRecognition list={_weeklyRecognitions} />
+            
+            {/* Oportunidades (para Membros não parceiros fica mais embaixo) */}
+            {!isPartner && <AppOpportunities list={_opportunities} />}
+            
           </Box>
         </Grid>
       </Grid>
