@@ -10,6 +10,9 @@ import IconButton from '@mui/material/IconButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -69,6 +72,8 @@ export function ChatNav({
     query: string;
     results: IChatParticipant[];
   }>({ query: '', results: [] });
+
+  const [currentTab, setCurrentTab] = useState<string>('all');
 
   const myContact: IChatParticipant = useMemo(
     () => ({
@@ -169,10 +174,18 @@ export function ChatNav({
 
   const renderLoading = () => <ChatNavItemSkeleton />;
 
+  const filteredConversationIds = useMemo(() => {
+    return conversations.allIds.filter((id) => {
+      if (currentTab === 'all') return true;
+      const category = conversations.byId[id]?.chatCategory;
+      return category === currentTab;
+    });
+  }, [conversations.allIds, conversations.byId, currentTab]);
+
   const renderList = () => (
     <nav>
       <Box component="ul">
-        {conversations.allIds.map((conversationId) => (
+        {filteredConversationIds.map((conversationId) => (
           <ChatNavItem
             key={conversationId}
             collapse={collapseDesktop}
@@ -214,6 +227,52 @@ export function ChatNav({
     </ClickAwayListener>
   );
 
+  const TABS = [
+    { value: 'all', label: 'Todos', icon: 'solar:chat-round-dots-bold' },
+    { value: 'ai', label: 'IA', icon: 'solar:magic-stick-3-bold' },
+    { value: 'ticket', label: 'Suporte', icon: 'solar:ticket-bold' },
+    { value: 'p2p', label: 'P2P', icon: 'solar:shield-keyhole-bold' },
+    { value: 'dao', label: 'DAO', icon: 'solar:users-group-two-rounded-bold' },
+    { value: 'system', label: 'Sistema', icon: 'solar:bell-bing-bold' },
+  ];
+
+  const renderTabs = () => (
+    <Box sx={{ px: 2.5, pb: 2 }}>
+      <Tabs
+        value={currentTab}
+        onChange={(e, newValue) => setCurrentTab(newValue)}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+        sx={{ minHeight: 36, '& .MuiTab-root': { minHeight: 36, minWidth: 60, px: 1, py: 0.5, fontSize: '0.75rem', fontWeight: 'bold' } }}
+      >
+        {TABS.map((tab) => (
+          <Tab 
+            key={tab.value} 
+            value={tab.value} 
+            label={collapseDesktop ? '' : tab.label} 
+            icon={<Iconify icon={tab.icon as any} width={16} />}
+            iconPosition="start"
+            sx={{ mx: 0.5, borderRadius: 1, '&.Mui-selected': { bgcolor: 'action.selected' } }}
+          />
+        ))}
+      </Tabs>
+      
+      {!collapseDesktop && (
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 2, px: 1 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'fontWeightMedium' }}>
+            {currentTab === 'all' && `${conversations.allIds.length} conversas no total`}
+            {currentTab === 'ai' && 'Assistente operacional'}
+            {currentTab === 'ticket' && `${filteredConversationIds.length} tickets abertos`}
+            {currentTab === 'p2p' && 'Mesa de operações Segura'}
+            {currentTab === 'dao' && `${filteredConversationIds.length} propostas ativas`}
+            {currentTab === 'system' && 'Notificações da rede'}
+          </Typography>
+        </Box>
+      )}
+    </Box>
+  );
+
   const renderContent = () => (
     <>
       <Box
@@ -246,6 +305,8 @@ export function ChatNav({
       </Box>
 
       <Box sx={{ p: 2.5, pt: 0 }}>{!collapseDesktop && renderSearchInput()}</Box>
+
+      {renderTabs()}
 
       {loading ? (
         renderLoading()

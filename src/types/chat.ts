@@ -20,6 +20,9 @@ export type IChatMessage = {
   contentType: string;
   createdAt: IDateValue;
   attachments: IChatAttachment[];
+  messageType?: 'text' | 'card' | 'invoice' | 'proposal' | 'system';
+  readReceipt?: 'sent' | 'delivered' | 'read';
+  systemData?: any; // Para carregar métricas de tx no sistema
 };
 
 export type IChatParticipant = {
@@ -32,6 +35,7 @@ export type IChatParticipant = {
   phoneNumber: string;
   lastActivity: IDateValue;
   status: BadgeProps['variant'];
+  presenceStatus?: 'online' | 'offline' | 'busy' | 'away';
 };
 
 export type IChatConversation = {
@@ -40,6 +44,9 @@ export type IChatConversation = {
   unreadCount: number;
   messages: IChatMessage[];
   participants: IChatParticipant[];
+  chatCategory?: 'ai' | 'ticket' | 'p2p' | 'dao' | 'system';
+  ticketSla?: string;
+  ticketStatus?: string;
 };
 
 export type IChatConversations = {

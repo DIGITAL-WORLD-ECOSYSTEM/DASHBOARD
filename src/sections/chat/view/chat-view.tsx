@@ -79,6 +79,7 @@ export function ChatView() {
               collapseNav={roomNav}
               participants={filteredParticipants}
               loading={conversationLoading}
+              conversation={conversation}
             />
           ) : (
             <ChatHeaderCompose contacts={contacts} onAddRecipients={handleAddRecipients} />
@@ -129,6 +130,7 @@ export function ChatView() {
               participants={filteredParticipants}
               loading={conversationLoading}
               messages={conversation?.messages ?? []}
+              conversation={conversation}
             />
           ),
         }}

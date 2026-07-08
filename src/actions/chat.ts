@@ -32,16 +32,16 @@ export function useGetContacts() {
     ...swrOptions,
   });
 
-  const memoizedValue = useMemo(
-    () => ({
-      contacts: data?.contacts || [],
-      contactsLoading: isLoading,
-      contactsError: error,
-      contactsValidating: isValidating,
-      contactsEmpty: !isLoading && !isValidating && !data?.contacts.length,
-    }),
-    [data?.contacts, error, isLoading, isValidating]
-  );
+  const memoizedValue = useMemo(() => {
+    const dataSource = enableServer && data ? data.contacts : _chatContacts;
+    return {
+      contacts: dataSource,
+      contactsLoading: enableServer ? isLoading : false,
+      contactsError: enableServer ? error : null,
+      contactsValidating: enableServer ? isValidating : false,
+      contactsEmpty: !dataSource.length,
+    };
+  }, [data?.contacts, error, isLoading, isValidating]);
 
   return memoizedValue;
 }
@@ -52,6 +52,8 @@ type ConversationsData = {
   conversations: IChatConversation[];
 };
 
+import { _chatContacts, _conversations } from 'src/_mock/_chat';
+
 export function useGetConversations() {
   const url = [CHAT_ENDPOINT, { params: { endpoint: 'conversations' } }];
 
@@ -60,15 +62,16 @@ export function useGetConversations() {
   });
 
   const memoizedValue = useMemo(() => {
-    const byId = data?.conversations.length ? keyBy(data.conversations, (option) => option.id) : {};
+    const dataSource = enableServer && data ? data.conversations : _conversations;
+    const byId = dataSource.length ? keyBy(dataSource, (option) => option.id) : {};
     const allIds = Object.keys(byId);
 
     return {
       conversations: { byId, allIds },
-      conversationsLoading: isLoading,
-      conversationsError: error,
-      conversationsValidating: isValidating,
-      conversationsEmpty: !isLoading && !isValidating && !allIds.length,
+      conversationsLoading: enableServer ? isLoading : false,
+      conversationsError: enableServer ? error : null,
+      conversationsValidating: enableServer ? isValidating : false,
+      conversationsEmpty: !allIds.length,
     };
   }, [data?.conversations, error, isLoading, isValidating]);
 
@@ -90,16 +93,17 @@ export function useGetConversation(conversationId: string) {
     ...swrOptions,
   });
 
-  const memoizedValue = useMemo(
-    () => ({
-      conversation: data?.conversation,
-      conversationLoading: isLoading,
-      conversationError: error,
-      conversationValidating: isValidating,
-      conversationEmpty: !isLoading && !isValidating && !data?.conversation,
-    }),
-    [data?.conversation, error, isLoading, isValidating]
-  );
+  const memoizedValue = useMemo(() => {
+    const dataSource = enableServer && data ? data.conversation : _conversations.find((c) => c.id === conversationId);
+    
+    return {
+      conversation: dataSource,
+      conversationLoading: enableServer ? isLoading : false,
+      conversationError: enableServer ? error : null,
+      conversationValidating: enableServer ? isValidating : false,
+      conversationEmpty: !dataSource,
+    };
+  }, [data?.conversation, error, isLoading, isValidating, conversationId]);
 
   return memoizedValue;
 }

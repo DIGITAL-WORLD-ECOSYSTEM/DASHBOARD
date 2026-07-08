@@ -1,4 +1,4 @@
-import type { IChatParticipant } from 'src/types/chat';
+import type { IChatParticipant, IChatConversation } from 'src/types/chat';
 import type { UseNavCollapseReturn } from './hooks/use-collapse-nav';
 
 import { useCallback } from 'react';
@@ -28,9 +28,10 @@ type Props = {
   loading: boolean;
   participants: IChatParticipant[];
   collapseNav: UseNavCollapseReturn;
+  conversation?: IChatConversation;
 };
 
-export function ChatHeaderDetails({ collapseNav, participants, loading }: Props) {
+export function ChatHeaderDetails({ collapseNav, participants, loading, conversation }: Props) {
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
 
   const menuActions = usePopover();
@@ -119,31 +120,94 @@ export function ChatHeaderDetails({ collapseNav, participants, loading }: Props)
     </CustomPopover>
   );
 
+  const renderContextBar = () => {
+    if (!conversation?.chatCategory) return null;
+
+    let icon = '';
+    let text = '';
+    let color = 'text.secondary';
+    let bgcolor = 'background.neutral';
+
+    switch (conversation.chatCategory) {
+      case 'ticket':
+        icon = 'solar:ticket-bold';
+        text = `Ticket ${conversation.id} • SLA: ${conversation.ticketSla || '24h'} • Status: ${conversation.ticketStatus || 'Aberto'}`;
+        color = 'warning.main';
+        bgcolor = 'warning.lighter';
+        break;
+      case 'p2p':
+        icon = 'solar:shield-keyhole-bold';
+        text = 'Comunicação End-to-End Criptografada (Seguro)';
+        color = 'success.main';
+        bgcolor = 'success.lighter';
+        break;
+      case 'dao':
+        icon = 'solar:users-group-two-rounded-bold';
+        text = 'Canal #governança • 3 Propostas Ativas';
+        color = 'info.main';
+        bgcolor = 'info.lighter';
+        break;
+      case 'system':
+        icon = 'solar:bell-bing-bold';
+        text = 'Notificações Institucionais do Sistema';
+        color = 'text.secondary';
+        break;
+      case 'ai':
+        icon = 'solar:magic-stick-3-bold';
+        text = 'Assistente Operacional da DAO';
+        color = 'primary.main';
+        bgcolor = 'primary.lighter';
+        break;
+    }
+
+    if (!text) return null;
+
+    return (
+      <Box
+        sx={{
+          px: 2,
+          py: 0.75,
+          bgcolor,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          borderBottom: (theme) => `1px solid ${theme.vars.palette.divider}`,
+        }}
+      >
+        <Iconify icon={icon as any} width={16} sx={{ color }} />
+        <Box sx={{ typography: 'caption', color, fontWeight: 'fontWeightBold' }}>{text}</Box>
+      </Box>
+    );
+  };
+
   return (
-    <>
-      {isGroup ? renderGroup() : renderSingle()}
+    <Box sx={{ display: 'flex', flexDirection: 'column', width: 1 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', p: 2, pb: 1, width: 1 }}>
+        {isGroup ? renderGroup() : renderSingle()}
 
-      <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-        <IconButton>
-          <Iconify icon="solar:phone-bold" />
-        </IconButton>
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
+          <IconButton>
+            <Iconify icon="solar:phone-bold" />
+          </IconButton>
 
-        <IconButton>
-          <Iconify icon="solar:videocamera-record-bold" />
-        </IconButton>
+          <IconButton>
+            <Iconify icon="solar:videocamera-record-bold" />
+          </IconButton>
 
-        <IconButton onClick={handleToggleNav}>
-          <Iconify
-            icon={!collapseDesktop ? 'custom:sidebar-unfold-fill' : 'custom:sidebar-fold-fill'}
-          />
-        </IconButton>
+          <IconButton onClick={handleToggleNav}>
+            <Iconify
+              icon={!collapseDesktop ? 'custom:sidebar-unfold-fill' : 'custom:sidebar-fold-fill'}
+            />
+          </IconButton>
 
-        <IconButton onClick={menuActions.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
+          <IconButton onClick={menuActions.onOpen}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        </Box>
       </Box>
 
+      {renderContextBar()}
       {renderMenuActions()}
-    </>
+    </Box>
   );
 }
