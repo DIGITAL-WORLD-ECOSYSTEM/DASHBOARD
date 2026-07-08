@@ -3,15 +3,13 @@ import type { UseNavCollapseReturn } from './hooks/use-collapse-nav';
 import type { IChatParticipant, IChatConversation } from 'src/types/chat';
 
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
 
 import { toast } from 'src/components/snackbar';
-import { Iconify } from 'src/components/iconify';
-
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { ChatRoomGroup } from './chat-room-group';

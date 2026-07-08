@@ -1,4 +1,5 @@
-import type { IChatConversation, IChatParticipant, IChatMessage } from 'src/types/chat';
+import type { IChatParticipant, IChatConversation } from 'src/types/chat';
+
 import { fSub, today } from 'src/utils/format-time';
 
 const _mock = {

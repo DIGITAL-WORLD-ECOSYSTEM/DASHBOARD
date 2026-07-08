@@ -4,15 +4,15 @@ import type { IChatParticipant, IChatConversations } from 'src/types/chat';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import Drawer from '@mui/material/Drawer';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
@@ -174,13 +174,11 @@ export function ChatNav({
 
   const renderLoading = () => <ChatNavItemSkeleton />;
 
-  const filteredConversationIds = useMemo(() => {
-    return conversations.allIds.filter((id) => {
+  const filteredConversationIds = useMemo(() => conversations.allIds.filter((id) => {
       if (currentTab === 'all') return true;
       const category = conversations.byId[id]?.chatCategory;
       return category === currentTab;
-    });
-  }, [conversations.allIds, conversations.byId, currentTab]);
+    }), [conversations.allIds, conversations.byId, currentTab]);
 
   const renderList = () => (
     <nav>

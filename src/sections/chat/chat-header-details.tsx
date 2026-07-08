@@ -1,5 +1,5 @@
-import type { IChatParticipant, IChatConversation } from 'src/types/chat';
 import type { UseNavCollapseReturn } from './hooks/use-collapse-nav';
+import type { IChatParticipant, IChatConversation } from 'src/types/chat';
 
 import { useCallback } from 'react';
 import { usePopover } from 'minimal-shared/hooks';
@@ -157,6 +157,8 @@ export function ChatHeaderDetails({ collapseNav, participants, loading, conversa
         text = 'Assistente Operacional da DAO';
         color = 'primary.main';
         bgcolor = 'primary.lighter';
+        break;
+      default:
         break;
     }
 
