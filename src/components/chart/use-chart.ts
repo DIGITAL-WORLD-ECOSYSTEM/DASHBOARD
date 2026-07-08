@@ -136,7 +136,7 @@ const baseChartOptions = (theme: Theme): ChartOptions => {
     /** **************************************
      * Tooltip
      *************************************** */
-    tooltip: { theme: 'false', fillSeriesColor: false, x: { show: true } },
+    tooltip: { theme: 'light', fillSeriesColor: false, x: { show: true } },
 
     /** **************************************
      * Legend
