@@ -1,18 +1,19 @@
-import type { CardProps } from '@mui/material/Card';
 import type { BoxProps } from '@mui/material/Box';
+import type { CardProps } from '@mui/material/Card';
 import type { HomeAnnouncement } from 'src/types/home';
 
-import Autoplay from 'embla-carousel-autoplay';
 import { useMemo } from 'react';
+import Autoplay from 'embla-carousel-autoplay';
 
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import { RouterLink } from 'src/routes/components';
+
 import { CONFIG } from 'src/global-config';
+
 import { Image } from 'src/components/image';
 import {
   Carousel,
@@ -95,7 +96,7 @@ type CarouselItemProps = BoxProps & {
 
 function CarouselItem({ item, sx, ...other }: CarouselItemProps) {
   const isCritical = item.priority === 'critical';
-  const labelColor = isCritical ? 'error.main' : 'primary.light';
+  
 
   // Fallback image based on priority if no image provided
   const coverUrl = item.image || `${CONFIG.assetsDir}/assets/background/background-5.webp`;

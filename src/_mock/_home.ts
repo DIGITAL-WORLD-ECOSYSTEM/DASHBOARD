@@ -108,6 +108,7 @@ export const _homeFeeds: FeedItem[] = [
     content: 'Chegamos hoje à expressiva marca de mais de 1.000 parceiros conectados à rede ASPPIBRA! Um marco histórico.',
     createdAt: fSub({ hours: 14 }),
     authorName: 'Comunidade ASPPIBRA',
+    mediaUrl: '/assets/background/background-3.webp',
   },
   {
     id: 'feed-3',

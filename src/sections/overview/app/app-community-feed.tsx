@@ -5,30 +5,29 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
+import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
+import IconButton from '@mui/material/IconButton';
 
 import { fToNow } from 'src/utils/format-time';
+
+import { Image } from 'src/components/image';
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  title?: string;
   list: FeedItem[];
 };
 
-export function AppCommunityFeed({ title, list, ...other }: Props) {
+export function AppCommunityFeed({ list, ...other }: Props) {
   return (
-    <Card {...other}>
-      <CardHeader title={title || 'Feed Institucional'} sx={{ mb: 2 }} />
-
-      <Stack spacing={3} sx={{ p: 3, pt: 0 }}>
-        {list.map((item) => (
-          <FeedItemView key={item.id} item={item} />
-        ))}
-      </Stack>
-    </Card>
+    <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }} {...other}>
+      {list.map((item) => (
+        <FeedItemView key={item.id} item={item} />
+      ))}
+    </Box>
   );
 }
 
@@ -57,38 +56,72 @@ function FeedItemView({ item }: { item: FeedItem }) {
   const { icon, color } = getIcon();
 
   return (
-    <Box sx={{ display: 'flex', gap: 2 }}>
-      <Avatar sx={{ bgcolor: 'background.neutral', color }}>
-        <Iconify icon={icon as any} width={24} />
-      </Avatar>
-
-      <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
-        <Typography variant="subtitle2">{item.title}</Typography>
-        
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {item.content}
-        </Typography>
-
-        <Stack direction="row" spacing={1} sx={{  alignItems: "center" ,  mt: 1  }}>
-          <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-            {fToNow(item.createdAt)}
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-            •
-          </Typography>
-          <Typography variant="caption" sx={{ color: 'text.disabled', fontWeight: 'fontWeightBold' }}>
+    <Card>
+      <CardHeader
+        disableTypography
+        avatar={
+          <Avatar alt={item.authorName} src={item.authorAvatar} sx={{ bgcolor: 'background.neutral', color }}>
+            {item.authorAvatar ? null : <Iconify icon={icon as any} width={24} />}
+          </Avatar>
+        }
+        title={
+          <Typography variant="subtitle2">
             {item.authorName || 'Equipe Institucional'}
           </Typography>
-        </Stack>
+        }
+        subheader={
+          <Stack direction="row" spacing={1} sx={{  alignItems: "center" , mt: 0.5 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+              {fToNow(item.createdAt)}
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+              •
+            </Typography>
+            <Typography variant="caption" sx={{ color, fontWeight: 'fontWeightBold' }}>
+              {item.type.toUpperCase()}
+            </Typography>
+          </Stack>
+        }
+        action={
+          <IconButton>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        }
+      />
 
+      <Box sx={{ p: 3, pt: 2 }}>
+        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          {item.title}
+        </Typography>
+        <Typography variant="body2" sx={{ color: 'text.secondary', whiteSpace: 'pre-line' }}>
+          {item.content}
+        </Typography>
+      </Box>
+
+      {item.mediaUrl && (
+        <Box sx={{ p: 1 }}>
+          <Image alt={item.title} src={item.mediaUrl} ratio="16/9" sx={{ borderRadius: 1.5 }} />
+        </Box>
+      )}
+
+      <Divider sx={{ borderStyle: 'dashed' }} />
+
+      <Box sx={{ display: 'flex', alignItems: 'center', p: 2, gap: 1 }}>
+        <IconButton color="default">
+          <Iconify icon="solar:heart-bold" />
+        </IconButton>
+        <IconButton color="default">
+          <Iconify icon="solar:share-bold" />
+        </IconButton>
+        
+        <Box sx={{ flexGrow: 1 }} />
+        
         {item.actionLabel && (
-          <Box sx={{ mt: 1 }}>
-            <Button size="small" variant="soft" color="inherit">
-              {item.actionLabel}
-            </Button>
-          </Box>
+          <Button size="small" variant="contained" color="primary">
+            {item.actionLabel}
+          </Button>
         )}
-      </Stack>
-    </Box>
+      </Box>
+    </Card>
   );
 }

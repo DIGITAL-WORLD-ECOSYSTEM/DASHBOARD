@@ -1,16 +1,15 @@
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import { alpha, useTheme } from '@mui/material/styles';
 
 import { Iconify } from 'src/components/iconify';
-import { svgColorClasses } from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
 
 export function AppNetworkGrowth({ ...other }) {
-  const theme = useTheme();
+  
 
   return (
     <Card 
@@ -50,7 +49,7 @@ function GrowthItem({ icon, label, value }: { icon: string; label: string; value
 // ----------------------------------------------------------------------
 
 export function AppEcosystemNumbers({ ...other }) {
-  const theme = useTheme();
+  
 
   return (
     <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(2, 1fr)', ...other }}>
@@ -63,9 +62,8 @@ export function AppEcosystemNumbers({ ...other }) {
 }
 
 function NumberCard({ title, value, icon, color }: { title: string; value: string; icon: string; color: string }) {
-  const theme = useTheme();
-  const colorPalette = (theme.vars || theme).palette[color as 'primary'|'info'|'warning'|'success'];
-
+  
+  
   return (
     <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
       <Box
@@ -77,8 +75,8 @@ function NumberCard({ title, value, icon, color }: { title: string; value: strin
           borderRadius: '50%',
           alignItems: 'center',
           justifyContent: 'center',
-          color: colorPalette.main,
-          bgcolor: alpha(colorPalette.main, 0.16),
+          color: `${color}.main`,
+          bgcolor: (t) => `rgba(${t.vars.palette[color as 'primary'|'info'|'warning'|'success'].mainChannel} / 0.16)`,
         }}
       >
         <Iconify icon={icon as any} width={24} />

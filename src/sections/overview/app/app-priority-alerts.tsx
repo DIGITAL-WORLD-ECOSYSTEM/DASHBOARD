@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
@@ -6,7 +7,6 @@ import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 
-import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ export function AppPriorityAlerts() {
   return (
     <Stack spacing={2} sx={{ mb: 3 }}>
       {alerts.map((alert) => (
-        <Collapse key={alert.id} in={true}>
+        <Collapse key={alert.id} in>
           <Alert
             severity={alert.severity}
             onClose={() => handleDismiss(alert.id)}

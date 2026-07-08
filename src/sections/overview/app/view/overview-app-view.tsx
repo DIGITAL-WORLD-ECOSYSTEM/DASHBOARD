@@ -1,39 +1,37 @@
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/material/styles';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import { useMockedUser } from 'src/auth/hooks';
-
 // Mocks Data
 import { 
-  _homeAnnouncements, 
   _homeFeeds, 
-  _activeProjects, 
   _opportunities, 
+  _activeProjects, 
+  _homeAnnouncements, 
   _weeklyRecognitions 
 } from 'src/_mock/_home';
 
-// Novos Componentes da Comunidade
-import { AppCommunicationCarousel } from '../app-communication-carousel';
-import { AppPriorityAlerts } from '../app-priority-alerts';
+import { useMockedUser } from 'src/auth/hooks';
+
 import { AppMyActions } from '../app-my-actions';
 import { AppOnboarding } from '../app-onboarding';
-import { AppCommunityFeed } from '../app-community-feed';
-
-import { AppChatHubSummary } from '../app-chat-hub-summary';
-import { AppGovernanceHighlight } from '../app-governance-highlight';
-import { AppActiveProjects } from '../app-active-projects';
 import { AppOpportunities } from '../app-opportunities';
+import { AppCommunityFeed } from '../app-community-feed';
+import { AppPriorityAlerts } from '../app-priority-alerts';
+import { AppActiveProjects } from '../app-active-projects';
 import { AppUpcomingEvents } from '../app-upcoming-events';
+import { AppChatHubSummary } from '../app-chat-hub-summary';
 import { AppWeeklyRecognition } from '../app-weekly-recognition';
+import { AppGovernanceHighlight } from '../app-governance-highlight';
+// Novos Componentes da Comunidade
+import { AppCommunicationCarousel } from '../app-communication-carousel';
 import { AppNetworkGrowth, AppEcosystemNumbers } from '../app-ecosystem-numbers';
 
 // ----------------------------------------------------------------------
 
 export function OverviewAppView() {
   const { user } = useMockedUser();
-  const theme = useTheme();
+  
 
   // Exemplo de Role Based Dashboard Rendering
   // admin, user, partner, etc.
