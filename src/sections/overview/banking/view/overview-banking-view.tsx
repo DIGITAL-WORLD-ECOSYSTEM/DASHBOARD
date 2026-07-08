@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 
 import { CONFIG } from 'src/global-config';
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _bankingContacts, _bankingCreditCard, _bankingRecentTransitions } from 'src/_mock';
+import { _bankingContacts, _bankingRecentTransitions } from 'src/_mock';
 
 import { Iconify } from 'src/components/iconify/iconify';
 
@@ -11,7 +11,6 @@ import { BankingContacts } from '../banking-contacts';
 import { BankingOverview } from '../banking-overview';
 import { BankingQuickTransfer } from '../banking-quick-transfer';
 import { BankingInviteFriends } from '../banking-invite-friends';
-import { BankingCurrentBalance } from '../banking-current-balance';
 import { BankingBalanceStatistics } from '../banking-balance-statistics';
 import { BankingRecentTransitions } from '../banking-recent-transitions';
 import { BankingExpensesCategories } from '../banking-expenses-categories';
@@ -21,14 +20,6 @@ import { BankingExpensesCategories } from '../banking-expenses-categories';
 export function OverviewBankingView() {
   return (
     <DashboardContent maxWidth="xl">
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        {_bankingCreditCard.map((card) => (
-          <Grid size={{ xs: 12, md: 4 }} key={card.id}>
-            <BankingCurrentBalance item={card} />
-          </Grid>
-        ))}
-      </Grid>
-
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 7, lg: 8 }}>
           <Box sx={{ gap: 3, display: 'flex', flexDirection: 'column' }}>
