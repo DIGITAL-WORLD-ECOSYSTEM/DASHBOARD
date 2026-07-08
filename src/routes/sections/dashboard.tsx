@@ -20,6 +20,7 @@ const DevPanelPage = lazy(() => import('src/pages/dashboard/dev-panel'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
 const OverviewBankingContaPage = lazy(() => import('src/pages/dashboard/banking/conta'));
+const OverviewBankingRedePage = lazy(() => import('src/pages/dashboard/banking/rede'));
 const OverviewBankingCartoesPage = lazy(() => import('src/pages/dashboard/banking/cartoes'));
 const OverviewBankingReceberPage = lazy(() => import('src/pages/dashboard/banking/receber'));
 const OverviewBankingTransferenciasPage = lazy(() => import('src/pages/dashboard/banking/transferencias'));
@@ -146,6 +147,7 @@ export const dashboardRoutes: RouteObject[] = [
         children: [
           { element: <OverviewBankingPage />, index: true },
           { path: 'conta', element: <OverviewBankingContaPage /> },
+          { path: 'rede', element: <OverviewBankingRedePage /> },
           { path: 'cartoes', element: <OverviewBankingCartoesPage /> },
           { path: 'receber', element: <OverviewBankingReceberPage /> },
           { path: 'transferencias', element: <OverviewBankingTransferenciasPage /> },
