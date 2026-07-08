@@ -91,7 +91,7 @@ export function AppCurrentDownload({ title, subheader, chart, sx, ...other }: Pr
 
       <ChartLegends
         labels={chartOptions?.labels}
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         sx={{ p: 3, justifyContent: 'center' }}
       />
     </Card>

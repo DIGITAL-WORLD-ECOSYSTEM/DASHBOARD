@@ -67,7 +67,7 @@ export function BookingStatistics({ title, subheader, chart, sx, ...other }: Pro
       />
 
       <ChartLegends
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         labels={chart.series[0].data.map((item) => item.name)}
         values={[fShortenNumber(6789), fShortenNumber(1234)]}
         sx={{ px: 3, gap: 3 }}

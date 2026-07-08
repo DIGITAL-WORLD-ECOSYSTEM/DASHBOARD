@@ -35,7 +35,7 @@ export function ChartPie({ chart }: Props) {
     <>
       <ChartLegends
         labels={chartOptions?.labels}
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         sx={{ p: 3, justifyContent: 'center' }}
       />
 

@@ -71,7 +71,7 @@ export function BankingBalanceStatistics({ title, subheader, chart, sx, ...other
       />
 
       <ChartLegends
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         labels={chart.series[0].data.map((item) => item.name)}
         sublabels={[`+${fPercent(43)}`, `+${fPercent(3)}`, `+${fPercent(8)}`]}
         values={[fCurrency(6789), fCurrency(1234), fCurrency(1012)]}

@@ -34,7 +34,7 @@ export function ChartDonut({ chart }: Props) {
     <>
       <ChartLegends
         labels={chartOptions?.labels}
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         values={chart.series.map((value) => value.toString())}
         sublabels={chart.series.map((value) => value.toString())}
         sx={{

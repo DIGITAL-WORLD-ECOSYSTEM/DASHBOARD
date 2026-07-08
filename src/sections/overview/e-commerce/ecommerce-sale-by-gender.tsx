@@ -92,7 +92,7 @@ export function EcommerceSaleByGender({ title, subheader, total, chart, sx, ...o
 
       <ChartLegends
         labels={chartOptions?.labels}
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         sx={{ p: 3, justifyContent: 'center' }}
       />
     </Card>

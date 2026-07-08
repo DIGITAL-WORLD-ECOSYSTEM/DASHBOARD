@@ -69,7 +69,7 @@ export function AnalyticsCurrentSubject({ title, subheader, chart, sx, ...other 
 
       <ChartLegends
         labels={chart.series.map((item) => item.name)}
-        colors={chartOptions?.colors}
+        colors={chartOptions?.colors as any}
         sx={{ p: 3, justifyContent: 'center' }}
       />
     </Card>

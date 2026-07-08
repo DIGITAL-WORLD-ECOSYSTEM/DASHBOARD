@@ -79,7 +79,7 @@ export function BankingExpensesCategories({ title, subheader, chart, sx, ...othe
         />
 
         <ChartLegends
-          colors={chartOptions?.colors}
+          colors={chartOptions?.colors as any}
           labels={chartOptions?.labels}
           icons={chart.icons}
           sublabels={chart.series.map((item) => fCurrency(item.value))}
