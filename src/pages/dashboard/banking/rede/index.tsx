@@ -1,5 +1,3 @@
-
-
 import { CONFIG } from 'src/global-config';
 
 import { BankingRedeView } from 'src/sections/overview/banking/view/banking-rede-view';

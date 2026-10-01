@@ -5,12 +5,12 @@ import { useState, useCallback } from 'react';
 import { usePopover } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
 import Select from '@mui/material/Select';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import ListItemText from '@mui/material/ListItemText';
@@ -21,12 +21,13 @@ import { inputBaseClasses } from '@mui/material/InputBase';
 import { Iconify } from 'src/components/iconify';
 import { CustomPopover } from 'src/components/custom-popover';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/facades';
+import { IdentityAvatar } from 'src/auth/components';
 
 // ----------------------------------------------------------------------
 
 export function ChatNavAccount() {
-  const { user } = useMockedUser();
+  const user = useUserProfile();
 
   const menuActions = usePopover();
 
@@ -56,7 +57,7 @@ export function ChatNavAccount() {
           alignItems: 'center',
         }}
       >
-        <ListItemText primary={user?.displayName} secondary={user?.email} />
+        <ListItemText primary={user?.displayName} secondary={user?.displayEmail} />
 
         <Tooltip title="Log out">
           <IconButton color="error">
@@ -125,24 +126,33 @@ export function ChatNavAccount() {
   );
 
   return (
-    <>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
       <Badge
         variant={status}
         badgeContent=" "
         overlap="circular"
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
-        <Avatar
+        <IdentityAvatar
           src={user?.photoURL}
           alt={user?.displayName}
           onClick={menuActions.onOpen}
           sx={{ cursor: 'pointer', width: 48, height: 48 }}
         >
           {user?.displayName?.charAt(0).toUpperCase()}
-        </Avatar>
+        </IdentityAvatar>
       </Badge>
 
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Typography variant="subtitle2" sx={{ fontWeight: 'fontWeightBold' }}>
+          {user?.displayName}
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 'fontWeightMedium' }}>
+          {user?.role || 'Administrador'} • ASPPIBRA
+        </Typography>
+      </Box>
+
       {renderMenuActions()}
-    </>
+    </Box>
   );
 }

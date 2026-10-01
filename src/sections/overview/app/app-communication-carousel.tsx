@@ -41,7 +41,7 @@ export function AppCommunicationCarousel({ list, sx, ...other }: Props) {
   // Motor de Lógica: Filtra vencidos e ordena por prioridade
   const activeAnnouncements = useMemo(() => {
     const now = new Date().getTime();
-    
+
     const valid = list.filter((item) => {
       if (!item.published) return false;
       const start = new Date(item.startsAt).getTime();
@@ -96,7 +96,6 @@ type CarouselItemProps = BoxProps & {
 
 function CarouselItem({ item, sx, ...other }: CarouselItemProps) {
   const isCritical = item.priority === 'critical';
-  
 
   // Fallback image based on priority if no image provided
   const coverUrl = item.image || `${CONFIG.assetsDir}/assets/background/background-5.webp`;
@@ -126,7 +125,16 @@ function CarouselItem({ item, sx, ...other }: CarouselItemProps) {
           alignItems: 'flex-start',
         }}
       >
-        <Typography variant="overline" sx={{ px: 1, py: 0.5, bgcolor: 'background.paper', borderRadius: 1, color: isCritical ? 'error.main' : 'text.primary' }}>
+        <Typography
+          variant="overline"
+          sx={{
+            px: 1,
+            py: 0.5,
+            bgcolor: 'background.paper',
+            borderRadius: 1,
+            color: isCritical ? 'error.main' : 'text.primary',
+          }}
+        >
           {isCritical ? '🚨 URGENTE' : '📰 COMUNICADO'}
         </Typography>
 
@@ -139,10 +147,10 @@ function CarouselItem({ item, sx, ...other }: CarouselItemProps) {
         </Typography>
 
         {item.actionLabel && (
-          <Button 
+          <Button
             component={RouterLink}
             href={item.actionRoute || '#'}
-            variant="contained" 
+            variant="contained"
             color={isCritical ? 'error' : 'primary'}
             sx={{ mt: 1 }}
           >

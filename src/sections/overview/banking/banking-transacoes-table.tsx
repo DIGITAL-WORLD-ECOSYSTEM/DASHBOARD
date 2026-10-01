@@ -84,10 +84,7 @@ export function BankingTransacoesTable({ onRowClick }: Props) {
       headerName: 'Auditoria',
       width: 140,
       renderCell: (params: GridRenderCellParams) => (
-        <Label
-          variant="soft"
-          color={params.value ? 'success' : 'warning'}
-        >
+        <Label variant="soft" color={params.value ? 'success' : 'warning'}>
           {params.value ? 'Conciliado' : 'Pendente'}
         </Label>
       ),
@@ -105,7 +102,11 @@ export function BankingTransacoesTable({ onRowClick }: Props) {
             'error'
           }
         >
-          {params.value === 'settled' ? 'Liquidado' : params.value === 'pending' ? 'Pendente' : 'Falhou'}
+          {params.value === 'settled'
+            ? 'Liquidado'
+            : params.value === 'pending'
+              ? 'Pendente'
+              : 'Falhou'}
         </Label>
       ),
     },
@@ -122,7 +123,8 @@ export function BankingTransacoesTable({ onRowClick }: Props) {
             variant="subtitle2"
             sx={{ color: isPositive ? 'success.main' : 'error.main' }}
           >
-            {isPositive ? '+' : ''}{fCurrency(params.value)} {params.row.currency}
+            {isPositive ? '+' : ''}
+            {fCurrency(params.value)} {params.row.currency}
           </Typography>
         );
       },

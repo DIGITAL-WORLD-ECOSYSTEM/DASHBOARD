@@ -54,8 +54,22 @@ const MOCK_TREE: AffiliateNode[] = [
         activationScore: 100,
         invitedAt: '2025-02-15T14:30:00Z',
         children: [
-          { id: 'USR-201', name: 'Maria Souza', level: 2, status: 'Ativo', activationScore: 82, invitedAt: '2025-03-01T09:15:00Z' },
-          { id: 'USR-202', name: 'Pedro Costa', level: 2, status: 'Pendente', activationScore: 40, invitedAt: '2025-03-05T11:20:00Z' },
+          {
+            id: 'USR-201',
+            name: 'Maria Souza',
+            level: 2,
+            status: 'Ativo',
+            activationScore: 82,
+            invitedAt: '2025-03-01T09:15:00Z',
+          },
+          {
+            id: 'USR-202',
+            name: 'Pedro Costa',
+            level: 2,
+            status: 'Pendente',
+            activationScore: 40,
+            invitedAt: '2025-03-05T11:20:00Z',
+          },
         ],
       },
       {
@@ -66,8 +80,22 @@ const MOCK_TREE: AffiliateNode[] = [
         activationScore: 100,
         invitedAt: '2025-02-20T16:45:00Z',
         children: [
-          { id: 'USR-203', name: 'Lucas Mendes', level: 2, status: 'Inativo', activationScore: 0, invitedAt: '2025-04-10T08:00:00Z' },
-          { id: 'USR-204', name: 'Carla Dias', level: 2, status: 'Suspenso', activationScore: 10, invitedAt: '2025-04-12T14:10:00Z' },
+          {
+            id: 'USR-203',
+            name: 'Lucas Mendes',
+            level: 2,
+            status: 'Inativo',
+            activationScore: 0,
+            invitedAt: '2025-04-10T08:00:00Z',
+          },
+          {
+            id: 'USR-204',
+            name: 'Carla Dias',
+            level: 2,
+            status: 'Suspenso',
+            activationScore: 10,
+            invitedAt: '2025-04-12T14:10:00Z',
+          },
         ],
       },
     ],
@@ -75,10 +103,42 @@ const MOCK_TREE: AffiliateNode[] = [
 ];
 
 const MOCK_COMMISSIONS: CommissionRow[] = [
-  { id: 'c1', date: '2026-07-08T10:00:00Z', type: 'Bônus de Adesão', origin: 'Nível 1: João Silva', asset: 'BRL', amount: 50.00, status: 'Pago' },
-  { id: 'c2', date: '2026-07-07T15:30:00Z', type: 'Taxa de Swap Co-participativa', origin: 'Nível 2: Maria Souza', asset: 'USDT', amount: 12.50, status: 'Disponível' },
-  { id: 'c3', date: '2026-07-06T09:15:00Z', type: 'Recompensa de Governança', origin: 'Pool Global', asset: 'ASPPIBRA', amount: 450, status: 'Pendente' },
-  { id: 'c4', date: '2026-07-05T14:20:00Z', type: 'Taxa de Liquidação', origin: 'Nível 1: Ana Carolina', asset: 'BRL', amount: 15.75, status: 'Pago' },
+  {
+    id: 'c1',
+    date: '2026-07-08T10:00:00Z',
+    type: 'Bônus de Adesão',
+    origin: 'Nível 1: João Silva',
+    asset: 'BRL',
+    amount: 50.0,
+    status: 'Pago',
+  },
+  {
+    id: 'c2',
+    date: '2026-07-07T15:30:00Z',
+    type: 'Taxa de Swap Co-participativa',
+    origin: 'Nível 2: Maria Souza',
+    asset: 'USDT',
+    amount: 12.5,
+    status: 'Disponível',
+  },
+  {
+    id: 'c3',
+    date: '2026-07-06T09:15:00Z',
+    type: 'Recompensa de Governança',
+    origin: 'Pool Global',
+    asset: 'ASPPIBRA',
+    amount: 450,
+    status: 'Pendente',
+  },
+  {
+    id: 'c4',
+    date: '2026-07-05T14:20:00Z',
+    type: 'Taxa de Liquidação',
+    origin: 'Nível 1: Ana Carolina',
+    asset: 'BRL',
+    amount: 15.75,
+    status: 'Pago',
+  },
 ];
 
 // ----------------------------------------------------------------------
@@ -93,13 +153,28 @@ export function BankingRedeView() {
     if (affiliateId) {
       setFocusedAffiliate(affiliateId);
       // Log audit trail for deep link access
-      console.log(JSON.stringify({ action: 'view_affiliate_deep_link', actor: 'current_user', affiliateId, timestamp: new Date().toISOString(), module: 'network' }));
+      console.log(
+        JSON.stringify({
+          action: 'view_affiliate_deep_link',
+          actor: 'current_user',
+          affiliateId,
+          timestamp: new Date().toISOString(),
+          module: 'network',
+        })
+      );
     }
   }, [searchParams]);
 
   return (
     <DashboardContent maxWidth="xl">
-      <Box sx={{ mb: { xs: 3, md: 5 }, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box
+        sx={{
+          mb: { xs: 3, md: 5 },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
         <Typography variant="h4">Rede & Afiliados</Typography>
       </Box>
 
@@ -109,12 +184,16 @@ export function BankingRedeView() {
       </Box>
 
       {/* Main Grid: Graph + Hub */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3, mb: 4 }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' },
+          gap: 3,
+          mb: 4,
+        }}
+      >
         <Box sx={{ gridColumn: { md: 'span 2' } }}>
-          <BankingRedeGraph 
-            treeData={MOCK_TREE} 
-            focusedId={focusedAffiliate} 
-          />
+          <BankingRedeGraph treeData={MOCK_TREE} focusedId={focusedAffiliate} />
         </Box>
         <Box sx={{ gridColumn: { md: 'span 1' } }}>
           <BankingRedeReferralHub />
@@ -126,10 +205,7 @@ export function BankingRedeView() {
         <BankingRedeCommissionStream commissions={MOCK_COMMISSIONS} />
       </Box>
 
-      <BankingRedeGovernanceDrawer 
-        open={govDrawerOpen} 
-        onClose={() => setGovDrawerOpen(false)} 
-      />
+      <BankingRedeGovernanceDrawer open={govDrawerOpen} onClose={() => setGovDrawerOpen(false)} />
     </DashboardContent>
   );
 }

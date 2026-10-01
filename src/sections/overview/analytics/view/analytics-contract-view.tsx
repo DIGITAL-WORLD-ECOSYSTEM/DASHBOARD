@@ -8,7 +8,9 @@ import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
 import { Iconify } from 'src/components/iconify';
 
-import { AnalyticsFilters } from '../analytics-filters';
+import { MOCK_FINANCIAL_PROFILES } from 'src/sections/banking/financial-history/utils/mock-financial-profile';
+import { FinancialSummaryHeader } from 'src/sections/banking/financial-history/components/financial-summary-header';
+
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
@@ -38,7 +40,8 @@ export function AnalyticsContractView() {
 
   return (
     <DashboardContent maxWidth="xl">
-      <AnalyticsFilters
+      <FinancialSummaryHeader
+        profile={MOCK_FINANCIAL_PROFILES[0]}
         years={availableYears}
         selectedYear={selectedYear}
         onSelectYear={setSelectedYear}
@@ -54,7 +57,7 @@ export function AnalyticsContractView() {
             percent={100}
             total="R$ 65.000,00"
             color="primary"
-            icon={<Iconify icon={"solar:diploma-verified-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={'solar:diploma-verified-bold-duotone' as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [100, 100, 100, 100, 100, 100, 100, 100],
@@ -68,7 +71,7 @@ export function AnalyticsContractView() {
             percent={+((summary.totalInflow / 65000) * 100)}
             total={`R$ ${summary.totalInflow.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="success"
-            icon={<Iconify icon={"solar:wad-of-money-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={'solar:wad-of-money-bold-duotone' as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [22, 33, 54, 12, 12, 43, 33, 20],
@@ -82,7 +85,7 @@ export function AnalyticsContractView() {
             percent={-(((65000 - summary.totalInflow) / 65000) * 100)}
             total={`R$ ${(65000 - summary.totalInflow).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
             color="info"
-            icon={<Iconify icon={"solar:calculator-minimalistic-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={'solar:calculator-minimalistic-bold-duotone' as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [80, 70, 60, 50, 45, 40, 35, 30],
@@ -96,7 +99,7 @@ export function AnalyticsContractView() {
             percent={0}
             total="DIA 20 | 1%"
             color="warning"
-            icon={<Iconify icon={"solar:document-text-bold-duotone" as any} width={32} />}
+            icon={<Iconify icon={'solar:document-text-bold-duotone' as any} width={32} />}
             chart={{
               categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'],
               series: [20, 20, 20, 20, 20, 20, 20, 20],

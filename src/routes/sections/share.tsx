@@ -8,7 +8,7 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
+const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/banking/financial-history'));
 
 // ----------------------------------------------------------------------
 
@@ -35,8 +35,6 @@ const shareLayout = () => (
 export const shareRoutes: RouteObject[] = [
   {
     path: 'share',
-    children: [
-      { path: 'analytics', element: shareLayout() },
-    ],
+    children: [{ path: 'analytics', element: shareLayout() }],
   },
 ];

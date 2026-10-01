@@ -28,7 +28,6 @@ declare global {
   }
 }
 
-
 /** **************************************
  * Sign in
  *************************************** */
@@ -68,15 +67,7 @@ export const signUp = async ({
   };
 
   try {
-    const res = await axios.post(endpoints.auth.signUp, params);
-
-    const { accessToken } = res.data;
-
-    if (!accessToken) {
-      throw new Error('Access token not found in response');
-    }
-
-    setSession(accessToken);
+    await axios.post(endpoints.auth.signUp, params);
   } catch (error) {
     console.error('Error during sign up:', error);
     throw error;
@@ -89,7 +80,7 @@ export const signUp = async ({
 export const signOut = async (): Promise<void> => {
   try {
     try {
-      await axios.post('/api/core/identity/logout');
+      await axios.post('/api/v1/identity/logout');
     } catch (e) {
       console.warn('Backend logout failed, proceeding with local clean:', e);
     }
@@ -141,4 +132,3 @@ export const signInWithWeb3 = async (address: string): Promise<void> => {
     throw error;
   }
 };
-

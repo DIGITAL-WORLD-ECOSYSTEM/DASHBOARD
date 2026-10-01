@@ -1,6 +1,40 @@
 import type { IDateValue } from './common';
 
 // ----------------------------------------------------------------------
+// CONTRATOS DO BACKEND (DTOs da API Hono)
+// ----------------------------------------------------------------------
+
+export type EmailDTO = {
+  id: string;
+  accountId: string;
+  folderId?: string | null;
+  threadId?: string | null;
+  direction: 'inbound' | 'outbound';
+  sender: string;
+  recipient: string;
+  cc?: string | null;
+  bcc?: string | null;
+  subject: string;
+  bodyHtml?: string | null;
+  bodyText?: string | null;
+  status: 'sent' | 'failed' | 'unread' | 'read' | 'draft' | 'queued' | 'bounced';
+  priority: 'low' | 'normal' | 'high' | 'urgent' | 'critical';
+  messageId?: string | null;
+  createdAt: string;
+};
+
+export type EmailFolderDTO = {
+  id: string;
+  accountId: string;
+  name: string;
+  isSystem: boolean;
+  createdAt: string;
+};
+
+// ----------------------------------------------------------------------
+// MODELOS DE UI (Frontend)
+// ----------------------------------------------------------------------
+
 
 export type IMailLabel = {
   id: string;

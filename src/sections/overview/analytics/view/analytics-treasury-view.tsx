@@ -18,7 +18,8 @@ import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { AnalyticsTable } from '../analytics-table';
+import { FinancialTransactionsTable } from 'src/sections/banking/financial-history/components/financial-transactions-table';
+
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
@@ -79,7 +80,7 @@ export function AnalyticsTreasuryView() {
             <Button
               variant="outlined"
               color="inherit"
-              startIcon={<Iconify icon={"solar:share-bold-duotone" as any} />}
+              startIcon={<Iconify icon={'solar:share-bold-duotone' as any} />}
               onClick={() => {
                 const url = `${window.location.origin}/share/analytics`;
                 navigator.clipboard.writeText(url);
@@ -92,7 +93,7 @@ export function AnalyticsTreasuryView() {
             <Button
               variant="contained"
               color="inherit"
-              startIcon={<Iconify icon={"eva:file-text-fill" as any} />}
+              startIcon={<Iconify icon={'eva:file-text-fill' as any} />}
               onClick={() => toast.info('Exportando relatório...')}
             >
               Exportar PDF
@@ -110,7 +111,7 @@ export function AnalyticsTreasuryView() {
             percent={2.6}
             total={fCurrency(summary.totalInflow / 100)}
             color="success"
-            icon={<Iconify icon={"solar:double-alt-arrow-up-bold-duotone" as any} width={24} />}
+            icon={<Iconify icon={'solar:double-alt-arrow-up-bold-duotone' as any} width={24} />}
             chart={{
               categories: monthlyTrend.map((m) => m.month),
               series: monthlyTrend.map((m) => m.total / 100),
@@ -125,7 +126,7 @@ export function AnalyticsTreasuryView() {
             percent={0.2}
             total={fCurrency(summary.avgTicket / 100)}
             color="info"
-            icon={<Iconify icon={"solar:bank-bold-duotone" as any} width={24} />}
+            icon={<Iconify icon={'solar:bank-bold-duotone' as any} width={24} />}
             chart={{
               categories: monthlyTrend.map((m) => m.month),
               series: monthlyTrend.map((m) => m.total / 100),
@@ -140,7 +141,7 @@ export function AnalyticsTreasuryView() {
             percent={-0.1}
             total={summary.count}
             color="warning"
-            icon={<Iconify icon={"solar:card-transfer-bold-duotone" as any} width={24} />}
+            icon={<Iconify icon={'solar:card-transfer-bold-duotone' as any} width={24} />}
             chart={{
               categories: monthlyTrend.map((m) => m.month),
               series: monthlyTrend.map((m) => m.total / 100),
@@ -155,7 +156,7 @@ export function AnalyticsTreasuryView() {
             percent={1.5}
             total={summary.topRecipient}
             color="primary"
-            icon={<Iconify icon={"solar:user-rounded-bold-duotone" as any} width={24} />}
+            icon={<Iconify icon={'solar:user-rounded-bold-duotone' as any} width={24} />}
             chart={{
               categories: monthlyTrend.map((m) => m.month),
               series: monthlyTrend.map((m) => m.total / 100),
@@ -214,7 +215,7 @@ export function AnalyticsTreasuryView() {
                 input: {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Iconify icon={"eva:search-fill" as any} sx={{ color: 'text.disabled' }} />
+                      <Iconify icon={'eva:search-fill' as any} sx={{ color: 'text.disabled' }} />
                     </InputAdornment>
                   ),
                 },
@@ -239,7 +240,7 @@ export function AnalyticsTreasuryView() {
 
         {/* Tabela de Transações */}
         <Grid size={{ xs: 12 }}>
-          <AnalyticsTable title="Histórico de Lançamentos de Tesouraria" tableData={dataFiltered} />
+          <FinancialTransactionsTable title="Histórico de Transações" tableData={dataFiltered} />
         </Grid>
       </Grid>
     </DashboardContent>

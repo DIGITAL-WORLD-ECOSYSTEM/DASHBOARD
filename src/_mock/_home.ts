@@ -1,9 +1,9 @@
-import type { 
-  HomeAnnouncement, 
-  FeedItem, 
-  ActiveProject, 
-  RecognitionItem, 
-  OpportunityItem 
+import type {
+  FeedItem,
+  ActiveProject,
+  RecognitionItem,
+  OpportunityItem,
+  HomeAnnouncement,
 } from 'src/types/home';
 
 import { fAdd, fSub } from 'src/utils/format-time';
@@ -15,7 +15,8 @@ export const _homeAnnouncements: HomeAnnouncement[] = [
     id: 'ann-1',
     priority: 'critical',
     title: 'Atualização de Regulamento',
-    description: 'Novas diretrizes para os afiliados da plataforma entram em vigor dia 01/09. Leia agora.',
+    description:
+      'Novas diretrizes para os afiliados da plataforma entram em vigor dia 01/09. Leia agora.',
     actionLabel: 'Ver Regulamento',
     actionRoute: '#',
     startsAt: fSub({ days: 1 }),
@@ -26,7 +27,8 @@ export const _homeAnnouncements: HomeAnnouncement[] = [
     id: 'ann-2',
     priority: 'high',
     title: 'Bem-vindo ao Ecossistema ASPPIBRA',
-    description: 'Plataforma integrada de comunidade, governança, comunicação, projetos e serviços digitais.',
+    description:
+      'Plataforma integrada de comunidade, governança, comunicação, projetos e serviços digitais.',
     actionLabel: 'Explorar Comunidade',
     actionRoute: '#',
     startsAt: fSub({ days: 10 }),
@@ -37,7 +39,8 @@ export const _homeAnnouncements: HomeAnnouncement[] = [
     id: 'ann-3',
     priority: 'normal',
     title: 'Nova Proposta em Votação',
-    description: 'Participe das decisões que impactam a comunidade e acompanhe o resultado das votações.',
+    description:
+      'Participe das decisões que impactam a comunidade e acompanhe o resultado das votações.',
     actionLabel: 'Ver Propostas',
     actionRoute: '/dao',
     startsAt: fSub({ hours: 12 }),
@@ -87,7 +90,7 @@ export const _homeAnnouncements: HomeAnnouncement[] = [
     startsAt: fSub({ days: 30 }),
     endsAt: fAdd({ days: 365 }),
     published: true,
-  }
+  },
 ];
 
 export const _homeFeeds: FeedItem[] = [
@@ -95,17 +98,19 @@ export const _homeFeeds: FeedItem[] = [
     id: 'feed-1',
     type: 'announcement',
     title: 'Novo portal de afiliados no ar',
-    content: 'O módulo de expansão em rede (Networking Graph) já está disponível para todos os membros ativos.',
+    content:
+      'O módulo de expansão em rede (Networking Graph) já está disponível para todos os membros ativos.',
     createdAt: fSub({ hours: 2 }),
     authorName: 'Mundo Digital Oficial',
     actionLabel: 'Ver Detalhes',
-    actionRoute: '/banking/rede'
+    actionRoute: '/banking/rede',
   },
   {
     id: 'feed-2',
     type: 'achievement',
     title: 'Marco de 1.000 Parceiros Ativos',
-    content: 'Chegamos hoje à expressiva marca de mais de 1.000 parceiros conectados à rede ASPPIBRA! Um marco histórico.',
+    content:
+      'Chegamos hoje à expressiva marca de mais de 1.000 parceiros conectados à rede ASPPIBRA! Um marco histórico.',
     createdAt: fSub({ hours: 14 }),
     authorName: 'Comunidade ASPPIBRA',
     mediaUrl: '/assets/background/background-3.webp',
@@ -114,10 +119,11 @@ export const _homeFeeds: FeedItem[] = [
     id: 'feed-3',
     type: 'project',
     title: 'Cultiva Agro - Fase 2',
-    content: 'O projeto Cultiva Agro acaba de iniciar sua segunda etapa de integração com parceiros logísticos.',
+    content:
+      'O projeto Cultiva Agro acaba de iniciar sua segunda etapa de integração com parceiros logísticos.',
     createdAt: fSub({ days: 1 }),
     authorName: 'Diretoria Executiva',
-  }
+  },
 ];
 
 export const _activeProjects: ActiveProject[] = [
@@ -126,22 +132,22 @@ export const _activeProjects: ActiveProject[] = [
     name: 'Cultiva Agro',
     description: 'Projeto de fomento e modernização do agronegócio',
     progress: 72,
-    status: 'active'
+    status: 'active',
   },
   {
     id: 'proj-2',
     name: 'Mundo Digital V2',
     description: 'Nova versão da plataforma (em rollout)',
     progress: 95,
-    status: 'active'
+    status: 'active',
   },
   {
     id: 'proj-3',
     name: 'FFC Hub',
     description: 'Centro logístico compartilhado',
     progress: 30,
-    status: 'planning'
-  }
+    status: 'planning',
+  },
 ];
 
 export const _weeklyRecognitions: RecognitionItem[] = [
@@ -150,22 +156,22 @@ export const _weeklyRecognitions: RecognitionItem[] = [
     type: 'member',
     name: 'João Silva',
     description: 'Maior engajamento na DAO',
-    badgeIcon: 'solar:medal-star-bold-duotone'
+    badgeIcon: 'solar:medal-star-bold-duotone',
   },
   {
     id: 'rec-2',
     type: 'project',
     name: 'Cultiva Agro',
     description: 'Projeto com maior avanço semanal',
-    badgeIcon: 'solar:rocket-bold-duotone'
+    badgeIcon: 'solar:rocket-bold-duotone',
   },
   {
     id: 'rec-3',
     type: 'partner',
     name: 'Logística SA',
     description: 'Parceiro Destaque da Semana',
-    badgeIcon: 'solar:hand-shake-bold-duotone'
-  }
+    badgeIcon: 'solar:hand-shake-bold-duotone',
+  },
 ];
 
 export const _opportunities: OpportunityItem[] = [
@@ -174,12 +180,12 @@ export const _opportunities: OpportunityItem[] = [
     type: 'grant',
     title: 'Edital de Inovação',
     description: 'Financiamento para soluções ESG em 2026',
-    deadline: fAdd({ days: 15 })
+    deadline: fAdd({ days: 15 }),
   },
   {
     id: 'opp-2',
     type: 'partnership',
     title: 'Fornecimento Cultiva',
-    description: 'Chamada para parceiros de distribuição logística'
-  }
+    description: 'Chamada para parceiros de distribuição logística',
+  },
 ];

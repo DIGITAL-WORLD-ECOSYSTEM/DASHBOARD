@@ -12,29 +12,30 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
-
-import { BankingQrCodeModal } from './banking-qr-code-modal';
+import { QrCodeModal } from 'src/components/shared/qr-code-modal';
 
 // ----------------------------------------------------------------------
 
 export function BankingRedeReferralHub() {
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [campaignTag, setCampaignTag] = useState('');
-  
+
   const baseUrl = 'https://asppibra.com/join?ref=USR-001';
   const finalUrl = campaignTag ? `${baseUrl}&utm_source=${campaignTag}` : baseUrl;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(finalUrl);
-    
+
     // Mock Audit Log (sending to backend)
-    console.log(JSON.stringify({
-      action: "copy_referral_link",
-      timestamp: new Date().toISOString(),
-      actor: "current_user",
-      module: "network",
-      data: { url: finalUrl }
-    }));
+    console.log(
+      JSON.stringify({
+        action: 'copy_referral_link',
+        timestamp: new Date().toISOString(),
+        actor: 'current_user',
+        module: 'network',
+        data: { url: finalUrl },
+      })
+    );
 
     toast.success('Link de indicação copiado!');
   };
@@ -48,8 +49,8 @@ export function BankingRedeReferralHub() {
             Gere links customizados ou QR Codes para atrair novos afiliados para sua rede.
           </Typography>
 
-          <TextField 
-            label="Tag de Campanha (Opcional)" 
+          <TextField
+            label="Tag de Campanha (Opcional)"
             placeholder="ex: instagram, evento_sp"
             value={campaignTag}
             onChange={(e) => setCampaignTag(e.target.value)}
@@ -59,10 +60,14 @@ export function BankingRedeReferralHub() {
               input: {
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Iconify icon={"solar:tag-bold" as any} width={20} sx={{ color: 'text.disabled' }} />
+                    <Iconify
+                      icon={'solar:tag-bold' as any}
+                      width={20}
+                      sx={{ color: 'text.disabled' }}
+                    />
                   </InputAdornment>
                 ),
-              }
+              },
             }}
           />
 
@@ -71,20 +76,24 @@ export function BankingRedeReferralHub() {
               Seu Link Personalizado
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <TextField 
-                value={finalUrl} 
+              <TextField
+                value={finalUrl}
                 size="small"
-                fullWidth 
+                fullWidth
                 slotProps={{
                   input: {
                     readOnly: true,
-                    sx: { fontFamily: 'monospace', fontSize: 13, bgcolor: 'background.neutral' }
-                  }
+                    sx: { fontFamily: 'monospace', fontSize: 13, bgcolor: 'background.neutral' },
+                  },
                 }}
               />
               <Tooltip title="Copiar Link">
-                <IconButton color="primary" onClick={handleCopy} sx={{ bgcolor: 'primary.lighter' }}>
-                  <Iconify icon={"solar:copy-bold-duotone" as any} />
+                <IconButton
+                  color="primary"
+                  onClick={handleCopy}
+                  sx={{ bgcolor: 'primary.lighter' }}
+                >
+                  <Iconify icon={'solar:copy-bold-duotone' as any} />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -94,7 +103,7 @@ export function BankingRedeReferralHub() {
             variant="outlined"
             color="inherit"
             fullWidth
-            startIcon={<Iconify icon={"solar:qr-code-bold-duotone" as any} />}
+            startIcon={<Iconify icon={'solar:qr-code-bold-duotone' as any} />}
             onClick={() => setQrModalOpen(true)}
           >
             Exibir QR Code de Indicação
@@ -102,9 +111,9 @@ export function BankingRedeReferralHub() {
         </Box>
       </Card>
 
-      <BankingQrCodeModal 
-        open={qrModalOpen} 
-        onClose={() => setQrModalOpen(false)} 
+      <QrCodeModal
+        open={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
         title="Indicação de Afiliado"
         value={finalUrl}
       />

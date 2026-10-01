@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
@@ -22,6 +23,7 @@ type Props = {
   filters: UseSetStateReturn<IUserTableFilters>;
   options: {
     roles: string[];
+    kycStatus: string[];
   };
 };
 
@@ -47,71 +49,123 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
     [onResetPage, updateFilters]
   );
 
+  const handleFilterKycStatus = useCallback(
+    (event: SelectChangeEvent<string[]>) => {
+      const newValue =
+        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value;
+
+      onResetPage();
+      updateFilters({ kycStatus: newValue });
+    },
+    [onResetPage, updateFilters]
+  );
+
+  const kycLabelMap: Record<string, string> = {
+    draft: 'Não Iniciado',
+    pending: 'Pendente',
+    under_review: 'Em Análise',
+    approved: 'Verificado',
+    rejected: 'Rejeitado',
+    expired: 'Expirado'
+  };
+
   return (
     <Box
-        sx={{
-          p: 2.5,
-          gap: 2,
-          display: 'flex',
-          pr: { xs: 2.5, md: 1 },
-          flexDirection: { xs: 'column', md: 'row' },
-          alignItems: { xs: 'flex-end', md: 'center' },
-        }}
-      >
-        <FormControl sx={{ flexShrink: 0, width: { xs: 1, md: 200 } }}>
-          <InputLabel htmlFor="filter-role-select">Cargo</InputLabel>
-          <Select
-            multiple
-            label="Cargo"
-            value={currentFilters.role}
-            onChange={handleFilterRole}
-            renderValue={(selected) => selected.map((value) => value).join(', ')}
-            inputProps={{ id: 'filter-role-select' }}
-            MenuProps={{
-              slotProps: { paper: { sx: { maxHeight: 240 } } },
-            }}
-          >
-            {options.roles.map((option) => (
-              <MenuItem key={option} value={option}>
-                <Checkbox
-                  disableRipple
-                  size="small"
-                  checked={currentFilters.role.includes(option)}
-                  slotProps={{ input: { id: `${option}-checkbox` } }}
-                />
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <Box
-          sx={{
-            gap: 2,
-            width: 1,
-            flexGrow: 1,
-            display: 'flex',
-            alignItems: 'center',
+      sx={{
+        p: 2.5,
+        gap: 2,
+        display: 'flex',
+        pr: { xs: 2.5, md: 2.5 },
+        flexDirection: { xs: 'column', md: 'row' },
+        alignItems: { xs: 'flex-end', md: 'center' },
+      }}
+    >
+      <FormControl sx={{ flexShrink: 0, width: { xs: 1, md: 180 } }}>
+        <InputLabel htmlFor="filter-role-select">Nível de Acesso</InputLabel>
+        <Select
+          multiple
+          label="Nível de Acesso"
+          value={currentFilters.role}
+          onChange={handleFilterRole}
+          renderValue={(selected) => selected.map((value) => value.toUpperCase()).join(', ')}
+          inputProps={{ id: 'filter-role-select' }}
+          MenuProps={{
+            slotProps: { paper: { sx: { maxHeight: 240 } } },
           }}
         >
-          <TextField
-            fullWidth
-            value={currentFilters.name}
-            onChange={handleFilterName}
-            placeholder="Pesquisar..."
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                ),
-              },
-            }}
-          />
+          {options.roles.map((option) => (
+            <MenuItem key={option} value={option}>
+              <Checkbox
+                disableRipple
+                size="small"
+                checked={currentFilters.role.includes(option)}
+              />
+              {option.toUpperCase()}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-          
-        </Box>
+      <FormControl sx={{ flexShrink: 0, width: { xs: 1, md: 180 } }}>
+        <InputLabel htmlFor="filter-kyc-select">KYC</InputLabel>
+        <Select
+          multiple
+          label="KYC"
+          value={currentFilters.kycStatus || []}
+          onChange={handleFilterKycStatus}
+          renderValue={(selected) => selected.map((val) => kycLabelMap[val] || val).join(', ')}
+          inputProps={{ id: 'filter-kyc-select' }}
+          MenuProps={{
+            slotProps: { paper: { sx: { maxHeight: 240 } } },
+          }}
+        >
+          {options.kycStatus.map((option) => (
+            <MenuItem key={option} value={option}>
+              <Checkbox
+                disableRipple
+                size="small"
+                checked={(currentFilters.kycStatus || []).includes(option)}
+              />
+              {kycLabelMap[option]}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <Box
+        sx={{
+          gap: 2,
+          width: 1,
+          flexGrow: 1,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <TextField
+          fullWidth
+          value={currentFilters.name}
+          onChange={handleFilterName}
+          placeholder="Pesquisar nome, e-mail ou ASP-ID..."
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+
+        <Button 
+          variant="outlined" 
+          color="inherit" 
+          startIcon={<Iconify icon="solar:export-bold" />}
+          sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+        >
+          Exportar
+        </Button>
       </Box>
+    </Box>
   );
 }

@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
@@ -14,6 +13,8 @@ import { fToNow } from 'src/utils/format-time';
 
 import { Image } from 'src/components/image';
 import { Iconify } from 'src/components/iconify';
+
+import { IdentityAvatar } from 'src/auth/components';
 
 // ----------------------------------------------------------------------
 
@@ -60,17 +61,19 @@ function FeedItemView({ item }: { item: FeedItem }) {
       <CardHeader
         disableTypography
         avatar={
-          <Avatar alt={item.authorName} src={item.authorAvatar} sx={{ bgcolor: 'background.neutral', color }}>
+          <IdentityAvatar
+            alt={item.authorName}
+            src={item.authorAvatar}
+            sx={{ bgcolor: 'background.neutral', color }}
+          >
             {item.authorAvatar ? null : <Iconify icon={icon as any} width={24} />}
-          </Avatar>
+          </IdentityAvatar>
         }
         title={
-          <Typography variant="subtitle2">
-            {item.authorName || 'Equipe Institucional'}
-          </Typography>
+          <Typography variant="subtitle2">{item.authorName || 'Equipe Institucional'}</Typography>
         }
         subheader={
-          <Stack direction="row" spacing={1} sx={{  alignItems: "center" , mt: 0.5 }}>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mt: 0.5 }}>
             <Typography variant="caption" sx={{ color: 'text.disabled' }}>
               {fToNow(item.createdAt)}
             </Typography>
@@ -113,9 +116,9 @@ function FeedItemView({ item }: { item: FeedItem }) {
         <IconButton color="default">
           <Iconify icon="solar:share-bold" />
         </IconButton>
-        
+
         <Box sx={{ flexGrow: 1 }} />
-        
+
         {item.actionLabel && (
           <Button size="small" variant="contained" color="primary">
             {item.actionLabel}

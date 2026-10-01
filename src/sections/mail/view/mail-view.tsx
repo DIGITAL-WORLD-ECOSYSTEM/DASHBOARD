@@ -1,42 +1,55 @@
+import { toast } from 'sonner';
 import { useBoolean } from 'minimal-shared/hooks';
-import { useEffect, useCallback, startTransition } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { paths } from 'src/routes/paths';
-import { useRouter, useSearchParams } from 'src/routes/hooks';
-
 import { DashboardContent } from 'src/layouts/dashboard';
-import { useGetMail, useGetMails, useGetLabels } from 'src/actions/mail';
+import { syncEmails, useGetMails, useGetLabels, useGetAccounts } from 'src/actions/mail';
 
 import { MailNav } from '../mail-nav';
 import { MailLayout } from '../layout';
 import { MailList } from '../mail-list';
 import { MailHeader } from '../mail-header';
+import { MailTopBar } from '../mail-topbar';
 import { MailCompose } from '../mail-compose';
 import { MailDetails } from '../mail-details';
+import { MailDashboard } from '../mail-dashboard';
 
 // ----------------------------------------------------------------------
 
-const LABEL_INDEX = 'inbox';
+const LABEL_INDEX = 'all';
 
 export function MailView() {
-  const router = useRouter();
-
   const mdUp = useMediaQuery((theme) => theme.breakpoints.up('md'));
 
-  const searchParams = useSearchParams();
-  const selectedLabelId = searchParams.get('label') ?? LABEL_INDEX;
-  const selectedMailId = searchParams.get('id') ?? '';
+  const [selectedLabelId, setSelectedLabelId] = useState(LABEL_INDEX);
+  const [selectedMailId, setSelectedMailId] = useState('');
+  const [selectedAccountId, setSelectedAccountId] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const openNav = useBoolean();
   const openMail = useBoolean();
   const openCompose = useBoolean();
 
-  const { labels, labelsLoading, labelsEmpty } = useGetLabels();
-  const { mail, mailLoading, mailError } = useGetMail(selectedMailId);
-  const { mails, mailsLoading, mailsEmpty } = useGetMails(selectedLabelId);
+  const { accounts, accountsLoading } = useGetAccounts();
+  const { labels, labelsLoading, labelsEmpty } = useGetLabels(selectedAccountId);
+
+  // Set default account when loaded
+  useEffect(() => {
+    if (accounts.length > 0 && !selectedAccountId) {
+      setSelectedAccountId(accounts[0].id);
+    }
+  }, [accounts, selectedAccountId]);
+
+  const { mails, mailsLoading, mailsError, mailsEmpty, refetchMails } = useGetMails(
+    selectedLabelId,
+    selectedAccountId
+  );
+
+  const mail = mails.byId[selectedMailId];
+  const mailLoading = mailsLoading;
+  const mailError = mailsError;
 
   const firstMailId = mails.allIds[0] || '';
 
@@ -52,17 +65,9 @@ export function MailView() {
       if (!mdUp) {
         openNav.onFalse();
       }
-
-      const redirectPath =
-        labelId !== LABEL_INDEX ? `${paths.dashboard.mail}?label=${labelId}` : paths.dashboard.mail;
-
-      if (selectedLabelId !== labelId) {
-        startTransition(() => {
-          router.push(redirectPath);
-        });
-      }
+      setSelectedLabelId(labelId);
     },
-    [mdUp, selectedLabelId, openNav, router]
+    [mdUp, openNav]
   );
 
   const handleClickMail = useCallback(
@@ -70,20 +75,27 @@ export function MailView() {
       if (!mdUp) {
         openMail.onFalse();
       }
-
-      const redirectPath =
-        selectedLabelId !== LABEL_INDEX
-          ? `${paths.dashboard.mail}?id=${mailId}&label=${selectedLabelId}`
-          : `${paths.dashboard.mail}?id=${mailId}`;
-
-      if (selectedMailId !== mailId) {
-        startTransition(() => {
-          router.push(redirectPath);
-        });
-      }
+      setSelectedMailId(mailId);
     },
-    [mdUp, openMail, router, selectedLabelId, selectedMailId]
+    [mdUp, openMail]
   );
+
+  const handleSync = useCallback(async () => {
+    if (!selectedAccountId) return;
+    try {
+      setIsSyncing(true);
+      const res = await syncEmails(selectedAccountId);
+      toast.success(`Sincronização concluída! ${res.count} novos e-mails.`);
+      if (refetchMails) {
+        refetchMails();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro ao sincronizar e-mails.');
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [selectedAccountId, refetchMails]);
 
   useEffect(() => {
     if (!selectedMailId && firstMailId) {
@@ -97,9 +109,15 @@ export function MailView() {
         maxWidth={false}
         sx={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column' }}
       >
-        <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-          Mail
-        </Typography>
+        <MailTopBar
+          selectedAccountId={selectedAccountId}
+          onChangeAccount={setSelectedAccountId}
+          onToggleCompose={handleToggleCompose}
+          onSync={handleSync}
+          isSyncing={isSyncing}
+        />
+
+        <MailDashboard mails={mails} />
 
         <MailLayout
           sx={{

@@ -58,8 +58,7 @@ export function AuthCenteredLayout({
           <Link
             href={paths.faqs}
             component={RouterLink}
-            color="inherit"
-            sx={{ typography: 'subtitle2' }}
+            sx={{ typography: 'subtitle2', color: 'info.main' }}
           >
             Need help?
           </Link>
@@ -139,4 +138,3 @@ export function AuthCenteredLayout({
 const backgroundStyles = (theme: Theme): CSSObject => ({
   display: 'none', // ✅ DESATIVADO: Usando vácuo digital sólido conforme frontline
 });
-

@@ -37,7 +37,14 @@ export function AppOpportunities({ list, ...other }: Props) {
                 color: item.type === 'grant' ? 'success.main' : 'info.main',
               }}
             >
-              <Iconify icon={item.type === 'grant' ? 'solar:bill-list-bold-duotone' : 'solar:hand-shake-bold-duotone' as any} width={24} />
+              <Iconify
+                icon={
+                  item.type === 'grant'
+                    ? 'solar:bill-list-bold-duotone'
+                    : ('solar:hand-shake-bold-duotone' as any)
+                }
+                width={24}
+              />
             </Box>
 
             <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
@@ -46,7 +53,10 @@ export function AppOpportunities({ list, ...other }: Props) {
                 {item.description}
               </Typography>
               {item.deadline && (
-                <Typography variant="caption" sx={{ color: 'error.main', fontWeight: 'fontWeightMedium' }}>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'error.main', fontWeight: 'fontWeightMedium' }}
+                >
                   Encerra {fToNow(item.deadline)}
                 </Typography>
               )}

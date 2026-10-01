@@ -196,7 +196,7 @@ export const _bankingCreditCard = [
   },
   {
     id: _mock.id(4),
-    balance: 1540.50,
+    balance: 1540.5,
     cardType: 'blockchain',
     cardHolder: '@sandro_da_asppibra',
     cardNumber: '0x8864...7755',

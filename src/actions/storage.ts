@@ -7,7 +7,7 @@ export async function uploadImage(file: File, entityType: string = 'post') {
   formData.append('file', file);
   formData.append('entity_type', entityType);
 
-  const res = await axios.post('/api/platform/storage/upload', formData, {
+  const res = await axios.post('/api/v1/storage/upload', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

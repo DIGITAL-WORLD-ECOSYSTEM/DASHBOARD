@@ -88,23 +88,31 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
     }
   }, [stepUpAction, item, onUpdate]);
 
-  const isInactive = item.status === 'frozen' || item.status === 'blocked' || item.status === 'cancelled' || item.status === 'consumed';
-  
+  const isInactive =
+    item.status === 'frozen' ||
+    item.status === 'blocked' ||
+    item.status === 'cancelled' ||
+    item.status === 'consumed';
+
   const getStatusLabel = () => {
     switch (item.status) {
-      case 'frozen': return 'Congelado';
-      case 'blocked': return 'Bloqueado';
-      case 'cancelled': return 'Cancelado';
-      case 'consumed': return 'Consumido';
-      default: return null;
+      case 'frozen':
+        return 'Congelado';
+      case 'blocked':
+        return 'Bloqueado';
+      case 'cancelled':
+        return 'Cancelado';
+      case 'consumed':
+        return 'Consumido';
+      default:
+        return null;
     }
   };
-  
+
   const statusLabel = getStatusLabel();
 
   return (
     <Box sx={{ perspective: 1000, width: '100%', height: 240, position: 'relative' }} {...other}>
-      
       {/* 3D Container */}
       <Box
         sx={{
@@ -137,22 +145,50 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
           {/* Top Row: Balance & Icons */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <Box>
-              <Box sx={{ mb: 0.5, typography: 'subtitle2', opacity: 0.7, textTransform: 'uppercase', fontSize: 11, letterSpacing: 1 }}>
+              <Box
+                sx={{
+                  mb: 0.5,
+                  typography: 'subtitle2',
+                  opacity: 0.7,
+                  textTransform: 'uppercase',
+                  fontSize: 11,
+                  letterSpacing: 1,
+                }}
+              >
                 Saldo atual
               </Box>
               <Box sx={{ gap: 1, display: 'flex', alignItems: 'center' }}>
-                <Box component="span" sx={{ typography: 'h4', fontFamily: 'var(--font-orbitron), sans-serif', letterSpacing: 1 }}>
+                <Box
+                  component="span"
+                  sx={{
+                    typography: 'h4',
+                    fontFamily: 'var(--font-orbitron), sans-serif',
+                    letterSpacing: 1,
+                  }}
+                >
                   {showCurrency.value ? '********' : fCurrency(item.balance)}
                 </Box>
-                <IconButton size="small" color="inherit" onClick={showCurrency.onToggle} sx={{ opacity: 0.48 }}>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  onClick={showCurrency.onToggle}
+                  sx={{ opacity: 0.48 }}
+                >
                   <Iconify icon={showCurrency.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </Box>
             </Box>
-            
+
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Iconify icon={"solar:wireless-charge-bold" as any} sx={{ width: 28, height: 28, opacity: 0.6, transform: 'rotate(90deg)' }} />
-              <IconButton color="inherit" onClick={menuActions.onOpen} sx={{ opacity: 0.8, mr: -1 }}>
+              <Iconify
+                icon={'solar:wireless-charge-bold' as any}
+                sx={{ width: 28, height: 28, opacity: 0.6, transform: 'rotate(90deg)' }}
+              />
+              <IconButton
+                color="inherit"
+                onClick={menuActions.onOpen}
+                sx={{ opacity: 0.8, mr: -1 }}
+              >
                 <Iconify icon="eva:more-vertical-fill" />
               </IconButton>
             </Box>
@@ -160,16 +196,16 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
 
           {/* Middle Row: Chip & Card Number */}
           <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            <Iconify 
-              icon={"solar:sim-card-bold" as any} 
-              sx={{ 
-                width: 40, 
-                height: 40, 
-                color: '#FFD700', 
-                opacity: 0.85, 
+            <Iconify
+              icon={'solar:sim-card-bold' as any}
+              sx={{
+                width: 40,
+                height: 40,
+                color: '#FFD700',
+                opacity: 0.85,
                 transform: 'rotate(90deg)',
-                filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.4))'
-              }} 
+                filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.4))',
+              }}
             />
             <Box
               sx={{
@@ -185,27 +221,78 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
           </Box>
 
           {/* Bottom Row: Details & Logo */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 'auto' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-end',
+              mt: 'auto',
+            }}
+          >
             <Box sx={{ gap: 4, display: 'flex', typography: 'subtitle1' }}>
               <Box>
-                <Box sx={{ mb: 0.5, opacity: 0.6, typography: 'caption', textTransform: 'uppercase', fontSize: 10, letterSpacing: 0.5 }}>
+                <Box
+                  sx={{
+                    mb: 0.5,
+                    opacity: 0.6,
+                    typography: 'caption',
+                    textTransform: 'uppercase',
+                    fontSize: 10,
+                    letterSpacing: 0.5,
+                  }}
+                >
                   Titular do cartão
                 </Box>
-                <Box component="span" sx={{ textTransform: 'uppercase', fontFamily: 'monospace', fontSize: 14, letterSpacing: 1, textShadow: '0px 1px 2px rgba(0,0,0,0.5)' }}>
+                <Box
+                  component="span"
+                  sx={{
+                    textTransform: 'uppercase',
+                    fontFamily: 'monospace',
+                    fontSize: 14,
+                    letterSpacing: 1,
+                    textShadow: '0px 1px 2px rgba(0,0,0,0.5)',
+                  }}
+                >
                   {item.cardHolder}
                 </Box>
               </Box>
               <Box>
-                <Box sx={{ mb: 0.5, opacity: 0.6, typography: 'caption', textTransform: 'uppercase', fontSize: 10, letterSpacing: 0.5 }}>
+                <Box
+                  sx={{
+                    mb: 0.5,
+                    opacity: 0.6,
+                    typography: 'caption',
+                    textTransform: 'uppercase',
+                    fontSize: 10,
+                    letterSpacing: 0.5,
+                  }}
+                >
                   Validade
                 </Box>
-                <Box component="span" sx={{ fontFamily: 'monospace', fontSize: 14, letterSpacing: 1, textShadow: '0px 1px 2px rgba(0,0,0,0.5)' }}>
+                <Box
+                  component="span"
+                  sx={{
+                    fontFamily: 'monospace',
+                    fontSize: 14,
+                    letterSpacing: 1,
+                    textShadow: '0px 1px 2px rgba(0,0,0,0.5)',
+                  }}
+                >
                   {item.cardValid}
                 </Box>
               </Box>
             </Box>
 
-            <Box sx={{ py: 0.5, px: 1, borderRadius: 1, display: 'inline-flex', bgcolor: 'common.white', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}>
+            <Box
+              sx={{
+                py: 0.5,
+                px: 1,
+                borderRadius: 1,
+                display: 'inline-flex',
+                bgcolor: 'common.white',
+                boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)',
+              }}
+            >
               {item.cardType === 'mastercard' ? (
                 <Iconify width={36} height="auto" icon="payments:mastercard" />
               ) : (
@@ -231,26 +318,76 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
             flexDirection: 'column',
           }}
         >
-          <Box sx={{ width: '100%', height: 40, bgcolor: 'grey.900', mt: 3 }} /> {/* Magnetic Stripe */}
-          
+          <Box sx={{ width: '100%', height: 40, bgcolor: 'grey.900', mt: 3 }} />{' '}
+          {/* Magnetic Stripe */}
           <Box sx={{ px: 3, pt: 2, flex: 1, display: 'flex', flexDirection: 'column' }}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-              <Box sx={{ bgcolor: 'common.white', color: 'grey.800', px: 2, py: 0.5, borderRadius: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>***</Typography>
-                <Typography variant="subtitle2" sx={{ fontFamily: 'monospace', fontStyle: 'italic' }}>123</Typography>
+              <Box
+                sx={{
+                  bgcolor: 'common.white',
+                  color: 'grey.800',
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                }}
+              >
+                <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                  ***
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontFamily: 'monospace', fontStyle: 'italic' }}
+                >
+                  123
+                </Typography>
               </Box>
             </Box>
-            
-            <Typography variant="caption" sx={{ opacity: 0.7, mb: 0.5 }}>Número Completo (Auto-Hide em 30s)</Typography>
-            <Typography variant="h6" sx={{ fontFamily: 'monospace', letterSpacing: 3, textShadow: '0px 1px 2px rgba(0,0,0,0.5)' }}>
+
+            <Typography variant="caption" sx={{ opacity: 0.7, mb: 0.5 }}>
+              Número Completo (Auto-Hide em 30s)
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: 'monospace',
+                letterSpacing: 3,
+                textShadow: '0px 1px 2px rgba(0,0,0,0.5)',
+              }}
+            >
               4242 4242 4242 4242
             </Typography>
 
-            <Box sx={{ mt: 'auto', mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Box sx={{ bgcolor: 'warning.main', color: 'warning.darker', px: 1, py: 0.5, borderRadius: 0.5, fontSize: 10, fontWeight: 'bold' }}>
+            <Box
+              sx={{
+                mt: 'auto',
+                mb: 2,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                sx={{
+                  bgcolor: 'warning.main',
+                  color: 'warning.darker',
+                  px: 1,
+                  py: 0.5,
+                  borderRadius: 0.5,
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                }}
+              >
                 AMBIENTE DEMONSTRATIVO
               </Box>
-              <Button size="small" variant="contained" color="primary" onClick={() => setIsFlipped(false)}>
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={() => setIsFlipped(false)}
+              >
                 Ocultar
               </Button>
             </Box>
@@ -260,42 +397,83 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
 
       {/* Badges Overlay */}
       <Box sx={{ position: 'absolute', top: -10, left: 24, zIndex: 10, display: 'flex', gap: 1 }}>
-        <Box sx={{ px: 1.5, py: 0.5, borderRadius: 4, bgcolor: 'primary.lighter', color: 'primary.darker', typography: 'caption', fontWeight: 'bold' }}>
-          {item.nature === 'physical' ? 'Físico' : item.nature === 'virtual_recurring' ? 'Virtual' : 'Descartável'}
+        <Box
+          sx={{
+            px: 1.5,
+            py: 0.5,
+            borderRadius: 4,
+            bgcolor: 'primary.lighter',
+            color: 'primary.darker',
+            typography: 'caption',
+            fontWeight: 'bold',
+          }}
+        >
+          {item.nature === 'physical'
+            ? 'Físico'
+            : item.nature === 'virtual_recurring'
+              ? 'Virtual'
+              : 'Descartável'}
         </Box>
         {statusLabel && (
-          <Box sx={{ px: 1.5, py: 0.5, borderRadius: 4, bgcolor: 'error.main', color: 'common.white', typography: 'caption', fontWeight: 'bold' }}>
+          <Box
+            sx={{
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 4,
+              bgcolor: 'error.main',
+              color: 'common.white',
+              typography: 'caption',
+              fontWeight: 'bold',
+            }}
+          >
             {statusLabel}
           </Box>
         )}
       </Box>
 
       {/* Popover Menu */}
-      <CustomPopover open={menuActions.open} anchorEl={menuActions.anchorEl} onClose={menuActions.onClose}>
+      <CustomPopover
+        open={menuActions.open}
+        anchorEl={menuActions.anchorEl}
+        onClose={menuActions.onClose}
+      >
         <MenuList>
           <MenuItem onClick={handleRevealRequest} disabled={item.status === 'cancelled'}>
-            <Iconify icon={isFlipped ? "solar:eye-closed-bold" : "solar:eye-bold"} />
-            {isFlipped ? "Ocultar Dados" : "Revelar Dados (Step-Up)"}
+            <Iconify icon={isFlipped ? 'solar:eye-closed-bold' : 'solar:eye-bold'} />
+            {isFlipped ? 'Ocultar Dados' : 'Revelar Dados (Step-Up)'}
           </MenuItem>
-          
-          <MenuItem onClick={() => { menuActions.onClose(); if (onManage) onManage(item.id); }}>
+
+          <MenuItem
+            onClick={() => {
+              menuActions.onClose();
+              if (onManage) onManage(item.id);
+            }}
+          >
             <Iconify icon="solar:settings-bold-duotone" />
             Configurar Limites
           </MenuItem>
 
           <MenuItem onClick={handleFreezeToggle} disabled={item.status === 'cancelled'}>
-            <Iconify icon={"solar:lock-password-bold-duotone" as any} sx={{ color: item.status === 'frozen' ? 'info.main' : 'inherit' }} />
+            <Iconify
+              icon={'solar:lock-password-bold-duotone' as any}
+              sx={{ color: item.status === 'frozen' ? 'info.main' : 'inherit' }}
+            />
             {item.status === 'frozen' ? 'Descongelar' : 'Bloqueio Temporário'}
           </MenuItem>
 
-          {(item.status === 'cancelled' || item.status === 'expired') ? (
-            <MenuItem onClick={() => { menuActions.onClose(); /* Mock Re-issue */ }} sx={{ color: 'primary.main' }}>
-              <Iconify icon={"solar:refresh-bold-duotone" as any} />
+          {item.status === 'cancelled' || item.status === 'expired' ? (
+            <MenuItem
+              onClick={() => {
+                menuActions.onClose(); /* Mock Re-issue */
+              }}
+              sx={{ color: 'primary.main' }}
+            >
+              <Iconify icon={'solar:refresh-bold-duotone' as any} />
               Reemitir Cartão
             </MenuItem>
           ) : (
             <MenuItem onClick={handleCancelRequest} sx={{ color: 'error.main' }}>
-              <Iconify icon={"solar:trash-bin-trash-bold-duotone" as any} />
+              <Iconify icon={'solar:trash-bin-trash-bold-duotone' as any} />
               Cancelar Cartão
             </MenuItem>
           )}
@@ -303,11 +481,13 @@ export function BankingCurrentBalance({ item, onUpdate, onManage, sx, ...other }
       </CustomPopover>
 
       {/* Security Modal */}
-      <BankingStepUpModal 
-        open={stepUpOpen} 
-        onClose={() => setStepUpOpen(false)} 
+      <BankingStepUpModal
+        open={stepUpOpen}
+        onClose={() => setStepUpOpen(false)}
         onSuccess={handleStepUpSuccess}
-        actionTitle={stepUpAction === 'flip' ? 'Revelar Dados do Cartão' : 'Cancelamento Definitivo'}
+        actionTitle={
+          stepUpAction === 'flip' ? 'Revelar Dados do Cartão' : 'Cancelamento Definitivo'
+        }
         requireKeyword={stepUpAction === 'cancel' ? 'CANCELAR' : undefined}
       />
     </Box>

@@ -27,15 +27,15 @@ export function AnalyticsAIInsights() {
               bgcolor: alpha(theme.palette.primary.main, 0.08),
             }}
           >
-            <Iconify icon={"solar:magic-stick-bold-duotone" as any} width={24} />
+            <Iconify icon={'solar:magic-stick-bold-duotone' as any} width={24} />
           </Box>
-          <Typography variant="h6">AI Behavioral Insights</Typography>
+          <Typography variant="h6">Insights Financeiros</Typography>
         </Box>
 
         <Button
           variant="contained"
           color="primary"
-          startIcon={<Iconify icon={"eva:flash-fill" as any} />}
+          startIcon={<Iconify icon={'eva:flash-fill' as any} />}
         >
           Analyze Patterns
         </Button>
@@ -56,7 +56,7 @@ export function AnalyticsAIInsights() {
         }}
       >
         <Iconify
-          icon={"solar:mask-hiding-linear" as any}
+          icon={'solar:mask-hiding-linear' as any}
           width={48}
           sx={{ mb: 2, color: 'text.disabled', opacity: 0.48 }}
         />

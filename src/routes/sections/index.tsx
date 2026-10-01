@@ -4,8 +4,8 @@ import { lazy } from 'react';
 
 import { authRoutes } from './auth';
 import { shareRoutes } from './share';
+import { devosRoutes } from './devos';
 import { dashboardRoutes } from './dashboard';
-import { componentsRoutes } from './components';
 
 // ----------------------------------------------------------------------
 
@@ -21,13 +21,13 @@ export const routesSection: RouteObject[] = [
   // Dashboard
   ...dashboardRoutes,
 
+  // DevOS
+  ...devosRoutes,
+
   /**
    * Main routes (Disabled for single-page-public login)
    * ...mainRoutes,
    */
-
-  // Components
-  ...componentsRoutes,
 
   // No match
   { path: '*', element: <Page404 /> },

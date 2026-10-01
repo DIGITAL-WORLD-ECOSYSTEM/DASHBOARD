@@ -8,15 +8,14 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
+import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/global-config';
 
@@ -25,6 +24,7 @@ import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
 import { useAuthContext } from '../../hooks';
 import { getErrorMessage } from '../../utils';
+import { FormSocials, FormDivider } from '../../components';
 import { signInWithWeb3, signInWithPassword } from '../../context/jwt';
 
 // ----------------------------------------------------------------------
@@ -67,11 +67,17 @@ export function JwtSignInView() {
     formState: { isSubmitting },
   } = methods;
 
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get('returnTo');
+
   const onSubmit = handleSubmit(async (data) => {
     try {
       await signInWithPassword({ email: data.email, password: data.password });
       await checkUserSession?.();
-      router.push(paths.dashboard.root);
+
+      const redirectUrl = returnTo || paths.dashboard.root;
+
+      router.push(redirectUrl);
     } catch (error) {
       console.error(error);
       const feedbackMessage = getErrorMessage(error);
@@ -88,7 +94,10 @@ export function JwtSignInView() {
       const address = accounts[0];
       await signInWithWeb3(address);
       await checkUserSession?.();
-      router.push(paths.dashboard.root);
+
+      const redirectUrl = returnTo || paths.dashboard.root;
+
+      router.push(redirectUrl);
     } catch (error) {
       console.error(error);
       setErrorMessage(getErrorMessage(error));
@@ -97,7 +106,7 @@ export function JwtSignInView() {
 
   const handleSocialLogin = (provider: 'google' | 'github') => {
     const { serverUrl } = CONFIG;
-    window.location.href = `${serverUrl}/api/core/identity/oauth/${provider}/login`;
+    window.location.href = `${serverUrl}/api/v1/identity/oauth/${provider}/login`;
   };
 
   const renderForm = () => (
@@ -112,8 +121,8 @@ export function JwtSignInView() {
             sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main'
-            }
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -130,8 +139,8 @@ export function JwtSignInView() {
               '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
               '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
               '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
-            }
-          }
+            },
+          },
         }}
       />
 
@@ -146,8 +155,8 @@ export function JwtSignInView() {
               sx: {
                 fontFamily: 'var(--font-orbitron), sans-serif',
                 fontWeight: 600,
-                color: 'info.main'
-              }
+                color: 'info.main',
+              },
             },
             input: {
               sx: {
@@ -167,7 +176,12 @@ export function JwtSignInView() {
               },
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: 'info.main' }}>
+                  <IconButton
+                    aria-label={showPassword.value ? "Hide password" : "Show password"}
+                    onClick={showPassword.onToggle}
+                    edge="end"
+                    sx={{ color: 'info.main' }}
+                  >
                     <Iconify
                       icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'}
                     />
@@ -182,7 +196,16 @@ export function JwtSignInView() {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Typography variant="caption" sx={{ color: 'grey.500', fontSize: 11 }}>
           Novo na DAO?{' '}
-          <Link component={RouterLink} href={paths.auth.jwt.signUp} sx={{ color: 'info.main', fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 800, textDecoration: 'none' }}>
+          <Link
+            component={RouterLink}
+            href={paths.auth.jwt.signUp}
+            sx={{
+              color: 'info.main',
+              fontFamily: 'var(--font-orbitron), sans-serif',
+              fontWeight: 800,
+              textDecoration: 'none',
+            }}
+          >
             SOLICITAR
           </Link>
         </Typography>
@@ -190,7 +213,13 @@ export function JwtSignInView() {
           component={RouterLink}
           href={paths.auth.jwt.resetPassword}
           variant="caption"
-          sx={{ color: 'info.main', fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 800, textDecoration: 'none', fontSize: 10 }}
+          sx={{
+            color: 'info.main',
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontWeight: 800,
+            textDecoration: 'none',
+            fontSize: 10,
+          }}
         >
           ESQUECEU A SENHA?
         </Link>
@@ -237,6 +266,10 @@ export function JwtSignInView() {
         gap: 3,
       }}
     >
+      <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 1, color: 'info.main', fontFamily: 'var(--font-orbitron), sans-serif' }}>
+        Acesso ao Portal
+      </Typography>
+
       {!!errorMessage && (
         <Alert severity="error" sx={{ mb: 3 }}>
           {errorMessage}
@@ -247,11 +280,7 @@ export function JwtSignInView() {
         {renderForm()}
       </Form>
 
-      <Divider sx={{ my: 2, '&::before, &::after': { borderTopStyle: 'dashed', opacity: 0.15 } }}>
-        <Typography variant="caption" sx={{ color: 'grey.500', letterSpacing: 2.5, fontWeight: 700, fontFamily: 'var(--font-orbitron), sans-serif' }}>
-          OU CONTINUE COM
-        </Typography>
-      </Divider>
+      <FormDivider label="OU ENTRE COM" />
 
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button
@@ -261,7 +290,7 @@ export function JwtSignInView() {
           startIcon={<Iconify icon="logos:google-icon" />}
           sx={{
             color: 'white',
-            borderColor: alpha(theme.palette.info.main, 0.1),
+            borderColor: alpha(theme.palette.info.main, 0.2),
             fontFamily: 'var(--font-orbitron), sans-serif',
             fontWeight: 700,
             fontSize: 13,
@@ -270,7 +299,7 @@ export function JwtSignInView() {
               bgcolor: alpha(theme.palette.info.main, 0.05),
               transform: 'translateY(-2px)',
               boxShadow: `0 5px 15px ${alpha(theme.palette.info.main, 0.2)}`,
-            }
+            },
           }}
         >
           Google
@@ -282,7 +311,7 @@ export function JwtSignInView() {
           startIcon={<Iconify icon="logos:github-icon" />}
           sx={{
             color: 'white',
-            borderColor: alpha(theme.palette.info.main, 0.1),
+            borderColor: alpha(theme.palette.info.main, 0.2),
             fontFamily: 'var(--font-orbitron), sans-serif',
             fontWeight: 700,
             fontSize: 13,
@@ -291,7 +320,7 @@ export function JwtSignInView() {
               bgcolor: alpha(theme.palette.info.main, 0.05),
               transform: 'translateY(-2px)',
               boxShadow: `0 5px 15px ${alpha(theme.palette.info.main, 0.2)}`,
-            }
+            },
           }}
         >
           GitHub
@@ -302,7 +331,13 @@ export function JwtSignInView() {
         fullWidth
         variant="soft"
         onClick={handleWeb3Login}
-        startIcon={<Box component="img" src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" sx={{ width: 24, height: 24 }} />}
+        startIcon={
+          <Box
+            component="img"
+            src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"
+            sx={{ width: 24, height: 24 }}
+          />
+        }
         sx={{
           height: 54,
           fontFamily: 'var(--font-orbitron), sans-serif',
@@ -333,7 +368,7 @@ export function JwtSignInView() {
           '@keyframes shimmer': {
             '0%': { transform: 'translateX(-100%) rotate(45deg)' },
             '100%': { transform: 'translateX(100%) rotate(45deg)' },
-          }
+          },
         }}
       >
         WALLET

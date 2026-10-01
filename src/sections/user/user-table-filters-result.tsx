@@ -38,10 +38,29 @@ export function UserTableFiltersResult({ filters, onResetPage, totalResults, sx 
     [onResetPage, updateFilters, currentFilters.role]
   );
 
+  const handleRemoveKyc = useCallback(
+    (inputValue: string) => {
+      const newValue = (currentFilters.kycStatus || []).filter((item) => item !== inputValue);
+
+      onResetPage();
+      updateFilters({ kycStatus: newValue });
+    },
+    [onResetPage, updateFilters, currentFilters.kycStatus]
+  );
+
   const handleReset = useCallback(() => {
     onResetPage();
     resetFilters();
   }, [onResetPage, resetFilters]);
+
+  const kycLabelMap: Record<string, string> = {
+    draft: 'Não Iniciado',
+    pending: 'Pendente',
+    under_review: 'Em Análise',
+    approved: 'Verificado',
+    rejected: 'Rejeitado',
+    expired: 'Expirado'
+  };
 
   return (
     <FiltersResult totalResults={totalResults} onReset={handleReset} sx={sx}>
@@ -54,13 +73,19 @@ export function UserTableFiltersResult({ filters, onResetPage, totalResults, sx 
         />
       </FiltersBlock>
 
-      <FiltersBlock label="Cargo:" isShow={!!currentFilters.role.length}>
+      <FiltersBlock label="Nível de Acesso:" isShow={!!currentFilters.role.length}>
         {currentFilters.role.map((item) => (
-          <Chip {...chipProps} key={item} label={item} onDelete={() => handleRemoveRole(item)} />
+          <Chip {...chipProps} key={item} label={item.toUpperCase()} onDelete={() => handleRemoveRole(item)} />
         ))}
       </FiltersBlock>
 
-      <FiltersBlock label="Palavra-chave:" isShow={!!currentFilters.name}>
+      <FiltersBlock label="KYC:" isShow={!!(currentFilters.kycStatus && currentFilters.kycStatus.length)}>
+        {(currentFilters.kycStatus || []).map((item) => (
+          <Chip {...chipProps} key={item} label={kycLabelMap[item] || item} onDelete={() => handleRemoveKyc(item)} />
+        ))}
+      </FiltersBlock>
+
+      <FiltersBlock label="Busca:" isShow={!!currentFilters.name}>
         <Chip {...chipProps} label={currentFilters.name} onDelete={handleRemoveKeyword} />
       </FiltersBlock>
     </FiltersResult>

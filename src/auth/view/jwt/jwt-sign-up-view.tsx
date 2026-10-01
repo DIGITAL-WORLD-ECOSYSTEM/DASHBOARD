@@ -17,13 +17,15 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import { CONFIG } from 'src/global-config';
+
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
 import { signUp } from '../../context/jwt';
 import { useAuthContext } from '../../hooks';
 import { getErrorMessage } from '../../utils';
-import { SignUpTerms } from '../../components/sign-up-terms';
+import { FormSocials, FormDivider, SignUpTerms } from '../../components';
 
 // ----------------------------------------------------------------------
 
@@ -69,6 +71,11 @@ export function JwtSignUpView() {
     formState: { isSubmitting },
   } = methods;
 
+  const handleSocialLogin = (provider: 'google' | 'github') => {
+    const { serverUrl } = CONFIG;
+    window.location.href = `${serverUrl}/api/v1/identity/oauth/${provider}/login`;
+  };
+
   const onSubmit = handleSubmit(async (data) => {
     try {
       await signUp({
@@ -77,8 +84,7 @@ export function JwtSignUpView() {
         firstName: data.firstName,
         lastName: data.lastName,
       });
-      await checkUserSession?.();
-      router.refresh();
+      router.push(`/verify?email=${encodeURIComponent(data.email)}`);
     } catch (error) {
       console.error(error);
       const feedbackMessage = getErrorMessage(error);
@@ -94,14 +100,14 @@ export function JwtSignUpView() {
         <Field.Text
           name="firstName"
           label="Nome"
-          slotProps={{ 
-            inputLabel: { 
-              shrink: true, 
-              sx: { 
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+              sx: {
                 fontFamily: 'var(--font-orbitron), sans-serif',
                 fontWeight: 600,
-                color: 'info.main' 
-              } 
+                color: 'info.main',
+              },
             },
             input: {
               sx: {
@@ -118,21 +124,21 @@ export function JwtSignUpView() {
                 '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
                 '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
                 '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
-              }
-            }
+              },
+            },
           }}
         />
         <Field.Text
           name="lastName"
           label="Sobrenome"
-          slotProps={{ 
-            inputLabel: { 
-              shrink: true, 
-              sx: { 
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+              sx: {
                 fontFamily: 'var(--font-orbitron), sans-serif',
                 fontWeight: 600,
-                color: 'info.main' 
-              } 
+                color: 'info.main',
+              },
             },
             input: {
               sx: {
@@ -149,23 +155,23 @@ export function JwtSignUpView() {
                 '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
                 '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
                 '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
-              }
-            }
+              },
+            },
           }}
         />
       </Box>
 
-      <Field.Text 
-        name="email" 
-        label="E-mail" 
-        slotProps={{ 
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+      <Field.Text
+        name="email"
+        label="E-mail"
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -182,9 +188,9 @@ export function JwtSignUpView() {
               '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
               '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
               '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
-            }
-          }
-        }} 
+            },
+          },
+        }}
       />
 
       <Field.Text
@@ -193,13 +199,13 @@ export function JwtSignUpView() {
         placeholder="6+ caracteres"
         type={showPassword.value ? 'text' : 'password'}
         slotProps={{
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -219,7 +225,7 @@ export function JwtSignUpView() {
             },
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={showPassword.onToggle} edge="end" sx={{ color: 'info.main' }}>
+                  <IconButton aria-label={showPassword.value ? "Hide password" : "Show password"} onClick={showPassword.onToggle} edge="end" sx={{ color: 'info.main' }}>
                   <Iconify icon={showPassword.value ? 'solar:eye-bold' : 'solar:eye-closed-bold'} />
                 </IconButton>
               </InputAdornment>
@@ -284,12 +290,30 @@ export function JwtSignUpView() {
       }}
     >
       <Box sx={{ mb: 2, textAlign: 'center' }}>
-        <Typography variant="h5" sx={{ color: 'info.main', mb: 1, fontWeight: 900, fontFamily: 'var(--font-orbitron), sans-serif' }}>
+        <Typography
+          variant="h5"
+          component="h1"
+          sx={{
+            color: 'info.main',
+            mb: 1,
+            fontWeight: 900,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+          }}
+        >
           SOLICITAR ACESSO
         </Typography>
         <Typography variant="body2" sx={{ color: 'grey.500', fontSize: 13 }}>
           Já possui uma conta?{' '}
-          <Link component={RouterLink} href={paths.auth.jwt.signIn} sx={{ color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif', textDecoration: 'none' }}>
+          <Link
+            component={RouterLink}
+            href={paths.auth.jwt.signIn}
+            sx={{
+              color: 'info.main',
+              fontWeight: 800,
+              fontFamily: 'var(--font-orbitron), sans-serif',
+              textDecoration: 'none',
+            }}
+          >
             ENTRAR
           </Link>
         </Typography>
@@ -304,6 +328,53 @@ export function JwtSignUpView() {
       <Form methods={methods} onSubmit={onSubmit}>
         {renderForm()}
       </Form>
+
+      <FormDivider label="OU CADASTRE-SE COM" />
+
+      <Box sx={{ display: 'flex', gap: 2 }}>
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => handleSocialLogin('google')}
+          startIcon={<Iconify icon="logos:google-icon" />}
+          sx={{
+            color: 'white',
+            borderColor: alpha(theme.palette.info.main, 0.2),
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontWeight: 700,
+            fontSize: 13,
+            '&:hover': {
+              borderColor: 'info.main',
+              bgcolor: alpha(theme.palette.info.main, 0.05),
+              transform: 'translateY(-2px)',
+              boxShadow: `0 5px 15px ${alpha(theme.palette.info.main, 0.2)}`,
+            },
+          }}
+        >
+          Google
+        </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={() => handleSocialLogin('github')}
+          startIcon={<Iconify icon="logos:github-icon" />}
+          sx={{
+            color: 'white',
+            borderColor: alpha(theme.palette.info.main, 0.2),
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontWeight: 700,
+            fontSize: 13,
+            '&:hover': {
+              borderColor: 'info.main',
+              bgcolor: alpha(theme.palette.info.main, 0.05),
+              transform: 'translateY(-2px)',
+              boxShadow: `0 5px 15px ${alpha(theme.palette.info.main, 0.2)}`,
+            },
+          }}
+        >
+          GitHub
+        </Button>
+      </Box>
 
       <SignUpTerms sx={{ color: 'grey.600', mt: 2 }} />
     </Box>

@@ -15,11 +15,7 @@ type AuthGuardProps = {
   children: React.ReactNode;
 };
 
-
-
 export function AuthGuard({ children }: AuthGuardProps) {
-
-
   const { authenticated, loading } = useAuthContext();
 
   const [isChecking, setIsChecking] = useState(true);

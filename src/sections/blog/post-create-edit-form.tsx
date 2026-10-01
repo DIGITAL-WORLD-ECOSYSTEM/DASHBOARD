@@ -85,11 +85,11 @@ export function PostCreateEditForm({ currentPost }: Props) {
     defaultValues,
     values: currentPost
       ? {
-        ...currentPost,
-        publish: currentPost.publish === 'published',
-        category: currentPost.category || 'Tecnologia',
-        slug: currentPost.slug || '',
-      }
+          ...currentPost,
+          publish: currentPost.publish === 'published',
+          category: currentPost.category || 'Tecnologia',
+          slug: currentPost.slug || '',
+        }
       : defaultValues,
   });
 
@@ -282,11 +282,7 @@ export function PostCreateEditForm({ currentPost }: Props) {
         justifyContent: 'flex-end',
       }}
     >
-      <Field.Switch
-        name="publish"
-        label="Publish"
-        sx={{ pl: 3, flexGrow: 1 }}
-      />
+      <Field.Switch name="publish" label="Publish" sx={{ pl: 3, flexGrow: 1 }} />
 
       <div>
         <Button color="inherit" variant="outlined" size="large" onClick={showPreview.onTrue}>

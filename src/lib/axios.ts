@@ -70,10 +70,11 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Never retry the refresh or logout endpoints themselves
+    // Never retry the refresh, logout, or login endpoints themselves
     const isAuthEndpoint =
       originalRequest?.url?.includes('/refresh') ||
-      originalRequest?.url?.includes('/logout');
+      originalRequest?.url?.includes('/logout') ||
+      originalRequest?.url?.includes('/login');
 
     if (error.response?.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
       // If already refreshing, queue this request until refresh resolves
@@ -93,7 +94,7 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axiosInstance.post('/api/core/identity/refresh');
+        const res = await axiosInstance.post('/api/v1/identity/refresh');
         const { accessToken } = res.data;
 
         if (accessToken) {
@@ -145,42 +146,58 @@ export const fetcher = async <T = unknown>(
 // ----------------------------------------------------------------------
 
 export const endpoints = {
-  chat: '/api/chat',
-  calendar: '/api/calendar',
+  chat: '/api/v1/chat',
+  calendar: '/api/v1/calendar',
   auth: {
-    me: '/api/core/identity/me',
-    signIn: '/api/core/identity/local/login',
-    signUp: '/api/core/identity/local/register',
-    web3Nonce: '/api/core/identity/web3/nonce',
-    web3Verify: '/api/core/identity/web3/verify',
+    me: '/api/v1/identity/me',
+    changePassword: '/api/v1/identity/change-password',
+    signIn: '/api/v1/identity/login',
+    signUp: '/api/v1/identity/register',
+    web3Nonce: '/api/v1/web3/challenge',
+    web3Verify: '/api/v1/identity/login/web3',
   },
   mail: {
-    list: '/api/mail/list',
-    details: '/api/mail/details',
-    labels: '/api/mail/labels',
+    list: '/api/v1/email/list',
+    details: '/api/v1/email/details',
+    labels: '/api/v1/email/labels',
   },
   post: {
-    list: '/api/posts',
-    details: '/api/posts', // O slug será passado via param
-    latest: '/api/posts', // Podemos usar o list com filtro ou limite
-    search: '/api/posts/search',
+    list: '/api/v1/posts',
+    details: '/api/v1/posts',
+    latest: '/api/v1/posts',
+    search: '/api/v1/posts/search',
   },
   product: {
-    list: '/api/product/list',
-    details: '/api/product/details',
-    search: '/api/product/search',
+    list: '/api/v1/product/list',
+    details: '/api/v1/product/details',
+    search: '/api/v1/product/search',
+  },
+  storage: {
+    upload: '/api/v1/storage/upload',
+  },
+  web3: {
+    wallets: '/api/v1/web3/wallets',
+    activeWallet: '/api/v1/web3/wallets/active',
+    balance: (address: string) => `/api/v1/web3/wallets/${address}/balance`,
+    sendTransaction: '/api/v1/web3/transactions/send',
+    link: '/api/v1/web3/wallets/link',
+    unlink: (address: string) => `/api/v1/web3/wallets/${address}`,
+    primary: (address: string) => `/api/v1/web3/wallets/${address}/primary`,
+    challenge: '/api/v1/web3/challenge',
   },
   platform: {
     email: {
-      campaign: '/api/platform/email/campaign',
+      campaign: '/api/v1/email/campaign',
+      accounts: '/api/v1/email/accounts',
     },
     treasury: {
-      analytics: '/api/platform/treasury/analytics',
+      root: '/api/v1/finance/treasury',
+      analytics: '/api/v1/finance/treasury/analytics',
     },
     identity: {
-      list: '/api/platform/identity/list',
-      base: '/api/platform/identity',
-      bulkDelete: '/api/platform/identity/bulk-delete',
+      list: '/api/v1/civil/citizens',
+      base: '/api/v1/civil/citizens',
+      bulkDelete: '/api/v1/civil/citizens/bulk-delete',
     },
   },
 } as const;

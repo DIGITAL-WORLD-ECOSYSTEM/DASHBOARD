@@ -10,6 +10,7 @@ const MOCK_TITLE = _postTitles[2];
 const ROOTS = {
   AUTH: '',
   DASHBOARD: '',
+  DEVOS: '/dev',
 };
 
 // ----------------------------------------------------------------------
@@ -56,8 +57,7 @@ export const paths = {
   // DASHBOARD
   dashboard: {
     root: '/',
-    devPanel: `${ROOTS.DASHBOARD}/dev-panel`,
-    mail: `${ROOTS.DASHBOARD}/mail`,
+    mail: `${ROOTS.DASHBOARD}/communication/email`,
     chat: `${ROOTS.DASHBOARD}/chat`,
     calendar: `${ROOTS.DASHBOARD}/calendar`,
     fileManager: `${ROOTS.DASHBOARD}/file-manager`,
@@ -78,19 +78,23 @@ export const paths = {
           associates: '#',
           members: `${ROOTS.DASHBOARD}/analytics/user/members`,
           users: `${ROOTS.DASHBOARD}/analytics/user/list`,
+          cards: `${ROOTS.DASHBOARD}/analytics/user/cards`,
+          new: `${ROOTS.DASHBOARD}/analytics/user/new`,
           api: '#',
         },
         finance: {
           root: `${ROOTS.DASHBOARD}/analytics/finance`,
-          treasury: `${ROOTS.DASHBOARD}/analytics/finance/treasury`,
-          payments: `${ROOTS.DASHBOARD}/analytics/finance/payments`,
           dao: '#',
           contract: `${ROOTS.DASHBOARD}/analytics/contract`,
-          ledger: `${ROOTS.DASHBOARD}/analytics/ledger`,
           api: '#',
         },
       },
-      banking: `${ROOTS.DASHBOARD}/banking`,
+      banking: {
+        root: `${ROOTS.DASHBOARD}/banking`,
+        treasury: `${ROOTS.DASHBOARD}/banking/treasury`,
+        payments: `${ROOTS.DASHBOARD}/banking/payments`,
+        financialHistory: `${ROOTS.DASHBOARD}/banking/financial-history`,
+      },
       file: `${ROOTS.DASHBOARD}/file`,
     },
     user: {
@@ -137,6 +141,40 @@ export const paths = {
       root: `${ROOTS.DASHBOARD}/order`,
       details: (id: string) => `${ROOTS.DASHBOARD}/order/${id}`,
       demo: { details: `${ROOTS.DASHBOARD}/order/${MOCK_ID}` },
-    }
+    },
+    communication: {
+      root: `${ROOTS.DASHBOARD}/communication`,
+      notifications: `${ROOTS.DASHBOARD}/communication/notifications`,
+      email: `${ROOTS.DASHBOARD}/communication/email`,
+      whatsapp: `${ROOTS.DASHBOARD}/communication/whatsapp`,
+      sms: `${ROOTS.DASHBOARD}/communication/sms`,
+      social: `${ROOTS.DASHBOARD}/communication/social`,
+      chat: `${ROOTS.DASHBOARD}/communication/chat`,
+      settings: `${ROOTS.DASHBOARD}/communication/settings`,
+    },
   },
+  // DEVOS
+  devos: {
+    root: ROOTS.DEVOS,
+    identity: `${ROOTS.DEVOS}/identity`,
+    impersonation: `${ROOTS.DEVOS}/impersonation`,
+    database: `${ROOTS.DEVOS}/database`,
+    apis: `${ROOTS.DEVOS}/apis`,
+    audit: `${ROOTS.DEVOS}/audit`,
+    security: `${ROOTS.DEVOS}/security`,
+    flags: `${ROOTS.DEVOS}/flags`,
+    infrastructure: `${ROOTS.DEVOS}/infrastructure`,
+    environment: `${ROOTS.DEVOS}/environment`,
+    testing: `${ROOTS.DEVOS}/testing`,
+    dao: `${ROOTS.DEVOS}/dao`,
+    releases: `${ROOTS.DEVOS}/releases`,
+    jobs: `${ROOTS.DEVOS}/jobs`,
+    registry: `${ROOTS.DEVOS}/registry`,
+    about: `${ROOTS.DEVOS}/about`,
+    founder: {
+      strategic: `${ROOTS.DEVOS}/founder/strategic`,
+      operations: `${ROOTS.DEVOS}/founder/operations`,
+      emergency: `${ROOTS.DEVOS}/founder/emergency`,
+    }
+  }
 };

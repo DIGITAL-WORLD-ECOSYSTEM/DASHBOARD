@@ -86,7 +86,15 @@ function AssetWidget({ asset }: AssetWidgetProps) {
         backgroundImage: `linear-gradient(135deg, ${alpha((theme.palette as any)[asset.color]?.light || '#fff', 0.2)}, ${alpha((theme.palette as any)[asset.color]?.main || '#fff', 0.2)})`,
       }}
     >
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 3,
+        }}
+      >
         <Typography variant="h6">{asset.currency}</Typography>
         <Box
           sx={{
@@ -106,18 +114,30 @@ function AssetWidget({ asset }: AssetWidgetProps) {
 
       <Stack spacing={1.5}>
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Typography variant="body2" sx={{ opacity: 0.72 }}>Total Entradas</Typography>
-          <Typography variant="subtitle2" sx={{ color: 'success.main' }}>+{fCurrency(asset.inbound)}</Typography>
+          <Typography variant="body2" sx={{ opacity: 0.72 }}>
+            Total Entradas
+          </Typography>
+          <Typography variant="subtitle2" sx={{ color: 'success.main' }}>
+            +{fCurrency(asset.inbound)}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Typography variant="body2" sx={{ opacity: 0.72 }}>Total Saídas</Typography>
-          <Typography variant="subtitle2" sx={{ color: 'error.main' }}>-{fCurrency(asset.outbound)}</Typography>
+          <Typography variant="body2" sx={{ opacity: 0.72 }}>
+            Total Saídas
+          </Typography>
+          <Typography variant="subtitle2" sx={{ color: 'error.main' }}>
+            -{fCurrency(asset.outbound)}
+          </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Typography variant="body2" sx={{ opacity: 0.72 }}>Tarifas/Gas</Typography>
-          <Typography variant="subtitle2" sx={{ color: 'warning.main' }}>-{fCurrency(asset.fees)}</Typography>
+          <Typography variant="body2" sx={{ opacity: 0.72 }}>
+            Tarifas/Gas
+          </Typography>
+          <Typography variant="subtitle2" sx={{ color: 'warning.main' }}>
+            -{fCurrency(asset.fees)}
+          </Typography>
         </Box>
       </Stack>
     </Card>

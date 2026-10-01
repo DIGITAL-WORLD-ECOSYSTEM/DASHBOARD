@@ -34,14 +34,26 @@ export function mapCitizenToUserItem(citizen: ICitizenItem): IUserItem {
     uiStatus = 'pending'; // fallback for 'none'
   }
 
+  let kycStatusMapped: any = citizen.kycStatus;
+  if (kycStatusMapped === 'none') kycStatusMapped = 'draft';
+
+  const currentYear = new Date().getFullYear().toString().slice(2);
+  const currentMonth = new Date().getMonth() + 1;
+  const paddedId = String(citizen.id).padStart(3, '0');
+  
+  const alphaHash = `${currentYear}${currentMonth}${paddedId}BR`;
+
   return {
     id: String(citizen.id),
+    aspId: alphaHash,
+    did: `did:asppibra:br:${alphaHash.toLowerCase()}`,
     name: `${citizen.firstName || ''} ${citizen.lastName || ''}`.trim() || citizen.username,
     email: citizen.email,
     phoneNumber: citizen.phoneNumber || '',
     company: citizen.cargoOsc || 'ASPPIBRA',
-    role: citizen.role,
-    status: uiStatus,
+    role: citizen.role === 'admin' ? 'admin' : citizen.role === 'system' ? 'dev' : 'user',
+    status: uiStatus as any,
+    kycStatus: kycStatusMapped,
     avatarUrl: citizen.avatarUrl || '',
     city: '',
     state: '',
@@ -49,6 +61,16 @@ export function mapCitizenToUserItem(citizen: ICitizenItem): IUserItem {
     zipCode: '',
     country: 'BR',
     isVerified: citizen.kycStatus === 'approved',
+    // Segurança e Atividade (Requer integração backend real na v2, setamos false/null para não ter fake success)
+    emailVerified: citizen.kycStatus === 'approved', // Simulação conservadora se for aprovado (mas o ideal seria ter campo db)
+    phoneVerified: Boolean(citizen.phoneNumber),
+    mfaEnabled: false,
+    passkeyCount: 0,
+    biometricVerified: false,
+    lastActivity: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    trustLevel: citizen.kycStatus === 'approved' ? 'Alto' : citizen.kycStatus === 'pending' ? 'Médio' : 'Baixo',
   };
 }
 
@@ -57,7 +79,10 @@ export function mapCitizenToUserItem(citizen: ICitizenItem): IUserItem {
 export function useGetCitizens() {
   const url = endpoints.platform.identity.list;
 
-  const { data, isLoading, error, isValidating, mutate } = useSWR<{ success: boolean; data: ICitizenItem[] }>(url, fetcher);
+  const { data, isLoading, error, isValidating, mutate } = useSWR<{
+    success: boolean;
+    data: ICitizenItem[];
+  }>(url, fetcher);
 
   const memoizedValue = useMemo(() => {
     const list = data?.data || [];
@@ -126,5 +151,19 @@ export async function deleteCitizen(id: string | number) {
 
 export async function deleteCitizens(ids: (string | number)[]) {
   const res = await axiosInstance.post(endpoints.platform.identity.bulkDelete, { ids });
+  return res.data;
+}
+
+// ----------------------------------------------------------------------
+// Self-Service (Usuário Logado)
+// ----------------------------------------------------------------------
+
+export async function updateMyProfile(data: Record<string, any>) {
+  const res = await axiosInstance.patch(endpoints.auth.me, data);
+  return res.data;
+}
+
+export async function changeMyPassword(data: Record<string, any>) {
+  const res = await axiosInstance.post(endpoints.auth.changePassword, data);
   return res.data;
 }

@@ -50,7 +50,10 @@ export function AppOnboarding({ ...other }) {
       </Typography>
 
       <Box sx={{ mb: 3 }}>
-        <Stack direction="row" sx={{  alignItems: "center", justifyContent: "space-between" ,  mb: 1  }}>
+        <Stack
+          direction="row"
+          sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 1 }}
+        >
           <Typography variant="body2" sx={{ fontWeight: 'fontWeightMedium' }}>
             Progresso
           </Typography>

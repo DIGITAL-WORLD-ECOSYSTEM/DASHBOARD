@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { usePopover } from 'minimal-shared/hooks';
 
 import Box from '@mui/material/Box';
@@ -33,13 +32,13 @@ export function BankingExportHub({ onExport, disabled }: Props) {
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Tooltip title="Gerar Snapshot Auditável">
-          <IconButton 
-            color="primary" 
+          <IconButton
+            color="primary"
             onClick={() => handleExport('SNAPSHOT')}
             disabled={disabled}
             sx={{ bgcolor: 'primary.lighter' }}
           >
-            <Iconify icon={"solar:camera-bold-duotone" as any} />
+            <Iconify icon={'solar:camera-bold-duotone' as any} />
           </IconButton>
         </Tooltip>
 
@@ -62,36 +61,42 @@ export function BankingExportHub({ onExport, disabled }: Props) {
         slotProps={{ arrow: { placement: 'top-right' } }}
       >
         <MenuList>
-          <Typography variant="overline" sx={{ px: 2, py: 1, color: 'text.secondary', display: 'block' }}>
+          <Typography
+            variant="overline"
+            sx={{ px: 2, py: 1, color: 'text.secondary', display: 'block' }}
+          >
             Formatos Contábeis
           </Typography>
 
           <MenuItem onClick={() => handleExport('XLSX')}>
-            <Iconify icon={"vscode-icons:file-type-excel" as any} />
+            <Iconify icon={'vscode-icons:file-type-excel' as any} />
             Planilha (XLSX)
           </MenuItem>
 
           <MenuItem onClick={() => handleExport('OFX')}>
-            <Iconify icon={"solar:banknotes-bold" as any} sx={{ color: 'success.main' }} />
+            <Iconify icon={'solar:banknotes-bold' as any} sx={{ color: 'success.main' }} />
             Padrão Bancário (OFX)
           </MenuItem>
-          
+
           <MenuItem onClick={() => handleExport('CSV')}>
-            <Iconify icon={"solar:file-text-bold" as any} sx={{ color: 'info.main' }} />
+            <Iconify icon={'solar:file-text-bold' as any} sx={{ color: 'info.main' }} />
             Dados Brutos (CSV)
           </MenuItem>
 
-          <Typography variant="overline" sx={{ px: 2, py: 1, color: 'text.secondary', display: 'block' }}>
+          <Typography
+            variant="overline"
+            sx={{ px: 2, py: 1, color: 'text.secondary', display: 'block' }}
+          >
             Formatos Legais
           </Typography>
 
           <MenuItem onClick={() => handleExport('PDF')}>
-            <Iconify icon={"vscode-icons:file-type-pdf2" as any} />
+            <Iconify icon={'vscode-icons:file-type-pdf2' as any} />
             Comprovante Visual (PDF)
           </MenuItem>
 
           <MenuItem onClick={() => handleExport('JSON')}>
-            <Iconify icon={"vscode-icons:file-type-json" as any} />
+            <Iconify icon={'vscode-icons:file-type-json' as any} />
             Data Dump API (JSON)
           </MenuItem>
         </MenuList>

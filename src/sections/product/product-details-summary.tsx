@@ -299,7 +299,7 @@ export function ProductDetailsSummary({
   return (
     <Form methods={methods} onSubmit={onSubmit}>
       <Stack spacing={3} sx={{ pt: 3 }} {...other}>
-        <Stack spacing={2} sx={{ alignItems:"flex-start" }}>
+        <Stack spacing={2} sx={{ alignItems: 'flex-start' }}>
           {renderLabels()}
           {renderInventoryType()}
 

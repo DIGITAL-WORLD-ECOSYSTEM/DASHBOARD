@@ -4,6 +4,7 @@ import { removeLastSlash } from 'minimal-shared/utils';
 
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
+import Card from '@mui/material/Card';
 
 import { paths } from 'src/routes/paths';
 import { usePathname } from 'src/routes/hooks';
@@ -18,29 +19,29 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
 const NAV_ITEMS = [
   {
-    label: 'General',
+    label: 'Perfil Geral',
     icon: <Iconify width={24} icon="solar:user-id-bold" />,
     href: paths.dashboard.user.account,
   },
   {
-    label: 'Billing',
-    icon: <Iconify width={24} icon="solar:bill-list-bold" />,
-    href: `${paths.dashboard.user.account}/billing`,
-  },
-  {
-    label: 'Notifications',
+    label: 'Notificações',
     icon: <Iconify width={24} icon="solar:bell-bing-bold" />,
     href: `${paths.dashboard.user.account}/notifications`,
   },
   {
-    label: 'Social links',
+    label: 'Redes Sociais',
     icon: <Iconify width={24} icon="solar:share-bold" />,
     href: `${paths.dashboard.user.account}/socials`,
   },
   {
-    label: 'Security',
+    label: 'Segurança',
     icon: <Iconify width={24} icon="ic:round-vpn-key" />,
     href: `${paths.dashboard.user.account}/change-password`,
+  },
+  {
+    label: 'Autenticador 2FA',
+    icon: <Iconify width={24} icon={'solar:shield-keyhole-bold' as any} />,
+    href: `${paths.dashboard.user.account}/2fa`,
   },
 ];
 
@@ -52,27 +53,61 @@ export function AccountLayout({ children, ...other }: DashboardContentProps) {
   return (
     <DashboardContent {...other}>
       <CustomBreadcrumbs
-        heading="Account"
+        heading="Central de Identidade Digital"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'User', href: paths.dashboard.user.root },
-          { name: 'Account' },
+          { name: 'Minha Conta', href: paths.dashboard.user.root },
+          { name: 'Identidade Digital' },
         ]}
         sx={{ mb: 3 }}
       />
 
-      <Tabs value={removeLastSlash(pathname)} sx={{ mb: { xs: 3, md: 5 } }}>
-        {NAV_ITEMS.map((tab) => (
-          <Tab
-            component={RouterLink}
-            key={tab.href}
-            label={tab.label}
-            icon={tab.icon}
-            value={tab.href}
-            href={tab.href}
-          />
-        ))}
-      </Tabs>
+      <Card
+        sx={{
+          mb: { xs: 3, md: 5 },
+          p: 1,
+          borderRadius: 2,
+          boxShadow: (theme) => theme.vars.customShadows.z4,
+        }}
+      >
+        <Tabs
+          value={removeLastSlash(pathname)}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{
+            minHeight: 48,
+            '& .MuiTabs-indicator': { display: 'none' },
+            '& .MuiTab-root': {
+              minHeight: 48,
+              minWidth: 120,
+              borderRadius: 1.5,
+              mx: 0.5,
+              transition: 'all 0.3s',
+              '&.Mui-selected': {
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                boxShadow: (theme) => theme.vars.customShadows.primary,
+              },
+              '&:hover:not(.Mui-selected)': {
+                bgcolor: 'background.neutral',
+              },
+            },
+          }}
+        >
+          {NAV_ITEMS.map((tab) => (
+            <Tab
+              component={RouterLink}
+              key={tab.href}
+              label={tab.label}
+              icon={tab.icon}
+              iconPosition="start"
+              value={tab.href}
+              href={tab.href}
+              sx={{ fontWeight: 'fontWeightSemiBold' }}
+            />
+          ))}
+        </Tabs>
+      </Card>
 
       {children}
     </DashboardContent>

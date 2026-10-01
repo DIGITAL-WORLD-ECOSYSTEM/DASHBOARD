@@ -2,7 +2,6 @@ import type { IChatMessage, IChatParticipant } from 'src/types/chat';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -12,7 +11,8 @@ import { fToNow } from 'src/utils/format-time';
 
 import { Iconify } from 'src/components/iconify';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/facades';
+import { IdentityAvatar } from 'src/auth/components';
 
 import { getMessage } from './utils/get-message';
 
@@ -25,7 +25,7 @@ type Props = {
 };
 
 export function ChatMessageItem({ message, participants, onOpenLightbox }: Props) {
-  const { user } = useMockedUser();
+  const user = useUserProfile();
 
   const { me, senderDetails, hasImage } = getMessage({
     message,
@@ -50,7 +50,7 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
 
   const renderReadReceipt = () => {
     if (!me || !message.readReceipt) return null;
-    
+
     let icon = 'solar:check-read-linear';
     let color = 'text.disabled';
 
@@ -112,20 +112,28 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
               {message.systemData.amount} {message.systemData.currency}
             </Typography>
           )}
-          <Button variant="contained" color="primary" size="small" fullWidth>Pagar Agora</Button>
+          <Button variant="contained" color="primary" size="small" fullWidth>
+            Pagar Agora
+          </Button>
         </Stack>
       ) : message.messageType === 'proposal' ? (
         <Stack spacing={1.5} sx={{ minWidth: 240 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Iconify icon={"solar:document-text-bold" as any} sx={{ color: 'info.main' }} />
+            <Iconify icon={'solar:document-text-bold' as any} sx={{ color: 'info.main' }} />
             <Typography variant="subtitle2">Proposta #{message.systemData?.proposalId}</Typography>
           </Box>
           <Divider sx={{ borderStyle: 'dashed' }} />
           <Typography variant="body2">{body}</Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>{message.systemData?.title}</Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            {message.systemData?.title}
+          </Typography>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button variant="soft" color="success" size="small" fullWidth>Aprovar</Button>
-            <Button variant="soft" color="error" size="small" fullWidth>Rejeitar</Button>
+            <Button variant="soft" color="success" size="small" fullWidth>
+              Aprovar
+            </Button>
+            <Button variant="soft" color="error" size="small" fullWidth>
+              Rejeitar
+            </Button>
           </Box>
         </Stack>
       ) : (
@@ -136,17 +144,32 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
 
   const renderSystemMessage = () => (
     <Box sx={{ width: 1, display: 'flex', justifyContent: 'center', my: 2 }}>
-      <Stack spacing={1} sx={{ alignItems: 'center', p: 2, bgcolor: 'background.neutral', borderRadius: 2, border: (theme) => `1px dashed ${theme.vars.palette.divider}`, minWidth: 320 }}>
+      <Stack
+        spacing={1}
+        sx={{
+          alignItems: 'center',
+          p: 2,
+          bgcolor: 'background.neutral',
+          borderRadius: 2,
+          border: (theme) => `1px dashed ${theme.vars.palette.divider}`,
+          minWidth: 320,
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Iconify icon="solar:info-circle-bold" sx={{ color: 'text.secondary' }} />
           <Typography variant="subtitle2">{body}</Typography>
         </Box>
         {message.systemData && (
-          <Typography variant="h6" sx={{ color: message.systemData.action === 'pix_in' ? 'success.main' : 'text.primary' }}>
+          <Typography
+            variant="h6"
+            sx={{ color: message.systemData.action === 'pix_in' ? 'success.main' : 'text.primary' }}
+          >
             + R$ {message.systemData.amount.toFixed(2)}
           </Typography>
         )}
-        <Button variant="outlined" size="small" sx={{ mt: 1 }}>Ver Transação</Button>
+        <Button variant="outlined" size="small" sx={{ mt: 1 }}>
+          Ver Transação
+        </Button>
       </Stack>
     </Box>
   );
@@ -191,7 +214,7 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
 
   return (
     <Box sx={{ mb: 5, display: 'flex', justifyContent: me ? 'flex-end' : 'unset' }}>
-      {!me && <Avatar alt={firstName} src={avatarUrl} sx={{ width: 32, height: 32, mr: 2 }} />}
+      {!me && <IdentityAvatar user={{ displayName: firstName || '', displayEmail: '', photoURL: avatarUrl, isWeb3Account: false }} size="sm" sx={{ mr: 2 }} />}
 
       <Stack sx={{ alignItems: me ? 'flex-end' : 'flex-start' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>

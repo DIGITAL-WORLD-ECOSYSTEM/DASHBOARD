@@ -18,11 +18,7 @@ export class CryptoCore {
       ['sign']
     );
 
-    const signature = await crypto.subtle.sign(
-      { name: 'Ed25519' },
-      key,
-      message as any
-    );
+    const signature = await crypto.subtle.sign({ name: 'Ed25519' }, key, message as any);
 
     return new Uint8Array(signature);
   }
@@ -38,20 +34,11 @@ export class CryptoCore {
     try {
       const algorithm = { name: 'Ed25519' };
 
-      const importedKey = await crypto.subtle.importKey(
-        'raw',
-        publicKey as any,
-        algorithm,
-        false,
-        ['verify']
-      );
+      const importedKey = await crypto.subtle.importKey('raw', publicKey as any, algorithm, false, [
+        'verify',
+      ]);
 
-      return await crypto.subtle.verify(
-        algorithm,
-        importedKey,
-        signature as any,
-        message as any
-      );
+      return await crypto.subtle.verify(algorithm, importedKey, signature as any, message as any);
     } catch (e) {
       console.error('CryptoCore Error:', e);
       return false;

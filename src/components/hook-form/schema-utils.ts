@@ -26,9 +26,12 @@ export const schemaUtils = {
    * Apply for email input.
    */
   email: (props?: { message?: SchemaErrorMessages }) =>
-    z.string().email({
-      message: (props?.message?.invalid ?? 'Email must be a valid email address!'),
-    }).min(1, { message: props?.message?.required ?? 'Email is required!' }),
+    z
+      .string()
+      .email({
+        message: props?.message?.invalid ?? 'Email must be a valid email address!',
+      })
+      .min(1, { message: props?.message?.required ?? 'Email is required!' }),
 
   /**
    * Date
@@ -145,7 +148,7 @@ export function testCase<T extends z.ZodTypeAny>(schema: T, values: unknown[]) {
     const label = result.success
       ? color.green(`✅ Valid - ${serializedValue}`)
       : color.red(`❌ Error - ${serializedValue}`);
-    
+
     const payload = result.success ? result.data : result.error.issues;
 
     console.info(`${label} ${type}:`, JSON.stringify(payload, null, 2));

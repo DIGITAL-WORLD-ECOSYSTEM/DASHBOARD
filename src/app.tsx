@@ -7,6 +7,7 @@ import { usePathname } from 'src/routes/hooks';
 import { LocalizationProvider } from 'src/locales';
 import { themeConfig, ThemeProvider } from 'src/theme';
 import { I18nProvider } from 'src/locales/i18n-provider';
+import { ChatRealtimeProvider } from 'src/contexts/chat-realtime-context';
 
 import { Snackbar } from 'src/components/snackbar';
 import { ProgressBar } from 'src/components/progress-bar';
@@ -37,10 +38,12 @@ export default function App({ children }: AppProps) {
             >
               <MotionLazy>
                 <CheckoutProvider>
-                  <Snackbar />
-                  <ProgressBar />
-                  <SettingsDrawer defaultSettings={defaultSettings} />
-                  {children}
+                  <ChatRealtimeProvider>
+                    <Snackbar />
+                    <ProgressBar />
+                    <SettingsDrawer defaultSettings={defaultSettings} />
+                    {children}
+                  </ChatRealtimeProvider>
                 </CheckoutProvider>
               </MotionLazy>
             </ThemeProvider>

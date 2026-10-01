@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import { Iconify } from 'src/components/iconify';
@@ -9,20 +8,18 @@ import { Iconify } from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 export function AppNetworkGrowth({ ...other }) {
-  
-
   return (
-    <Card 
-      sx={{ 
-        p: 3, 
-        bgcolor: 'primary.dark', 
+    <Card
+      sx={{
+        p: 3,
+        bgcolor: 'primary.dark',
         color: 'primary.lighter',
-        ...other
+        ...other,
       }}
     >
-      <Stack direction="row" sx={{  alignItems: "center", justifyContent: "space-between" ,  mb: 2  }}>
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6">Crescimento da Comunidade</Typography>
-        <Iconify icon={"solar:chart-square-bold" as any} width={24} sx={{ opacity: 0.48 }} />
+        <Iconify icon={'solar:chart-square-bold' as any} width={24} sx={{ opacity: 0.48 }} />
       </Stack>
 
       <Stack spacing={2}>
@@ -37,11 +34,13 @@ export function AppNetworkGrowth({ ...other }) {
 function GrowthItem({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+      <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
         <Iconify icon={icon as any} width={20} sx={{ opacity: 0.72 }} />
         <Typography variant="body2">{label}</Typography>
       </Stack>
-      <Typography variant="subtitle2" sx={{ color: 'success.light' }}>{value}</Typography>
+      <Typography variant="subtitle2" sx={{ color: 'success.light' }}>
+        {value}
+      </Typography>
     </Box>
   );
 }
@@ -49,8 +48,6 @@ function GrowthItem({ icon, label, value }: { icon: string; label: string; value
 // ----------------------------------------------------------------------
 
 export function AppEcosystemNumbers({ ...other }) {
-  
-
   return (
     <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: 'repeat(2, 1fr)', ...other }}>
       <NumberCard title="Membros" value="1.240" icon="solar:user-id-bold" color="info" />
@@ -61,11 +58,27 @@ export function AppEcosystemNumbers({ ...other }) {
   );
 }
 
-function NumberCard({ title, value, icon, color }: { title: string; value: string; icon: string; color: string }) {
-  
-  
+function NumberCard({
+  title,
+  value,
+  icon,
+  color,
+}: {
+  title: string;
+  value: string;
+  icon: string;
+  color: string;
+}) {
   return (
-    <Card sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+    <Card
+      sx={{
+        p: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        textAlign: 'center',
+      }}
+    >
       <Box
         sx={{
           mb: 1,
@@ -76,13 +89,16 @@ function NumberCard({ title, value, icon, color }: { title: string; value: strin
           alignItems: 'center',
           justifyContent: 'center',
           color: `${color}.main`,
-          bgcolor: (t) => `rgba(${t.vars.palette[color as 'primary'|'info'|'warning'|'success'].mainChannel} / 0.16)`,
+          bgcolor: (t) =>
+            `rgba(${t.vars.palette[color as 'primary' | 'info' | 'warning' | 'success'].mainChannel} / 0.16)`,
         }}
       >
         <Iconify icon={icon as any} width={24} />
       </Box>
       <Typography variant="h6">{value}</Typography>
-      <Typography variant="body2" sx={{ color: 'text.secondary' }}>{title}</Typography>
+      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+        {title}
+      </Typography>
     </Card>
   );
 }

@@ -13,13 +13,17 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
+import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { SentIcon } from 'src/assets/icons';
 
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
+import { getErrorMessage } from '../../utils/error-message';
 import { FormResendCode } from '../../components/form-resend-code';
+import { IdentitySessionService } from '../../application/identity-session.service';
 
 // ----------------------------------------------------------------------
 
@@ -49,11 +53,14 @@ export const UpdatePasswordSchema = z
 
 export function JwtUpdatePasswordView() {
   const theme = useTheme();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlToken = searchParams.get('token') || '';
 
   const showPassword = useBoolean();
 
   const defaultValues: UpdatePasswordSchemaType = {
-    code: '',
+    code: urlToken,
     email: '',
     password: '',
     confirmPassword: '',
@@ -71,10 +78,12 @@ export function JwtUpdatePasswordView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.info('DATA', data);
+      const tokenToUse = urlToken || data.code;
+      await IdentitySessionService.resetPassword(tokenToUse, data.email, data.password);
+      toast.success('Senha atualizada! Faça login.');
+      router.push(paths.auth.jwt.signIn);
     } catch (error) {
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   });
 
@@ -84,14 +93,14 @@ export function JwtUpdatePasswordView() {
         name="email"
         label="E-mail"
         placeholder="usuario@mundodigital.com"
-        slotProps={{ 
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -108,13 +117,26 @@ export function JwtUpdatePasswordView() {
               '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
               '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
               '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
-            }
-          }
+            },
+          },
         }}
       />
 
-      <Box sx={{ p: 2, border: `1px dashed ${alpha(theme.palette.info.main, 0.2)}`, borderRadius: 1 }}>
-        <Typography variant="caption" sx={{ color: 'info.main', mb: 1, display: 'block', fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 700 }}>CÓDIGO DE VERIFICAÇÃO</Typography>
+      <Box
+        sx={{ p: 2, border: `1px dashed ${alpha(theme.palette.info.main, 0.2)}`, borderRadius: 1 }}
+      >
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'info.main',
+            mb: 1,
+            display: 'block',
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontWeight: 700,
+          }}
+        >
+          CÓDIGO DE VERIFICAÇÃO
+        </Typography>
         <Field.Code name="code" />
       </Box>
 
@@ -123,13 +145,13 @@ export function JwtUpdatePasswordView() {
         label="Nova Senha"
         type={showPassword.value ? 'text' : 'password'}
         slotProps={{
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -163,13 +185,13 @@ export function JwtUpdatePasswordView() {
         label="Confirmar Nova Senha"
         type={showPassword.value ? 'text' : 'password'}
         slotProps={{
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -255,13 +277,29 @@ export function JwtUpdatePasswordView() {
     >
       <Box sx={{ mb: 2, textAlign: 'center' }}>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
-           <SentIcon sx={{ width: 64, height: 64, color: 'info.main', filter: `drop-shadow(0 0 15px ${alpha(theme.palette.info.main, 0.4)})` }} />
+          <SentIcon
+            sx={{
+              width: 64,
+              height: 64,
+              color: 'info.main',
+              filter: `drop-shadow(0 0 15px ${alpha(theme.palette.info.main, 0.4)})`,
+            }}
+          />
         </Box>
-        <Typography variant="h5" sx={{ color: 'info.main', mb: 1, fontWeight: 900, fontFamily: 'var(--font-orbitron), sans-serif' }}>
+        <Typography
+          variant="h5"
+          sx={{
+            color: 'info.main',
+            mb: 1,
+            fontWeight: 900,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+          }}
+        >
           SOLICITAÇÃO ENVIADA!
         </Typography>
         <Typography variant="body2" sx={{ color: 'grey.500', fontSize: 13 }}>
-          Enviamos um código de confirmação de 6 dígitos para o seu e-mail. Por favor, insira o código abaixo para redefinir sua senha.
+          Enviamos um código de confirmação de 6 dígitos para o seu e-mail. Por favor, insira o
+          código abaixo para redefinir sua senha.
         </Typography>
       </Box>
 
@@ -269,13 +307,35 @@ export function JwtUpdatePasswordView() {
         {renderForm()}
       </Form>
 
-      <FormResendCode onResendCode={() => {}} value={0} disabled={false} sx={{ color: 'info.main', '& .MuiButton-root': { color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif' } }} />
+      <FormResendCode
+        onResendCode={() => {}}
+        value={0}
+        disabled={false}
+        sx={{
+          color: 'info.main',
+          '& .MuiButton-root': {
+            color: 'info.main',
+            fontWeight: 800,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+          },
+        }}
+      />
 
       <Box sx={{ mt: 2, textAlign: 'center' }}>
-        <Link 
-          component={RouterLink} 
-          href={paths.auth.jwt.signIn} 
-          sx={{ color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontSize: 13 }}
+        <Link
+          component={RouterLink}
+          href={paths.auth.jwt.signIn}
+          sx={{
+            color: 'info.main',
+            fontWeight: 800,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+            fontSize: 13,
+          }}
         >
           <Iconify icon="eva:arrow-ios-back-fill" />
           VOLTAR PARA O LOGIN

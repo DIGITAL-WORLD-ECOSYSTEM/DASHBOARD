@@ -66,9 +66,14 @@ export interface ITreasuryAnalytics {
 }
 
 export function useGetTreasuryAnalytics(year?: string) {
-  const url = year ? `${endpoints.platform.treasury.analytics}?year=${year}` : endpoints.platform.treasury.analytics;
+  const url = year
+    ? `${endpoints.platform.treasury.analytics}?year=${year}`
+    : endpoints.platform.treasury.analytics;
 
-  const { data, isLoading, error, isValidating } = useSWR<{ data: ITreasuryAnalytics }>(url, fetcher);
+  const { data, isLoading, error, isValidating } = useSWR<{ data: ITreasuryAnalytics }>(
+    url,
+    fetcher
+  );
 
   const memoizedValue = useMemo(
     () => ({
@@ -77,6 +82,28 @@ export function useGetTreasuryAnalytics(year?: string) {
       analyticsError: error,
       analyticsValidating: isValidating,
       analyticsEmpty: !isLoading && !data?.data,
+    }),
+    [data, error, isLoading, isValidating]
+  );
+
+  return memoizedValue;
+}
+
+export function useGetCitizenLedger(citizenId: string | number | null) {
+  const url = citizenId ? `${endpoints.platform.treasury.root}/citizen/${citizenId}/ledger` : '';
+
+  const { data, isLoading, error, isValidating } = useSWR<{ success: boolean; data: any }>(
+    url ? url : null,
+    fetcher
+  );
+
+  const memoizedValue = useMemo(
+    () => ({
+      profile: data?.data || null,
+      profileLoading: isLoading,
+      profileError: error,
+      profileValidating: isValidating,
+      profileEmpty: !isLoading && !data?.data,
     }),
     [data, error, isLoading, isValidating]
   );

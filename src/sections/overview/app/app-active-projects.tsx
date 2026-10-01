@@ -33,33 +33,42 @@ export function AppActiveProjects({ list, ...other }: Props) {
 function ProjectItem({ project }: { project: ActiveProject }) {
   const getStatusColor = () => {
     switch (project.status) {
-      case 'completed': return 'success';
-      case 'planning': return 'warning';
-      default: return 'primary';
+      case 'completed':
+        return 'success';
+      case 'planning':
+        return 'warning';
+      default:
+        return 'primary';
     }
   };
 
   return (
     <Stack spacing={1}>
-      <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between" }}>
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          <Iconify icon={"solar:rocket-bold-duotone" as any} sx={{ color: `${getStatusColor()}.main` }} />
+      <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Iconify
+            icon={'solar:rocket-bold-duotone' as any}
+            sx={{ color: `${getStatusColor()}.main` }}
+          />
           <Typography variant="subtitle2">{project.name}</Typography>
         </Stack>
-        <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 'fontWeightMedium' }}>
+        <Typography
+          variant="body2"
+          sx={{ color: 'text.secondary', fontWeight: 'fontWeightMedium' }}
+        >
           {project.progress}%
         </Typography>
       </Stack>
-      
+
       <Typography variant="body2" sx={{ color: 'text.secondary' }}>
         {project.description}
       </Typography>
 
-      <LinearProgress 
-        variant="determinate" 
-        value={project.progress} 
-        color={getStatusColor()} 
-        sx={{ height: 6, borderRadius: 1 }} 
+      <LinearProgress
+        variant="determinate"
+        value={project.progress}
+        color={getStatusColor()}
+        sx={{ height: 6, borderRadius: 1 }}
       />
     </Stack>
   );

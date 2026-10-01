@@ -21,7 +21,13 @@ type Props = {
   requireKeyword?: string;
 };
 
-export function BankingStepUpModal({ open, onClose, onSuccess, actionTitle = 'Confirme sua Identidade', requireKeyword }: Props) {
+export function BankingStepUpModal({
+  open,
+  onClose,
+  onSuccess,
+  actionTitle = 'Confirme sua Identidade',
+  requireKeyword,
+}: Props) {
   const [password, setPassword] = useState('');
   const [keyword, setKeyword] = useState('');
   const [attempts, setAttempts] = useState(0);
@@ -61,18 +67,33 @@ export function BankingStepUpModal({ open, onClose, onSuccess, actionTitle = 'Co
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Iconify icon={"solar:shield-warning-bold-duotone" as any} width={24} sx={{ color: 'warning.main' }} />
+        <Iconify
+          icon={'solar:shield-warning-bold-duotone' as any}
+          width={24}
+          sx={{ color: 'warning.main' }}
+        />
         {actionTitle}
       </DialogTitle>
 
       <DialogContent>
         <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-          Para continuar com esta ação sensível, precisamos confirmar sua identidade através de Step-Up Authentication (MOCK).
+          Para continuar com esta ação sensível, precisamos confirmar sua identidade através de
+          Step-Up Authentication (MOCK).
         </Typography>
 
         {isLocked ? (
-          <Box sx={{ p: 2, bgcolor: 'error.lighter', color: 'error.darker', borderRadius: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Iconify icon={"solar:danger-circle-bold" as any} width={24} />
+          <Box
+            sx={{
+              p: 2,
+              bgcolor: 'error.lighter',
+              color: 'error.darker',
+              borderRadius: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Iconify icon={'solar:danger-circle-bold' as any} width={24} />
             Rate Limit Excedido: Muitas tentativas falhas. Conta bloqueada temporariamente.
           </Box>
         ) : (
@@ -105,7 +126,12 @@ export function BankingStepUpModal({ open, onClose, onSuccess, actionTitle = 'Co
         <Button onClick={handleClose} color="inherit">
           Cancelar
         </Button>
-        <Button onClick={handleSubmit} variant="contained" color="primary" disabled={isLocked || !password || (!!requireKeyword && !keyword)}>
+        <Button
+          onClick={handleSubmit}
+          variant="contained"
+          color="primary"
+          disabled={isLocked || !password || (!!requireKeyword && !keyword)}
+        >
           Confirmar
         </Button>
       </DialogActions>

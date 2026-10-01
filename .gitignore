@@ -119,3 +119,9 @@ dist
 dist-ssr
 .vercel
 .output
+
+# Temporary developer scripts & reports
+*.py
+*.cjs
+tsc_errors*.txt
+audit_files.txt

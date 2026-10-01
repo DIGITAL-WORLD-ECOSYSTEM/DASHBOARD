@@ -16,7 +16,6 @@ import { usePathname } from '../hooks';
 
 // Overview
 const IndexPage = lazy(() => import('src/pages/dashboard'));
-const DevPanelPage = lazy(() => import('src/pages/dashboard/dev-panel'));
 const OverviewEcommercePage = lazy(() => import('src/pages/dashboard/ecommerce'));
 const OverviewBankingPage = lazy(() => import('src/pages/dashboard/banking'));
 const OverviewBankingContaPage = lazy(() => import('src/pages/dashboard/banking/conta'));
@@ -29,10 +28,9 @@ const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
 // Analytics
 const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/global'));
 const AnalyticsContractPage = lazy(() => import('src/pages/dashboard/analytics/contract'));
-const AnalyticsLedgerPage = lazy(() => import('src/pages/dashboard/analytics/ledger'));
-const AnalyticsTreasuryPage = lazy(() => import('src/pages/dashboard/analytics/finance/treasury'));
-const AnalyticsPaymentsPage = lazy(() => import('src/pages/dashboard/analytics/finance/payments'));
-const AnalyticsSocialApiPage = lazy(() => import('src/pages/dashboard/analytics/social-api'));
+const BankingFinancialHistoryPage = lazy(() => import('src/pages/dashboard/banking/financial-history'));
+const BankingTreasuryPage = lazy(() => import('src/pages/dashboard/banking/treasury'));
+const BankingPaymentsPage = lazy(() => import('src/pages/dashboard/banking/payments'));
 const AnalyticsUserListPage = lazy(() => import('src/pages/dashboard/analytics/user-list'));
 const AnalyticsUserMembersPage = lazy(() => import('src/pages/dashboard/analytics/user-members'));
 // Product
@@ -50,10 +48,7 @@ const InvoiceCreatePage = lazy(() => import('src/pages/dashboard/invoice/new'));
 const InvoiceEditPage = lazy(() => import('src/pages/dashboard/invoice/edit'));
 // User
 const UserProfilePage = lazy(() => import('src/pages/dashboard/user/profile'));
-const UserCardsPage = lazy(() => import('src/pages/dashboard/user/cards'));
-const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
 const UserCreatePage = lazy(() => import('src/pages/dashboard/user/new'));
-const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
 // Account
 const AccountGeneralPage = lazy(() => import('src/pages/dashboard/user/account/general'));
 const AccountBillingPage = lazy(() => import('src/pages/dashboard/user/account/billing'));
@@ -64,6 +59,7 @@ const AccountNotificationsPage = lazy(
 const AccountChangePasswordPage = lazy(
   () => import('src/pages/dashboard/user/account/change-password')
 );
+const AccountTwoFAPage = lazy(() => import('src/pages/dashboard/user/account/2fa'));
 // Blog
 const BlogPostsPage = lazy(() => import('src/pages/dashboard/post/list'));
 const BlogPostPage = lazy(() => import('src/pages/dashboard/post/details'));
@@ -75,6 +71,16 @@ const FileManagerPage = lazy(() => import('src/pages/dashboard/file-manager'));
 const ChatPage = lazy(() => import('src/pages/dashboard/chat'));
 const MailPage = lazy(() => import('src/pages/dashboard/mail'));
 const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
+
+// Communication (Notifications)
+const CommNotificationsPage = lazy(() => import('src/pages/dashboard/communication/notifications'));
+const CommEmailPage = lazy(() => import('src/pages/dashboard/communication/email'));
+const CommWhatsAppPage = lazy(() => import('src/pages/dashboard/communication/whatsapp'));
+const CommSmsPage = lazy(() => import('src/pages/dashboard/communication/sms'));
+const CommSocialPage = lazy(() => import('src/pages/dashboard/communication/social'));
+const CommChatPage = lazy(() => import('src/pages/dashboard/communication/chat'));
+const CommSettingsPage = lazy(() => import('src/pages/dashboard/communication/settings'));
+
 
 // ----------------------------------------------------------------------
 
@@ -99,40 +105,34 @@ const accountLayout = () => (
   </AccountLayout>
 );
 
+const AdminGuardOutlet = () => (
+  <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+    <SuspenseOutlet />
+  </RoleBasedGuard>
+);
+
 export const dashboardRoutes: RouteObject[] = [
   {
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
       { index: true, element: <IndexPage /> },
-      {
-        path: 'dev-panel',
+      { 
+        path: 'ecommerce', 
         element: (
-          <RoleBasedGuard allowedRoles={['dev']} hasContent>
-            <DevPanelPage />
+          <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+            <OverviewEcommercePage />
           </RoleBasedGuard>
-        ),
+        ) 
       },
-      { path: 'ecommerce', element: <OverviewEcommercePage /> },
+      { path: 'chat', element: <ChatPage /> },
       {
         path: 'analytics',
+        element: <AdminGuardOutlet />,
         children: [
           { index: true, element: <AnalyticsGlobalPage /> },
           { path: 'global', element: <AnalyticsGlobalPage /> },
           { path: 'contract', element: <AnalyticsContractPage /> },
-          { path: 'ledger', element: <AnalyticsLedgerPage /> },
-          {
-            path: 'finance',
-            children: [
-              { path: 'treasury', element: <AnalyticsTreasuryPage /> },
-              { path: 'payments', element: <AnalyticsPaymentsPage /> },
-            ],
-          },
-          {
-            path: 'social',
-            children: [
-              { path: 'api', element: <AnalyticsSocialApiPage /> },
-            ],
-          },
+
           {
             path: 'user',
             children: [
@@ -152,6 +152,30 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'receber', element: <OverviewBankingReceberPage /> },
           { path: 'transferencias', element: <OverviewBankingTransferenciasPage /> },
           { path: 'transacoes', element: <OverviewBankingTransacoesPage /> },
+          { 
+            path: 'financial-history', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <BankingFinancialHistoryPage />
+              </RoleBasedGuard>
+            ) 
+          },
+          { 
+            path: 'treasury', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <BankingTreasuryPage />
+              </RoleBasedGuard>
+            ) 
+          },
+          { 
+            path: 'payments', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <BankingPaymentsPage />
+              </RoleBasedGuard>
+            ) 
+          },
         ]
       },
       { path: 'file', element: <OverviewFilePage /> },
@@ -160,10 +184,7 @@ export const dashboardRoutes: RouteObject[] = [
         children: [
           { index: true, element: <UserProfilePage /> },
           { path: 'profile', element: <UserProfilePage /> },
-          { path: 'cards', element: <UserCardsPage /> },
-          { path: 'list', element: <UserListPage /> },
           { path: 'new', element: <UserCreatePage /> },
-          { path: ':id/edit', element: <UserEditPage /> },
           {
             path: 'account',
             element: accountLayout(),
@@ -173,12 +194,14 @@ export const dashboardRoutes: RouteObject[] = [
               { path: 'notifications', element: <AccountNotificationsPage /> },
               { path: 'socials', element: <AccountSocialsPage /> },
               { path: 'change-password', element: <AccountChangePasswordPage /> },
+              { path: '2fa', element: <AccountTwoFAPage /> },
             ],
           },
         ],
       },
       {
         path: 'product',
+        element: <AdminGuardOutlet />,
         children: [
           { index: true, element: <ProductListPage /> },
           { path: 'list', element: <ProductListPage /> },
@@ -189,6 +212,7 @@ export const dashboardRoutes: RouteObject[] = [
       },
       {
         path: 'order',
+        element: <AdminGuardOutlet />,
         children: [
           { index: true, element: <OrderListPage /> },
           { path: 'list', element: <OrderListPage /> },
@@ -197,6 +221,7 @@ export const dashboardRoutes: RouteObject[] = [
       },
       {
         path: 'invoice',
+        element: <AdminGuardOutlet />,
         children: [
           { index: true, element: <InvoiceListPage /> },
           { path: 'list', element: <InvoiceListPage /> },
@@ -207,6 +232,7 @@ export const dashboardRoutes: RouteObject[] = [
       },
       {
         path: 'post',
+        element: <AdminGuardOutlet />,
         children: [
           { index: true, element: <BlogPostsPage /> },
           { path: 'list', element: <BlogPostsPage /> },
@@ -224,9 +250,55 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'document', element: <FileManagerPage /> },
         ],
       },
-      { path: 'mail', element: <MailPage /> },
-      { path: 'chat', element: <ChatPage /> },
-      { path: 'calendar', element: <CalendarPage /> },
+      { 
+        path: 'calendar', 
+        element: (
+          <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+            <CalendarPage />
+          </RoleBasedGuard>
+        ) 
+      },
+      {
+        path: 'communication',
+        children: [
+          { index: true, element: <CommNotificationsPage /> },
+          { path: 'notifications', element: <CommNotificationsPage /> },
+          { 
+            path: 'email', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <MailPage />
+              </RoleBasedGuard>
+            )
+          },
+          { 
+            path: 'whatsapp', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <CommWhatsAppPage />
+              </RoleBasedGuard>
+            )
+          },
+          { 
+            path: 'sms', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <CommSmsPage />
+              </RoleBasedGuard>
+            )
+          },
+          { 
+            path: 'social', 
+            element: (
+              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
+                <CommSocialPage />
+              </RoleBasedGuard>
+            )
+          },
+          { path: 'chat', element: <CommChatPage /> },
+          { path: 'settings', element: <CommSettingsPage /> },
+        ]
+      },
     ],
   },
 ];

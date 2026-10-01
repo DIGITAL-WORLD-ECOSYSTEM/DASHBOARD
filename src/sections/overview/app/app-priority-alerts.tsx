@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import Collapse from '@mui/material/Collapse';
 import Typography from '@mui/material/Typography';
 
-
 // ----------------------------------------------------------------------
 
 type PriorityAlert = {
@@ -23,14 +22,14 @@ const _mockAlerts: PriorityAlert[] = [
     id: 'alt-1',
     severity: 'error',
     title: 'Manutenção Programada',
-    message: 'O sistema de saques Pix ficará indisponível no sábado das 02h às 04h.'
+    message: 'O sistema de saques Pix ficará indisponível no sábado das 02h às 04h.',
   },
   {
     id: 'alt-2',
     severity: 'warning',
     title: 'Assembleia Extraordinária',
-    message: 'Faltam apenas 2 dias para o fechamento de pautas da próxima assembleia.'
-  }
+    message: 'Faltam apenas 2 dias para o fechamento de pautas da próxima assembleia.',
+  },
 ];
 
 export function AppPriorityAlerts() {
@@ -59,16 +58,19 @@ export function AppPriorityAlerts() {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              '& .MuiAlert-message': { flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }
+              '& .MuiAlert-message': {
+                flexGrow: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              },
             }}
           >
             <Box>
               <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
                 {alert.title}
               </Typography>
-              <Typography variant="body2">
-                {alert.message}
-              </Typography>
+              <Typography variant="body2">{alert.message}</Typography>
             </Box>
           </Alert>
         </Collapse>

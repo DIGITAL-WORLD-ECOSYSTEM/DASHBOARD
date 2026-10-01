@@ -5,6 +5,7 @@ import type { IDateValue, ISocialLink } from './common';
 export type IUserTableFilters = {
   name: string;
   role: string[];
+  kycStatus: string[];
   status: string;
 };
 
@@ -74,14 +75,20 @@ export type IUserCard = {
   totalFollowing: number;
 };
 
+export type AccountStatus = 'active' | 'pending' | 'suspended' | 'inactive' | 'blocked';
+export type KycStatus = 'draft' | 'pending' | 'under_review' | 'approved' | 'rejected' | 'expired';
+
 export type IUserItem = {
   id: string;
+  aspId: string;
+  did: string;
   name: string;
   city: string;
-  role: string;
+  role: 'admin' | 'dev' | 'user';
   email: string;
   state: string;
-  status: string;
+  status: AccountStatus;
+  kycStatus: KycStatus;
   address: string;
   country: string;
   zipCode: string;
@@ -89,6 +96,17 @@ export type IUserItem = {
   avatarUrl: string;
   phoneNumber: string;
   isVerified: boolean;
+  // Credenciais
+  emailVerified: boolean;
+  phoneVerified: boolean;
+  mfaEnabled: boolean;
+  passkeyCount: number;
+  biometricVerified: boolean;
+  // Atividade e Governança
+  lastActivity?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  trustLevel?: 'Alto' | 'Médio' | 'Baixo';
 };
 
 export type IUserAccountBillingHistory = {

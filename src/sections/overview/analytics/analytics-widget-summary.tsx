@@ -82,7 +82,11 @@ export function AnalyticsWidgetSummary({
     >
       <Iconify
         width={14}
-        icon={percent < 0 ? 'solar:double-alt-arrow-down-bold-duotone' : 'solar:double-alt-arrow-up-bold-duotone'}
+        icon={
+          percent < 0
+            ? 'solar:double-alt-arrow-down-bold-duotone'
+            : 'solar:double-alt-arrow-up-bold-duotone'
+        }
       />
       <Box component="span">
         {percent > 0 && '+'}
@@ -133,11 +137,11 @@ export function AnalyticsWidgetSummary({
       </Box>
 
       <Box sx={{ flexGrow: 1 }}>
-        <Box 
-          sx={{ 
-            typography: 'overline', 
-            color: 'text.secondary', 
-            mb: 0.5, 
+        <Box
+          sx={{
+            typography: 'overline',
+            color: 'text.secondary',
+            mb: 0.5,
             fontWeight: 800,
             letterSpacing: 1.2,
             lineHeight: 1.5,

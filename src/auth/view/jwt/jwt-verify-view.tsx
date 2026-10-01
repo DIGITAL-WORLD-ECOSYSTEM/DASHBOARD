@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
@@ -6,12 +8,16 @@ import { alpha, useTheme } from '@mui/material/styles';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
+import { useSearchParams } from 'src/routes/hooks';
 
 import { EmailInboxIcon } from 'src/assets/icons';
 
+import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 
+import { getErrorMessage } from '../../utils/error-message';
 import { FormResendCode } from '../../components/form-resend-code';
+import { IdentitySessionService } from '../../application/identity-session.service';
 
 // ----------------------------------------------------------------------
 
@@ -19,6 +25,36 @@ import { FormResendCode } from '../../components/form-resend-code';
 
 export function JwtVerifyView() {
   const theme = useTheme();
+  const searchParams = useSearchParams();
+  const email = searchParams.get('email') || '';
+
+  const [countdown, setCountdown] = useState(0);
+  const [backoffLevel, setBackoffLevel] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
+  const handleResendCode = async () => {
+    if (!email) {
+      toast.error('E-mail não fornecido.');
+      return;
+    }
+    try {
+      await IdentitySessionService.resendVerification(email);
+      toast.success('Código reenviado! Verifique seu e-mail.');
+      
+      const levels = [60, 120, 300];
+      setCountdown(levels[backoffLevel] || 300);
+      if (backoffLevel < 2) setBackoffLevel((prev) => prev + 1);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
 
   return (
     <Box
@@ -31,13 +67,29 @@ export function JwtVerifyView() {
     >
       <Box sx={{ mb: 2, textAlign: 'center' }}>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
-           <EmailInboxIcon sx={{ width: 96, height: 96, color: 'info.main', filter: `drop-shadow(0 0 20px ${alpha(theme.palette.info.main, 0.4)})` }} />
+          <EmailInboxIcon
+            sx={{
+              width: 96,
+              height: 96,
+              color: 'info.main',
+              filter: `drop-shadow(0 0 20px ${alpha(theme.palette.info.main, 0.4)})`,
+            }}
+          />
         </Box>
-        <Typography variant="h5" sx={{ color: 'info.main', mb: 1, fontWeight: 900, fontFamily: 'var(--font-orbitron), sans-serif' }}>
+        <Typography
+          variant="h5"
+          sx={{
+            color: 'info.main',
+            mb: 1,
+            fontWeight: 900,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+          }}
+        >
           VERIFIQUE SEU E-MAIL
         </Typography>
         <Typography variant="body2" sx={{ color: 'grey.500', fontSize: 13 }}>
-          Enviamos um link de confirmação para o seu endereço de e-mail. Por favor, siga as instruções para ativar sua conta.
+          Enviamos um link de confirmação para o seu endereço de e-mail. Por favor, siga as
+          instruções para ativar sua conta.
         </Typography>
       </Box>
 
@@ -85,13 +137,35 @@ export function JwtVerifyView() {
         IR PARA O LOGIN
       </Button>
 
-      <FormResendCode onResendCode={() => {}} value={0} disabled={false} sx={{ color: 'info.main', '& .MuiButton-root': { color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif' } }} />
+      <FormResendCode
+        onResendCode={handleResendCode}
+        value={countdown}
+        disabled={countdown > 0}
+        sx={{
+          color: 'info.main',
+          '& .MuiButton-root': {
+            color: 'info.main',
+            fontWeight: 800,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+          },
+        }}
+      />
 
       <Box sx={{ mt: 2, textAlign: 'center' }}>
-        <Link 
-          component={RouterLink} 
-          href={paths.auth.jwt.signIn} 
-          sx={{ color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontSize: 13 }}
+        <Link
+          component={RouterLink}
+          href={paths.auth.jwt.signIn}
+          sx={{
+            color: 'info.main',
+            fontWeight: 800,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+            fontSize: 13,
+          }}
         >
           <Iconify icon="eva:arrow-ios-back-fill" />
           VOLTAR PARA O LOGIN

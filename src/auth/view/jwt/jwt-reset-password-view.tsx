@@ -16,7 +16,6 @@ import { PasswordIcon } from 'src/assets/icons';
 import { Iconify } from 'src/components/iconify';
 import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
-
 // ----------------------------------------------------------------------
 
 export type ResetPasswordSchemaType = z.infer<typeof ResetPasswordSchema>;
@@ -27,10 +26,18 @@ export const ResetPasswordSchema = z.object({
 
 // ----------------------------------------------------------------------
 
+import { useRouter } from 'src/routes/hooks';
+
+import { toast } from 'src/components/snackbar';
+
+import { getErrorMessage } from '../../utils/error-message';
+import { IdentitySessionService } from '../../application/identity-session.service';
+
 // ----------------------------------------------------------------------
 
 export function JwtResetPasswordView() {
   const theme = useTheme();
+  const router = useRouter();
 
   const defaultValues: ResetPasswordSchemaType = {
     email: '',
@@ -48,10 +55,12 @@ export function JwtResetPasswordView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      console.info('DATA', data);
+      await IdentitySessionService.forgotPassword(data.email);
+      toast.success('Se o e-mail existir, enviaremos o link.');
+      // O backend não vaza existência, sempre direcionamos
+      router.push(paths.auth.jwt.updatePassword);
     } catch (error) {
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   });
 
@@ -62,14 +71,14 @@ export function JwtResetPasswordView() {
         label="E-mail de Recuperação"
         placeholder="usuario@mundodigital.com"
         autoFocus
-        slotProps={{ 
-          inputLabel: { 
-            shrink: true, 
-            sx: { 
+        slotProps={{
+          inputLabel: {
+            shrink: true,
+            sx: {
               fontFamily: 'var(--font-orbitron), sans-serif',
               fontWeight: 600,
-              color: 'info.main' 
-            } 
+              color: 'info.main',
+            },
           },
           input: {
             sx: {
@@ -86,8 +95,8 @@ export function JwtResetPasswordView() {
               '& fieldset': { borderColor: alpha(theme.palette.info.main, 0.2) },
               '&:hover fieldset': { borderColor: `${theme.palette.info.main} !important` },
               '&.Mui-focused fieldset': { borderColor: `${theme.palette.info.main} !important` },
-            }
-          }
+            },
+          },
         }}
       />
 
@@ -148,9 +157,24 @@ export function JwtResetPasswordView() {
     >
       <Box sx={{ mb: 2, textAlign: 'center' }}>
         <Box sx={{ mb: 3, display: 'flex', justifyContent: 'center' }}>
-           <PasswordIcon sx={{ width: 64, height: 64, color: 'info.main', filter: `drop-shadow(0 0 15px ${alpha(theme.palette.info.main, 0.4)})` }} />
+          <PasswordIcon
+            sx={{
+              width: 64,
+              height: 64,
+              color: 'info.main',
+              filter: `drop-shadow(0 0 15px ${alpha(theme.palette.info.main, 0.4)})`,
+            }}
+          />
         </Box>
-        <Typography variant="h5" sx={{ color: 'info.main', mb: 1, fontWeight: 900, fontFamily: 'var(--font-orbitron), sans-serif' }}>
+        <Typography
+          variant="h5"
+          sx={{
+            color: 'info.main',
+            mb: 1,
+            fontWeight: 900,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+          }}
+        >
           ESQUECEU A SENHA?
         </Typography>
         <Typography variant="body2" sx={{ color: 'grey.500', fontSize: 13 }}>
@@ -163,10 +187,20 @@ export function JwtResetPasswordView() {
       </Form>
 
       <Box sx={{ mt: 2, textAlign: 'center' }}>
-        <Link 
-          component={RouterLink} 
-          href={paths.auth.jwt.signIn} 
-          sx={{ color: 'info.main', fontWeight: 800, fontFamily: 'var(--font-orbitron), sans-serif', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, fontSize: 13 }}
+        <Link
+          component={RouterLink}
+          href={paths.auth.jwt.signIn}
+          sx={{
+            color: 'info.main',
+            fontWeight: 800,
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+            fontSize: 13,
+          }}
         >
           <Iconify icon="eva:arrow-ios-back-fill" />
           VOLTAR PARA O LOGIN

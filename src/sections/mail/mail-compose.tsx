@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-import { sendCampaign } from 'src/actions/mail';
+import { useGetMails, sendCampaign } from 'src/actions/mail';
 
 import { Editor } from 'src/components/editor';
 import { toast } from 'src/components/snackbar';
@@ -44,6 +44,8 @@ export function MailCompose({ onCloseCompose }: Props) {
 
   const fullScreen = useBoolean();
   const isSubmitting = useBoolean();
+  
+  const { refetchMails } = useGetMails();
 
   const {
     register,
@@ -66,18 +68,18 @@ export function MailCompose({ onCloseCompose }: Props) {
   const onSubmit = handleSubmit(async (data) => {
     isSubmitting.onTrue();
     try {
-      // Formata o payload para o Backend (SendPulse)
-      const payload = {
-        campaignName: `Campaign: ${data.subject}`,
-        addressBookId: 1000, // TODO: Permitir escolha de AddressBookId ou usar default
-        templateId: 0, // 0 indica envio manual/HTML bruto
+      // Formata o payload para o Backend via Adapter (Transparência)
+      await sendCampaign({
+        to: data.to,
         subject: data.subject,
-        body: data.message,
-      };
+        message: data.message,
+      });
 
-      await sendCampaign(payload);
-      
       toast.success('Mailing campaign started successfully!');
+      
+      // Atualiza a caixa de e-mails na tela
+      refetchMails();
+      
       reset();
       onCloseCompose();
     } catch (error: any) {

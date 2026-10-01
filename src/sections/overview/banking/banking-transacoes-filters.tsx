@@ -30,7 +30,7 @@ export function BankingTransacoesFilters() {
       } else {
         params.delete(name);
       }
-      
+
       // Reset cursor pagination on filter change
       params.delete('cursor');
 
@@ -47,12 +47,12 @@ export function BankingTransacoesFilters() {
 
   return (
     <Box
-      sx={{ 
+      sx={{
         display: 'flex',
         gap: 2,
         alignItems: { xs: 'flex-end', md: 'center' },
         flexDirection: { xs: 'column', md: 'row' },
-        mb: 3
+        mb: 3,
       }}
     >
       <TextField
@@ -100,7 +100,7 @@ export function BankingTransacoesFilters() {
         <Button
           color="inherit"
           variant="outlined"
-          startIcon={<Iconify icon={"solar:filter-bold" as any} />}
+          startIcon={<Iconify icon={'solar:filter-bold' as any} />}
           sx={{ height: 48 }}
         >
           Mais Filtros

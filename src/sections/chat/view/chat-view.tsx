@@ -9,27 +9,30 @@ import { useRouter, useSearchParams } from 'src/routes/hooks';
 
 import { CONFIG } from 'src/global-config';
 import { DashboardContent } from 'src/layouts/dashboard';
+import { useChatRealtime } from 'src/contexts/chat-realtime-context';
 import { useGetContacts, useGetConversation, useGetConversations } from 'src/actions/chat';
 
 import { EmptyContent } from 'src/components/empty-content';
 
-import { useMockedUser } from 'src/auth/hooks';
+import { useUserProfile } from 'src/auth/facades';
 
 import { ChatNav } from '../chat-nav';
 import { ChatLayout } from '../layout';
 import { ChatRoom } from '../chat-room';
+import { ChatKpiBar } from '../chat-kpi-bar';
+import { ChatDashboard } from '../chat-dashboard';
 import { ChatMessageList } from '../chat-message-list';
 import { ChatMessageInput } from '../chat-message-input';
-import { ChatHeaderDetails } from '../chat-header-details';
-import { ChatHeaderCompose } from '../chat-header-compose';
 import { useCollapseNav } from '../hooks/use-collapse-nav';
+import { ChatHeaderCompose } from '../chat-header-compose';
+import { ChatHeaderDetails } from '../chat-header-details';
 
 // ----------------------------------------------------------------------
 
 export function ChatView() {
   const router = useRouter();
 
-  const { user } = useMockedUser();
+  const user = useUserProfile();
 
   const { contacts } = useGetContacts();
 
@@ -53,14 +56,24 @@ export function ChatView() {
     }
   }, [conversationError, router, selectedConversationId]);
 
+  const { connect, disconnect, connectionState } = useChatRealtime();
+
+  useEffect(() => {
+    if (selectedConversationId) {
+      connect(selectedConversationId);
+    } else {
+      disconnect();
+    }
+  }, [selectedConversationId, connect, disconnect]);
+
   const handleAddRecipients = useCallback((selected: IChatParticipant[]) => {
     setRecipients(selected);
   }, []);
 
   const filteredParticipants: IChatParticipant[] = conversation
     ? conversation.participants.filter(
-        (participant: IChatParticipant) => participant.id !== `${user?.id}`
-      )
+      (participant: IChatParticipant) => participant.id !== `${user?.id}`
+    )
     : [];
 
   return (
@@ -69,11 +82,12 @@ export function ChatView() {
       sx={{ display: 'flex', flex: '1 1 auto', flexDirection: 'column' }}
     >
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Chat
+        Chat {connectionState !== 'DISCONNECTED' && `(${connectionState.toLowerCase()})`}
       </Typography>
 
       <ChatLayout
         slots={{
+          kpiBar: <ChatKpiBar />,
           header: selectedConversationId ? (
             <ChatHeaderDetails
               collapseNav={roomNav}
@@ -109,11 +123,7 @@ export function ChatView() {
                   />
                 )
               ) : (
-                <EmptyContent
-                  title="Good morning!"
-                  description="Write something awesome..."
-                  imgUrl={`${CONFIG.assetsDir}/assets/icons/empty/ic-chat-active.svg`}
-                />
+                <ChatDashboard />
               )}
 
               <ChatMessageInput

@@ -13,16 +13,15 @@ import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
+import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { paths } from 'src/routes/paths';
 import { RouterLink } from 'src/routes/components';
 
-import { _roles, USER_STATUS_OPTIONS } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { deleteCitizen, useGetCitizens, deleteCitizens } from 'src/actions/identity';
 
-import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
@@ -42,18 +41,28 @@ import {
 
 import { UserTableRow } from '../user-table-row';
 import { UserTableToolbar } from '../user-table-toolbar';
+import { DirectoryHeroMetrics } from '../directory-hero-metrics';
 import { UserTableFiltersResult } from '../user-table-filters-result';
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...USER_STATUS_OPTIONS];
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'Todos' },
+  { value: 'active', label: 'Ativo' },
+  { value: 'pending', label: 'Pendente' },
+  { value: 'suspended', label: 'Suspenso' },
+  { value: 'inactive', label: 'Inativo' },
+  { value: 'blocked', label: 'Bloqueado' },
+];
 
 const TABLE_HEAD: TableHeadCellProps[] = [
-  { id: 'name', label: 'Name' },
-  { id: 'phoneNumber', label: 'Phone number', width: 180 },
-  { id: 'company', label: 'Company', width: 220 },
-  { id: 'role', label: 'Role', width: 180 },
-  { id: 'status', label: 'Status', width: 100 },
+  { id: 'name', label: 'Usuário' },
+  { id: 'aspId', label: 'ID', width: 120 },
+  { id: 'company', label: 'Função', width: 180 },
+  { id: 'role', label: 'Perfil', width: 140 },
+  { id: 'kycStatus', label: 'KYC', width: 120 },
+  { id: 'lastActivity', label: 'Login', width: 140 },
+  { id: 'status', label: 'Situação', width: 100 },
   { id: '', width: 88 },
 ];
 
@@ -73,7 +82,7 @@ export function UserListView() {
     }
   }, [citizens]);
 
-  const filters = useSetState<IUserTableFilters>({ name: '', role: [], status: 'all' });
+  const filters = useSetState<IUserTableFilters>({ name: '', role: [], kycStatus: [], status: 'all' });
   const { state: currentFilters, setState: updateFilters } = filters;
 
   const dataFiltered = applyFilter({
@@ -150,25 +159,32 @@ export function UserListView() {
   return (
     <>
       <DashboardContent>
-        <CustomBreadcrumbs
-          heading="List"
-          links={[
-            { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'User', href: paths.dashboard.user.root },
-            { name: 'List' },
-          ]}
-          action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.user.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              Add user
-            </Button>
-          }
-          sx={{ mb: { xs: 3, md: 5 } }}
-        />
+        <Box sx={{ mb: { xs: 3, md: 5 } }}>
+          <CustomBreadcrumbs
+            heading="Central de Identidade"
+            links={[
+              { name: 'Dashboard', href: paths.dashboard.root },
+              { name: 'Analytics', href: paths.dashboard.general.analytics.root },
+              { name: 'Central de Identidade' },
+            ]}
+            action={
+              <Button
+                component={RouterLink}
+                href={paths.dashboard.user.new}
+                variant="contained"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+              >
+                Provisionar Acesso
+              </Button>
+            }
+            sx={{ mb: 1 }}
+          />
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Visão centralizada para análise, rastreamento e governança de identidades digitais e controles de acesso.
+          </Typography>
+        </Box>
+
+        <DirectoryHeroMetrics tableData={tableData} />
 
         <Card>
           <Tabs
@@ -187,24 +203,6 @@ export function UserListView() {
                 iconPosition="end"
                 value={tab.value}
                 label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === currentFilters.status) && 'filled') ||
-                      'soft'
-                    }
-                    color={
-                      (tab.value === 'active' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'banned' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {['active', 'pending', 'banned', 'rejected'].includes(tab.value)
-                      ? tableData.filter((user) => user.status === tab.value).length
-                      : tableData.length}
-                  </Label>
-                }
               />
             ))}
           </Tabs>
@@ -212,7 +210,10 @@ export function UserListView() {
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
-            options={{ roles: _roles }}
+            options={{ 
+              roles: ['admin', 'dev', 'user'], 
+              kycStatus: ['draft', 'pending', 'under_review', 'approved', 'rejected', 'expired']
+            }}
           />
 
           {canReset && (
@@ -236,11 +237,28 @@ export function UserListView() {
                 )
               }
               action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={confirmDialog.onTrue}>
-                    <Iconify icon="solar:trash-bin-trash-bold" />
-                  </IconButton>
-                </Tooltip>
+                <>
+                  <Tooltip title="Exportar CSV">
+                    <IconButton color="primary" onClick={() => toast.success('Exportação iniciada...')}>
+                      <Iconify icon="solar:export-bold" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Enviar Comunicado">
+                    <IconButton color="primary" onClick={() => toast.success('Ação indisponível nesta versão.')}>
+                      <Iconify icon="solar:letter-bold" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Alterar Status">
+                    <IconButton color="primary" onClick={() => toast.success('Ação indisponível nesta versão.')}>
+                      <Iconify icon="solar:pen-bold" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Suspender">
+                    <IconButton color="primary" onClick={confirmDialog.onTrue}>
+                      <Iconify icon="solar:trash-bin-trash-bold" />
+                    </IconButton>
+                  </Tooltip>
+                </>
               }
             />
 
@@ -274,7 +292,6 @@ export function UserListView() {
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        editHref={paths.dashboard.user.edit(row.id)}
                       />
                     ))}
 
@@ -283,7 +300,9 @@ export function UserListView() {
                     emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                   />
 
-                  <TableNoData notFound={notFound} />
+                  {notFound ? (
+                    <TableNoData notFound={notFound} sx={{ py: 10 }} />
+                  ) : null}
                 </TableBody>
               </Table>
             </Scrollbar>
@@ -315,7 +334,7 @@ type ApplyFilterProps = {
 };
 
 function applyFilter({ inputData, comparator, filters }: ApplyFilterProps) {
-  const { name, status, role } = filters;
+  const { name, status, role, kycStatus } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index] as const);
 
@@ -328,7 +347,12 @@ function applyFilter({ inputData, comparator, filters }: ApplyFilterProps) {
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (name) {
-    inputData = inputData.filter((user) => user.name.toLowerCase().includes(name.toLowerCase()));
+    inputData = inputData.filter(
+      (user) =>
+        user.name.toLowerCase().includes(name.toLowerCase()) ||
+        user.email.toLowerCase().includes(name.toLowerCase()) ||
+        user.aspId.toLowerCase().includes(name.toLowerCase())
+    );
   }
 
   if (status !== 'all') {
@@ -337,6 +361,10 @@ function applyFilter({ inputData, comparator, filters }: ApplyFilterProps) {
 
   if (role.length) {
     inputData = inputData.filter((user) => role.includes(user.role));
+  }
+
+  if (kycStatus && kycStatus.length) {
+    inputData = inputData.filter((user) => kycStatus.includes(user.kycStatus));
   }
 
   return inputData;

@@ -1,9 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { alpha, useTheme } from '@mui/material/styles';
 
@@ -46,9 +45,9 @@ const initialCards: ExtendedCardData[] = _bankingCreditCard.map((card, index) =>
 export function BankingCartoesView() {
   const theme = useTheme();
   const [cards, setCards] = useState<ExtendedCardData[]>(initialCards);
-  
+
   const [issuingModalOpen, setIssuingModalOpen] = useState(false);
-  
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
 
@@ -79,7 +78,7 @@ export function BankingCartoesView() {
     setSelectedCardId(null);
   };
 
-  const selectedCard = cards.find(c => c.id === selectedCardId) || null;
+  const selectedCard = cards.find((c) => c.id === selectedCardId) || null;
 
   return (
     <DashboardContent maxWidth="xl">
@@ -87,7 +86,7 @@ export function BankingCartoesView() {
         heading="Central Operacional de Cartões"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Bancário', href: paths.dashboard.general.banking },
+          { name: 'Bancário', href: paths.dashboard.general.banking.root },
           { name: 'Cartões' },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}
@@ -96,9 +95,11 @@ export function BankingCartoesView() {
       <Grid container spacing={3}>
         {cards.map((card) => (
           <Grid size={{ xs: 12, md: 4 }} key={card.id}>
-            <BankingCurrentBalance 
-              item={card} 
-              onUpdate={(updated) => setCards(prev => prev.map(c => c.id === updated.id ? updated : c))}
+            <BankingCurrentBalance
+              item={card}
+              onUpdate={(updated) =>
+                setCards((prev) => prev.map((c) => (c.id === updated.id ? updated : c)))
+              }
               onManage={handleOpenDrawer}
             />
           </Grid>
@@ -138,29 +139,28 @@ export function BankingCartoesView() {
                 bgcolor: alpha(theme.palette.grey[500], 0.12),
               }}
             >
-              <Iconify icon={"solar:add-circle-bold-duotone" as any} width={28} />
+              <Iconify icon={'solar:add-circle-bold-duotone' as any} width={28} />
             </Box>
             <Typography variant="subtitle1" sx={{ color: 'text.secondary' }}>
               Emitir Novo Cartão
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.disabled', mt: 0.5, textAlign: 'center' }}>
+            <Typography
+              variant="body2"
+              sx={{ color: 'text.disabled', mt: 0.5, textAlign: 'center' }}
+            >
               Físico, Virtual Recorrente ou Virtual Descartável
             </Typography>
           </Card>
         </Grid>
       </Grid>
 
-      <BankingNewCardModal 
-        open={issuingModalOpen} 
-        onClose={handleCloseIssuingModal} 
-        onEmit={handleEmitCard} 
+      <BankingNewCardModal
+        open={issuingModalOpen}
+        onClose={handleCloseIssuingModal}
+        onEmit={handleEmitCard}
       />
 
-      <BankingCardDrawer 
-        open={drawerOpen} 
-        onClose={handleCloseDrawer} 
-        card={selectedCard} 
-      />
+      <BankingCardDrawer open={drawerOpen} onClose={handleCloseDrawer} card={selectedCard} />
     </DashboardContent>
   );
 }

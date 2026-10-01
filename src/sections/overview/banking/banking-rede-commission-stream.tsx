@@ -32,32 +32,44 @@ export function BankingRedeCommissionStream({ commissions }: Props) {
 
   const handleExport = (format: string) => {
     // Mock Audit Log
-    console.log(JSON.stringify({
-      action: "export_commission_report",
-      timestamp: new Date().toISOString(),
-      actor: "current_user",
-      module: "network",
-      data: { format }
-    }));
+    console.log(
+      JSON.stringify({
+        action: 'export_commission_report',
+        timestamp: new Date().toISOString(),
+        actor: 'current_user',
+        module: 'network',
+        data: { format },
+      })
+    );
 
     toast.success(`Relatório exportado em ${format}`);
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'Pago': return <Label color="success">Pago</Label>;
-      case 'Disponível': return <Label color="info">Disponível</Label>;
-      case 'Pendente': return <Label color="warning">Pendente</Label>;
-      default: return <Label>{status}</Label>;
+      case 'Pago':
+        return <Label color="success">Pago</Label>;
+      case 'Disponível':
+        return <Label color="info">Disponível</Label>;
+      case 'Pendente':
+        return <Label color="warning">Pendente</Label>;
+      default:
+        return <Label>{status}</Label>;
     }
   };
 
   const getAssetIcon = (asset: string) => {
     switch (asset) {
-      case 'BRL': return <Iconify icon={"twemoji:flag-brazil" as any} width={20} />;
-      case 'USDT': return <Iconify icon={"cryptocurrency-color:usdt" as any} width={20} />;
-      case 'ASPPIBRA': return <Iconify icon={"solar:star-fall-bold" as any} width={20} sx={{ color: 'warning.main' }} />;
-      default: return <Iconify icon={"solar:wallet-bold" as any} width={20} />;
+      case 'BRL':
+        return <Iconify icon={'twemoji:flag-brazil' as any} width={20} />;
+      case 'USDT':
+        return <Iconify icon={'cryptocurrency-color:usdt' as any} width={20} />;
+      case 'ASPPIBRA':
+        return (
+          <Iconify icon={'solar:star-fall-bold' as any} width={20} sx={{ color: 'warning.main' }} />
+        );
+      default:
+        return <Iconify icon={'solar:wallet-bold' as any} width={20} />;
     }
   };
 
@@ -68,27 +80,27 @@ export function BankingRedeCommissionStream({ commissions }: Props) {
 
   return (
     <Card>
-      <CardHeader 
-        title="Extrato de Comissões e Recompensas" 
-        sx={{ mb: 3 }} 
+      <CardHeader
+        title="Extrato de Comissões e Recompensas"
+        sx={{ mb: 3 }}
         action={
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button 
-              variant="outlined" 
-              color="inherit" 
+            <Button
+              variant="outlined"
+              color="inherit"
               size="small"
-              startIcon={<Iconify icon={"solar:download-bold" as any} />}
+              startIcon={<Iconify icon={'solar:download-bold' as any} />}
               onClick={() => handleExport('PDF')}
             >
               Exportar
             </Button>
-            <Button 
+            <Button
               component={RouterLink}
               href="/dashboard/banking/transferencias"
-              variant="contained" 
-              color="primary" 
+              variant="contained"
+              color="primary"
               size="small"
-              startIcon={<Iconify icon={"solar:export-bold" as any} />}
+              startIcon={<Iconify icon={'solar:export-bold' as any} />}
             >
               Resgatar Comissões
             </Button>
@@ -115,14 +127,17 @@ export function BankingRedeCommissionStream({ commissions }: Props) {
                 <TableCell>
                   <Typography variant="body2">{new Date(row.date).toLocaleDateString()}</Typography>
                   <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    {new Date(row.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(row.date).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
                   </Typography>
                 </TableCell>
-                
+
                 <TableCell>
                   <Typography variant="subtitle2">{row.type}</Typography>
                 </TableCell>
-                
+
                 <TableCell>
                   <Typography variant="body2">{row.origin}</Typography>
                 </TableCell>
@@ -140,9 +155,7 @@ export function BankingRedeCommissionStream({ commissions }: Props) {
                   </Typography>
                 </TableCell>
 
-                <TableCell align="center">
-                  {getStatusLabel(row.status)}
-                </TableCell>
+                <TableCell align="center">{getStatusLabel(row.status)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

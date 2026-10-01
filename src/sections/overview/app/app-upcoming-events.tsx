@@ -18,9 +18,24 @@ type EventItem = {
 };
 
 const _mockEvents: EventItem[] = [
-  { id: 'ev-1', title: 'Assembleia Geral', date: new Date(Date.now() + 86400000 * 2), type: 'assembly' },
-  { id: 'ev-2', title: 'Webinar de Governança', date: new Date(Date.now() + 86400000 * 5), type: 'webinar' },
-  { id: 'ev-3', title: 'Treinamento de Embaixadores', date: new Date(Date.now() + 86400000 * 12), type: 'training' },
+  {
+    id: 'ev-1',
+    title: 'Assembleia Geral',
+    date: new Date(Date.now() + 86400000 * 2),
+    type: 'assembly',
+  },
+  {
+    id: 'ev-2',
+    title: 'Webinar de Governança',
+    date: new Date(Date.now() + 86400000 * 5),
+    type: 'webinar',
+  },
+  {
+    id: 'ev-3',
+    title: 'Treinamento de Embaixadores',
+    date: new Date(Date.now() + 86400000 * 12),
+    type: 'training',
+  },
 ];
 
 export function AppUpcomingEvents({ ...other }) {
@@ -53,7 +68,11 @@ export function AppUpcomingEvents({ ...other }) {
                 mr: 2,
               }}
             >
-              <Iconify icon={"solar:calendar-bold-duotone" as any} width={24} sx={{ color: 'text.secondary' }} />
+              <Iconify
+                icon={'solar:calendar-bold-duotone' as any}
+                width={24}
+                sx={{ color: 'text.secondary' }}
+              />
             </Box>
 
             <Stack spacing={0.5} sx={{ flexGrow: 1 }}>

@@ -1,7 +1,7 @@
 import type { AuthState } from '../../types';
 
 import { useSetState } from 'minimal-shared/hooks';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useEffect, useCallback } from 'react';
 
 import axios, { endpoints } from 'src/lib/axios';
 
@@ -23,15 +23,9 @@ type Props = {
 
 export function AuthProvider({ children }: Props) {
   const { state, setState } = useSetState<AuthState>({ user: null, loading: true });
-  const [simulatedRole, setSimulatedRole] = useState<string | null>(() => localStorage.getItem('simulated_role'));
-
-  const updateSimulatedRole = useCallback((role: string | null) => {
-    if (role) {
-      localStorage.setItem('simulated_role', role);
-    } else {
-      localStorage.removeItem('simulated_role');
-    }
-    setSimulatedRole(role);
+  useEffect(() => {
+    // Resgata o usuário de possíveis bugs de simulação anteriores
+    localStorage.removeItem('simulated_role');
   }, []);
 
   const checkUserSession = useCallback(async () => {
@@ -46,6 +40,7 @@ export function AuthProvider({ children }: Props) {
         const { user } = res.data;
 
         setState({ user: { ...user, accessToken }, loading: false });
+        return { ...user, accessToken };
       } else {
         // Tenta recuperar a sessão usando Cookies HttpOnly
         try {
@@ -56,13 +51,16 @@ export function AuthProvider({ children }: Props) {
             setSession(token);
           }
           setState({ user: { ...user, accessToken: token }, loading: false });
+          return { ...user, accessToken: token };
         } catch (e) {
           setState({ user: null, loading: false });
+          return null;
         }
       }
     } catch (error) {
       console.error(error);
       setState({ user: null, loading: false });
+      return null;
     }
   }, [setState]);
 
@@ -88,23 +86,23 @@ export function AuthProvider({ children }: Props) {
 
   const status = state.loading ? 'loading' : checkAuthenticated;
 
-  const memoizedValue = useMemo(
-    () => {
-      const backendRole = state.user?.role;
-      const mappedRole = backendRole === 'citizen' ? 'user' : (backendRole ?? 'admin');
-      const finalRole = simulatedRole || mappedRole;
+  const memoizedValue = useMemo(() => {
+    const backendRole = state.user?.role;
+    let mappedRole = backendRole === 'citizen' ? 'user' : (backendRole ?? 'admin');
 
-      return {
-        user: state.user ? { ...state.user, role: finalRole } : null,
-        checkUserSession,
-        updateSimulatedRole,
-        loading: status === 'loading',
-        authenticated: status === 'authenticated',
-        unauthenticated: status === 'unauthenticated',
-      };
-    },
-    [checkUserSession, updateSimulatedRole, state.user, status, simulatedRole]
-  );
+    // Força a role 'dev' para o usuário root do DevOS
+    if (state.user?.email === 'dev@asppibra.com') {
+      mappedRole = 'dev';
+    }
+
+    return {
+      user: state.user ? { ...state.user, role: mappedRole } : null,
+      checkUserSession,
+      loading: status === 'loading',
+      authenticated: status === 'authenticated',
+      unauthenticated: status === 'unauthenticated',
+    };
+  }, [checkUserSession, state.user, status]);
 
   return <AuthContext value={memoizedValue}>{children}</AuthContext>;
 }

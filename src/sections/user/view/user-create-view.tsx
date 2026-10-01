@@ -4,7 +4,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { UserCreateEditForm } from '../user-create-edit-form';
+import { UserCreateForm } from '../user-create-form';
 
 // ----------------------------------------------------------------------
 
@@ -12,16 +12,16 @@ export function UserCreateView() {
   return (
     <DashboardContent>
       <CustomBreadcrumbs
-        heading="Create a new user"
+        heading="Provisionar Credencial de Acesso"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'User', href: paths.dashboard.user.root },
-          { name: 'Create' },
+          { name: 'Usuários', href: paths.dashboard.user.root },
+          { name: 'Novo Acesso' },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}
       />
 
-      <UserCreateEditForm />
+      <UserCreateForm />
     </DashboardContent>
   );
 }

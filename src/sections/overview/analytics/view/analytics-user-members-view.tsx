@@ -57,9 +57,10 @@ export function AnalyticsUserMembersView() {
     }
 
     if (searchName) {
-      result = result.filter((citizen) =>
-        citizen.name.toLowerCase().includes(searchName.toLowerCase()) ||
-        citizen.email.toLowerCase().includes(searchName.toLowerCase())
+      result = result.filter(
+        (citizen) =>
+          citizen.name.toLowerCase().includes(searchName.toLowerCase()) ||
+          citizen.email.toLowerCase().includes(searchName.toLowerCase())
       );
     }
 
@@ -67,16 +68,20 @@ export function AnalyticsUserMembersView() {
   }, [citizens, statusTab, searchName]);
 
   // Map to IUserCard
-  const mappedUserCards = useMemo(() => filteredCitizens.map((citizen, index) => ({
-      id: citizen.id,
-      name: citizen.name,
-      role: citizen.role || 'Cidadão',
-      avatarUrl: citizen.avatarUrl || _mock.image.avatar(index % 20),
-      coverUrl: _mock.image.cover(index % 20),
-      totalFollowers: 0,
-      totalFollowing: 0,
-      totalPosts: 0,
-    })), [filteredCitizens]);
+  const mappedUserCards = useMemo(
+    () =>
+      filteredCitizens.map((citizen, index) => ({
+        id: citizen.id,
+        name: citizen.name,
+        role: citizen.role || 'Cidadão',
+        avatarUrl: citizen.avatarUrl || _mock.image.avatar(index % 20),
+        coverUrl: _mock.image.cover(index % 20),
+        totalFollowers: 0,
+        totalFollowing: 0,
+        totalPosts: 0,
+      })),
+    [filteredCitizens]
+  );
 
   // Initialize Carousel
   const carousel = useCarousel({
@@ -166,16 +171,17 @@ export function AnalyticsUserMembersView() {
       </Card>
 
       {citizensLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-          Carregando membros...
-        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>Carregando membros...</Box>
       ) : mappedUserCards.length === 0 ? (
         <Card sx={{ py: 10, textAlign: 'center', color: 'text.secondary' }}>
           Nenhum membro encontrado com os filtros selecionados.
         </Card>
       ) : (
         <Box sx={{ position: 'relative' }}>
-          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+          <Stack
+            direction="row"
+            sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}
+          >
             <Typography variant="h5">Galeria de Membros ({mappedUserCards.length})</Typography>
             <CarouselArrowBasicButtons {...carousel.arrows} options={carousel.options} />
           </Stack>

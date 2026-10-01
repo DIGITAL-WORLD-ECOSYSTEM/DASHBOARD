@@ -16,7 +16,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 
 import { endpoints } from 'src/lib/axios';
-import { USER_STATUS_OPTIONS } from 'src/_mock';
 import { updateCitizen } from 'src/actions/identity';
 
 import { toast } from 'src/components/snackbar';
@@ -36,15 +35,30 @@ export const UserQuickEditSchema = z.object({
     })
     .optional()
     .or(z.literal('')),
-  country: z.string().optional().nullable(),
-  state: z.string().optional().nullable(),
-  city: z.string().optional().nullable(),
-  address: z.string().optional().nullable(),
-  zipCode: z.string().optional().nullable(),
-  company: z.string().min(1, { message: 'Organização/Cargo é obrigatório!' }),
-  role: z.string().min(1, { message: 'Função é obrigatória!' }),
   status: z.string(),
+  statusReason: z.string().min(5, { message: 'Justificativa obrigatória (mínimo 5 caracteres).' }),
+  kycStatus: z.string(),
+  kycReason: z.string().min(5, { message: 'Justificativa obrigatória (mínimo 5 caracteres).' }),
 });
+
+// ----------------------------------------------------------------------
+
+const STATUS_OPTIONS = [
+  { value: 'active', label: 'Ativo' },
+  { value: 'pending', label: 'Pendente' },
+  { value: 'suspended', label: 'Suspenso' },
+  { value: 'inactive', label: 'Inativo' },
+  { value: 'blocked', label: 'Bloqueado' },
+];
+
+const KYC_STATUS_OPTIONS = [
+  { value: 'draft', label: 'Não Iniciado' },
+  { value: 'pending', label: 'Pendente' },
+  { value: 'under_review', label: 'Em Análise' },
+  { value: 'approved', label: 'Verificado' },
+  { value: 'rejected', label: 'Rejeitado' },
+  { value: 'expired', label: 'Expirado' },
+];
 
 // ----------------------------------------------------------------------
 
@@ -56,24 +70,19 @@ type Props = {
 
 export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
   const defaultValues: UserQuickEditSchemaType = {
-    name: '',
-    email: '',
-    phoneNumber: '',
-    address: '',
-    country: '',
-    state: '',
-    city: '',
-    zipCode: '',
-    status: '',
-    company: '',
-    role: '',
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
+    phoneNumber: currentUser?.phoneNumber || '',
+    status: currentUser?.status || 'pending',
+    statusReason: '',
+    kycStatus: currentUser?.kycStatus || 'pending',
+    kycReason: '',
   };
 
   const methods = useForm({
     mode: 'all',
     resolver: zodResolver(UserQuickEditSchema),
     defaultValues,
-    values: currentUser,
   });
 
   const {
@@ -93,19 +102,18 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
         const payload = {
           firstName,
           lastName,
-          cargoOsc: data.company,
           phoneNumber: data.phoneNumber || '',
-          nacionalidade: data.country || 'Brasileira',
-          role: data.role || 'citizen',
-          kycStatus: data.status === 'active' ? 'approved' : data.status === 'rejected' ? 'rejected' : 'pending',
+          kycStatus: data.kycStatus === 'draft' ? 'none' : data.kycStatus,
+          // Neste cenário real, statusReason e kycReason iriam para uma tabela de Audit Trail
+          // auditTrail: { statusReason: data.statusReason, kycReason: data.kycReason }
         };
 
         const updatePromise = updateCitizen(currentUser.id, payload);
 
         toast.promise(updatePromise, {
           loading: 'Atualizando...',
-          success: 'Perfil atualizado com sucesso!',
-          error: 'Erro ao atualizar o perfil.',
+          success: 'Identidade atualizada com sucesso!',
+          error: 'Erro ao atualizar.',
         });
 
         await updatePromise;
@@ -135,60 +143,59 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
       onClose={onClose}
       slotProps={{
         paper: {
-          sx: { maxWidth: 720 },
+          sx: { maxWidth: 600 },
         },
       }}
     >
-      <DialogTitle>Edição Rápida</DialogTitle>
+      <DialogTitle>Edição Rápida (Administrativo)</DialogTitle>
 
       <Form methods={methods} onSubmit={onSubmit}>
         <DialogContent>
-          <Alert variant="outlined" severity="info" sx={{ mb: 3 }}>
-            Perfil de cidadão ativo e registrado na rede soberana da DAO
+          <Alert variant="outlined" severity="warning" sx={{ mb: 3 }}>
+            Toda alteração de Status ou KYC gera um log inalterável na trilha de auditoria.
           </Alert>
 
-          <Box
-            sx={{
-              rowGap: 3,
-              columnGap: 2,
-              display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
-            }}
-          >
-            <Field.Select name="status" label="Status da Conta">
-              {USER_STATUS_OPTIONS.map((status) => {
-                let label = status.label;
-                if (status.value === 'active') label = 'Ativo';
-                if (status.value === 'pending') label = 'Pendente';
-                if (status.value === 'banned') label = 'Bloqueado';
-                if (status.value === 'rejected') label = 'Rejeitado';
-                return (
-                  <MenuItem key={status.value} value={status.value}>
-                    {label}
-                  </MenuItem>
-                );
-              })}
-            </Field.Select>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            
+            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+              <Field.Text name="name" label="Nome Completo" />
+              <Field.Phone name="phoneNumber" label="Número de Telefone" />
+            </Box>
 
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }} />
-
-            <Field.Text name="name" label="Nome Completo" />
             <Field.Text name="email" label="Endereço de E-mail" disabled />
-            <Field.Phone name="phoneNumber" label="Número de Telefone" />
 
-            <Field.CountrySelect
-              fullWidth
-              name="country"
-              label="Nacionalidade/País"
-              placeholder="Escolha um país"
-            />
+            <Box sx={{ p: 2.5, bgcolor: 'background.neutral', borderRadius: 1.5, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Field.Select name="status" label="Status Institucional">
+                {STATUS_OPTIONS.map((status) => (
+                  <MenuItem key={status.value} value={status.value}>
+                    {status.label}
+                  </MenuItem>
+                ))}
+              </Field.Select>
+              
+              <Field.Text 
+                name="statusReason" 
+                label="Motivo da alteração de Status" 
+                placeholder="Ex: Conta inativa por solicitação do usuário." 
+              />
+            </Box>
 
-            <Field.Text name="state" label="Estado/Região" />
-            <Field.Text name="city" label="Cidade" />
-            <Field.Text name="address" label="Endereço" />
-            <Field.Text name="zipCode" label="CEP" />
-            <Field.Text name="company" label="Organização/Cargo" />
-            <Field.Text name="role" label="Função (role)" />
+            <Box sx={{ p: 2.5, bgcolor: 'background.neutral', borderRadius: 1.5, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Field.Select name="kycStatus" label="Situação Documental (KYC)">
+                {KYC_STATUS_OPTIONS.map((status) => (
+                  <MenuItem key={status.value} value={status.value}>
+                    {status.label}
+                  </MenuItem>
+                ))}
+              </Field.Select>
+
+              <Field.Text 
+                name="kycReason" 
+                label="Parecer / Justificativa (KYC)" 
+                placeholder="Ex: Documento CNH ilegível, solicitando reenvio." 
+              />
+            </Box>
+
           </Box>
         </DialogContent>
 
@@ -197,7 +204,7 @@ export function UserQuickEditForm({ currentUser, open, onClose }: Props) {
             Cancelar
           </Button>
           <Button type="submit" variant="contained" loading={isSubmitting}>
-            Salvar
+            Salvar e Auditar
           </Button>
         </DialogActions>
       </Form>
