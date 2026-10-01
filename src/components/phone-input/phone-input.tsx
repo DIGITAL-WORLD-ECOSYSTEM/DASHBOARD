@@ -54,7 +54,7 @@ export function PhoneInput({
   }, [country, selectedCountry, normalizedValue, defaultCountry]);
 
   const debouncedChange = useMemo(
-    () => debounce((inputValue: PhoneValue) => onChange(inputValue), 200),
+    () => debounce((inputValue: PhoneValue) => onChange?.(inputValue), 200),
     [onChange]
   );
 
@@ -130,7 +130,7 @@ export function PhoneInput({
       ...(isCountryLocked ? { country: activeCountry } : { defaultCountry: activeCountry }),
     };
 
-    return <PhoneNumberInput {...textFieldProps} {...phoneInputProps} {...other} />;
+    return <PhoneNumberInput {...(textFieldProps as any)} {...phoneInputProps} {...other} />;
   };
 
   const baseButtonWidth = variant === 'standard' ? '48px' : '60px';

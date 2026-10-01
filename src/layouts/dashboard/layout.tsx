@@ -180,7 +180,7 @@ export function DashboardLayout({
         disableElevation={isNavVertical}
         {...slotProps?.header}
         slots={{ ...headerSlots, ...slotProps?.header?.slots }}
-        slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {})}
+        slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {}) as any}
         sx={slotProps?.header?.sx}
       />
     );

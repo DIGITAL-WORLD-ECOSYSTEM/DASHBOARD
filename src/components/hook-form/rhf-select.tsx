@@ -64,7 +64,7 @@ export function RHFSelect({
           fullWidth
           error={!!error}
           helperText={error?.message ?? helperText}
-          slotProps={merge(baseSlotProps, slotProps)}
+          slotProps={merge(baseSlotProps, slotProps) as any}
           {...other}
         >
           {children}

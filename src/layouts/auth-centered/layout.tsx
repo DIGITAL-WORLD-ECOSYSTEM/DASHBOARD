@@ -75,7 +75,7 @@ export function AuthCenteredLayout({
         layoutQuery={layoutQuery}
         {...slotProps?.header}
         slots={{ ...headerSlots, ...slotProps?.header?.slots }}
-        slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {})}
+        slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {}) as any}
         sx={[
           { position: { [layoutQuery]: 'fixed' } },
           ...(Array.isArray(slotProps?.header?.sx) ? slotProps.header.sx : [slotProps?.header?.sx]),
