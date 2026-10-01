@@ -27,6 +27,7 @@ export default defineConfig({
         position: 'tl',
         initialIsOpen: false,
       },
+      enableBuild: false,
     }),
   ],
   resolve: {
