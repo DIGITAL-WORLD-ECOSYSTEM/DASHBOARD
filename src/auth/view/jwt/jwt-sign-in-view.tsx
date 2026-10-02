@@ -51,6 +51,11 @@ export function JwtSignInView() {
   const { checkUserSession } = useAuthContext();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [authNotice, setAuthNotice] = useState<{
+    type: 'warning' | 'info' | 'error';
+    title: string;
+    description: string;
+  } | null>(null);
 
   const defaultValues: SignInSchemaType = {
     email: '',
@@ -108,15 +113,23 @@ export function JwtSignInView() {
     const errorParam = searchParams.get('error');
     const providerParam = searchParams.get('provider') || 'Google';
     if (errorParam === 'IDENTITY_NOT_LINKED') {
-      setErrorMessage(
-        `Conta do ${providerParam} não vinculada a nenhuma conta existente. O serviço está ativo, mas o primeiro acesso requer uma conta cadastrada. Por favor, crie sua conta pelo botão "SOLICITAR" ou faça login com seu e-mail/senha para vincular sua conta do ${providerParam} nas configurações do seu perfil.`
-      );
+      setAuthNotice({
+        type: 'warning',
+        title: `Vínculo com ${providerParam} Pendente`,
+        description: `Sua conta do ${providerParam} foi autenticada com sucesso, porém ela ainda não está vinculada a nenhuma conta autorizada no ecossistema ASPPIBRA. Para acessar por este método, entre primeiro com seu e-mail e senha cadastrados para vincular suas credenciais no seu perfil.`
+      });
     } else if (errorParam === 'OAUTH_NOT_CONFIGURED') {
-      setErrorMessage(
-        `O serviço de login com ${providerParam} está em processo de sincronização de credenciais de produção. Por favor, utilize seu e-mail e senha cadastrados para acessar.`
-      );
+      setAuthNotice({
+        type: 'info',
+        title: `Serviço ${providerParam}`,
+        description: `O serviço de login com ${providerParam} está em sincronização. Por favor, utilize suas credenciais cadastradas de e-mail e senha para acessar o portal.`
+      });
     } else if (errorParam) {
-      setErrorMessage(`Falha na autenticação com ${providerParam}: ${errorParam}`);
+      setAuthNotice({
+        type: 'error',
+        title: 'Falha na Autenticação',
+        description: `Não foi possível concluir o acesso com ${providerParam}: ${errorParam}`
+      });
     }
   }, [searchParams]);
 
@@ -286,39 +299,92 @@ export function JwtSignInView() {
         Acesso ao Portal
       </Typography>
 
-      {!!errorMessage && (
-        <Alert
-          severity={errorMessage.includes('não vinculada') || errorMessage.includes('homologação') ? 'warning' : 'error'}
+      {authNotice && (
+        <Box
           sx={{
-            mb: 3,
-            textAlign: 'left',
-            fontFamily: 'var(--font-orbitron), sans-serif',
-            fontSize: 12,
-            lineHeight: 1.6,
+            p: 2,
+            borderRadius: 1.5,
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 1.5,
+            bgcolor:
+              authNotice.type === 'warning'
+                ? alpha(theme.palette.warning.main, 0.08)
+                : authNotice.type === 'error'
+                  ? alpha(theme.palette.error.main, 0.08)
+                  : alpha(theme.palette.info.main, 0.08),
+            border: '1px solid',
+            borderColor:
+              authNotice.type === 'warning'
+                ? alpha(theme.palette.warning.main, 0.3)
+                : authNotice.type === 'error'
+                  ? alpha(theme.palette.error.main, 0.3)
+                  : alpha(theme.palette.info.main, 0.3),
+            boxShadow: `0 4px 20px ${alpha(
+              authNotice.type === 'warning'
+                ? theme.palette.warning.main
+                : authNotice.type === 'error'
+                  ? theme.palette.error.main
+                  : theme.palette.info.main,
+              0.08
+            )}`,
+            backdropFilter: 'blur(8px)',
           }}
-          action={
-            errorMessage.includes('não vinculada') ? (
-              <Button
-                component={RouterLink}
-                href={paths.auth.jwt.signUp}
-                color="inherit"
-                size="small"
-                variant="outlined"
-                sx={{
-                  ml: 1,
-                  fontFamily: 'var(--font-orbitron), sans-serif',
-                  fontWeight: 800,
-                  fontSize: 10,
-                  letterSpacing: '0.05em',
-                  textTransform: 'uppercase',
-                  borderColor: 'currentColor',
-                }}
-              >
-                SOLICITAR ACESSO
-              </Button>
-            ) : undefined
-          }
         >
+          <Iconify
+            icon={
+              (authNotice.type === 'warning'
+                ? 'solar:shield-warning-bold-duotone'
+                : authNotice.type === 'error'
+                  ? 'solar:danger-triangle-bold-duotone'
+                  : 'solar:info-circle-bold-duotone') as any
+            }
+            width={24}
+            sx={{
+              flexShrink: 0,
+              mt: 0.25,
+              color:
+                authNotice.type === 'warning'
+                  ? 'warning.main'
+                  : authNotice.type === 'error'
+                    ? 'error.main'
+                    : 'info.main',
+            }}
+          />
+
+          <Box sx={{ flex: 1 }}>
+            <Typography
+              variant="subtitle2"
+              sx={{
+                mb: 0.5,
+                fontWeight: 600,
+                color:
+                  authNotice.type === 'warning'
+                    ? 'warning.light'
+                    : authNotice.type === 'error'
+                      ? 'error.light'
+                      : 'info.light',
+              }}
+            >
+              {authNotice.title}
+            </Typography>
+
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                fontSize: 13,
+                lineHeight: 1.55,
+              }}
+            >
+              {authNotice.description}
+            </Typography>
+          </Box>
+        </Box>
+      )}
+
+      {!!errorMessage && !authNotice && (
+        <Alert severity="error" sx={{ mb: 1 }}>
           {errorMessage}
         </Alert>
       )}
