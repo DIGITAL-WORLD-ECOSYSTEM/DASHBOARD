@@ -47,6 +47,16 @@ export const authRoutes: RouteObject[] = [
         ),
       },
       {
+        path: 'auth/jwt/sign-in',
+        element: (
+          <GuestGuard>
+            <AuthCenteredLayout>
+              <Jwt.SignInPage />
+            </AuthCenteredLayout>
+          </GuestGuard>
+        ),
+      },
+      {
         path: 'register',
         element: (
           <GuestGuard>
