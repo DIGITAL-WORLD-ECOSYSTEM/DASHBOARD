@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useBoolean } from 'minimal-shared/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -104,11 +104,25 @@ export function JwtSignInView() {
     }
   };
 
+  useEffect(() => {
+    const errorParam = searchParams.get('error');
+    const providerParam = searchParams.get('provider') || 'Google';
+    if (errorParam === 'IDENTITY_NOT_LINKED') {
+      setErrorMessage(
+        `Conta do ${providerParam} não vinculada a nenhuma conta existente. O serviço está ativo, mas o primeiro acesso requer uma conta cadastrada. Por favor, crie sua conta pelo botão "SOLICITAR" ou faça login com seu e-mail/senha para vincular sua conta do ${providerParam} nas configurações do seu perfil.`
+      );
+    } else if (errorParam === 'OAUTH_NOT_CONFIGURED') {
+      setErrorMessage(
+        `O serviço de login com ${providerParam} está em processo de sincronização de credenciais de produção. Por favor, utilize seu e-mail e senha cadastrados para acessar.`
+      );
+    } else if (errorParam) {
+      setErrorMessage(`Falha na autenticação com ${providerParam}: ${errorParam}`);
+    }
+  }, [searchParams]);
+
   const handleSocialLogin = (provider: 'google' | 'github') => {
-    const providerName = provider === 'google' ? 'Google' : 'GitHub';
-    setErrorMessage(
-      `Conta do ${providerName} não vinculada a nenhuma conta existente. O serviço está ativo, mas o primeiro acesso requer uma conta cadastrada. Por favor, crie sua conta pelo botão "SOLICITAR" ou faça login com seu e-mail/senha para vincular sua conta do ${providerName} nas configurações do seu perfil.`
-    );
+    const serverUrl = CONFIG.serverUrl || 'https://api.asppibra.com';
+    window.location.href = `${serverUrl}/api/v1/identity/oauth/${provider}/login`;
   };
 
   const renderForm = () => (
