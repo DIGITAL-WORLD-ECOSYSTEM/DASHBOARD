@@ -125,3 +125,56 @@ dist-ssr
 *.cjs
 tsc_errors*.txt
 audit_files.txt
+
+# ------------------------------------------------------
+# 🔒 CLOUDFLARE, SEGREDO E VARIÁVEIS (PROTEÇÃO TOTAL)
+# ------------------------------------------------------
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+.env.local
+.env.*.local
+.wrangler/
+.mf/
+
+# Chaves e Certificados
+*.pem
+*.key
+*.pfx
+*.crt
+*.cer
+secrets.json
+credentials.json
+service-account.json
+
+# Web3 Wallets & Seeds
+*.wallet
+*.keystore
+*.seed
+*.mnemonic
+wallet*.json
+
+# Vite & Cache de Bundler
+.vite/
+.turbo/
+
+# AI Assistants & Scratch
+.antigravity/
+.gemini/
+.claude/
+.cursor/
+.agents/
+scratch/
+temp/
+tmp/
+*.tmp
+*.temp
+*.bak
+
+# OS & Arquivos Temporários
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+desktop.ini
