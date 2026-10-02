@@ -74,7 +74,7 @@ export function JwtSignUpView() {
   const handleSocialLogin = (provider: 'google' | 'github') => {
     const providerName = provider === 'google' ? 'Google' : 'GitHub';
     setErrorMessage(
-      `O cadastro via ${providerName} está em homologação e será liberado em breve. Por favor, utilize o cadastro manual com Nome, E-mail e Senha abaixo.`
+      `Conta do ${providerName} não vinculada a nenhuma conta existente. O serviço está ativo, mas o primeiro acesso requer o preenchimento do formulário abaixo. Complete seu cadastro com Nome, E-mail e Senha para depois vincular sua conta do ${providerName} nas configurações.`
     );
   };
 
@@ -323,7 +323,7 @@ export function JwtSignUpView() {
 
       {!!errorMessage && (
         <Alert
-          severity={errorMessage.includes('homologação') ? 'warning' : 'error'}
+          severity={errorMessage.includes('não vinculada') || errorMessage.includes('homologação') ? 'warning' : 'error'}
           sx={{
             mb: 3,
             textAlign: 'left',

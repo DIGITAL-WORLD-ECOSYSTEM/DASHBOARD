@@ -107,7 +107,7 @@ export function JwtSignInView() {
   const handleSocialLogin = (provider: 'google' | 'github') => {
     const providerName = provider === 'google' ? 'Google' : 'GitHub';
     setErrorMessage(
-      `O acesso via ${providerName} está em homologação e será liberado em breve. Por favor, utilize o cadastro com E-mail e Senha ou vincule sua Carteira Web3.`
+      `Conta do ${providerName} não vinculada a nenhuma conta existente. O serviço está ativo, mas o primeiro acesso requer uma conta cadastrada. Por favor, crie sua conta pelo botão "SOLICITAR" ou faça login com seu e-mail/senha para vincular sua conta do ${providerName} nas configurações do seu perfil.`
     );
   };
 
