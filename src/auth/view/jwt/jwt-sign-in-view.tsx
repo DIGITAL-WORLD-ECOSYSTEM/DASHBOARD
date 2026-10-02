@@ -105,7 +105,18 @@ export function JwtSignInView() {
       router.push(redirectUrl);
     } catch (error) {
       console.error(error);
-      setErrorMessage(getErrorMessage(error));
+      const msg = getErrorMessage(error);
+      if (msg.includes('não vinculada') || msg.includes('Carteira Web3') || msg.includes('IDENTITY_NOT_LINKED')) {
+        setAuthNotice({
+          type: 'warning',
+          title: 'Vínculo com Carteira Web3 Pendente',
+          description: 'Sua assinatura MetaMask foi validada com sucesso, porém esta carteira ainda não está vinculada a nenhuma conta autorizada no ecossistema ASPPIBRA. Para acessar por este método, entre primeiro com seu e-mail e senha cadastrados para vincular sua carteira no seu perfil.'
+        });
+        setErrorMessage(null);
+      } else {
+        setErrorMessage(msg);
+        setAuthNotice(null);
+      }
     }
   };
 
