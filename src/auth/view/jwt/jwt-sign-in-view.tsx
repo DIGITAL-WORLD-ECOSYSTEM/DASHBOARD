@@ -105,8 +105,10 @@ export function JwtSignInView() {
   };
 
   const handleSocialLogin = (provider: 'google' | 'github') => {
-    const { serverUrl } = CONFIG;
-    window.location.href = `${serverUrl}/api/v1/identity/oauth/${provider}/login`;
+    const providerName = provider === 'google' ? 'Google' : 'GitHub';
+    setErrorMessage(
+      `O acesso via ${providerName} está em homologação e será liberado em breve. Por favor, utilize o cadastro com E-mail e Senha ou vincule sua Carteira Web3.`
+    );
   };
 
   const renderForm = () => (
@@ -271,7 +273,38 @@ export function JwtSignInView() {
       </Typography>
 
       {!!errorMessage && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert
+          severity={errorMessage.includes('não vinculada') || errorMessage.includes('homologação') ? 'warning' : 'error'}
+          sx={{
+            mb: 3,
+            textAlign: 'left',
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontSize: 12,
+            lineHeight: 1.6,
+          }}
+          action={
+            errorMessage.includes('não vinculada') ? (
+              <Button
+                component={RouterLink}
+                href={paths.auth.jwt.signUp}
+                color="inherit"
+                size="small"
+                variant="outlined"
+                sx={{
+                  ml: 1,
+                  fontFamily: 'var(--font-orbitron), sans-serif',
+                  fontWeight: 800,
+                  fontSize: 10,
+                  letterSpacing: '0.05em',
+                  textTransform: 'uppercase',
+                  borderColor: 'currentColor',
+                }}
+              >
+                SOLICITAR ACESSO
+              </Button>
+            ) : undefined
+          }
+        >
           {errorMessage}
         </Alert>
       )}

@@ -72,8 +72,10 @@ export function JwtSignUpView() {
   } = methods;
 
   const handleSocialLogin = (provider: 'google' | 'github') => {
-    const { serverUrl } = CONFIG;
-    window.location.href = `${serverUrl}/api/v1/identity/oauth/${provider}/login`;
+    const providerName = provider === 'google' ? 'Google' : 'GitHub';
+    setErrorMessage(
+      `O cadastro via ${providerName} está em homologação e será liberado em breve. Por favor, utilize o cadastro manual com Nome, E-mail e Senha abaixo.`
+    );
   };
 
   const onSubmit = handleSubmit(async (data) => {
@@ -320,7 +322,16 @@ export function JwtSignUpView() {
       </Box>
 
       {!!errorMessage && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert
+          severity={errorMessage.includes('homologação') ? 'warning' : 'error'}
+          sx={{
+            mb: 3,
+            textAlign: 'left',
+            fontFamily: 'var(--font-orbitron), sans-serif',
+            fontSize: 12,
+            lineHeight: 1.6,
+          }}
+        >
           {errorMessage}
         </Alert>
       )}

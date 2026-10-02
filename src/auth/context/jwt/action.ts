@@ -37,13 +37,17 @@ export const signInWithPassword = async ({ email, password }: SignInParams): Pro
 
     const res = await axios.post(endpoints.auth.signIn, params);
 
-    const { accessToken } = res.data;
+    const token =
+      res.data?.accessToken ||
+      res.data?.data?.accessToken ||
+      res.data?.token ||
+      res.data?.data?.token;
 
-    if (!accessToken) {
-      throw new Error('Access token not found in response');
+    if (!token) {
+      throw new Error('Token de acesso não retornado pelo servidor.');
     }
 
-    setSession(accessToken);
+    setSession(token);
   } catch (error) {
     console.error('Error during sign in:', error);
     throw error;
@@ -96,37 +100,52 @@ export const signOut = async (): Promise<void> => {
  * *************************************** */
 export const signInWithWeb3 = async (address: string): Promise<void> => {
   try {
-    const nonceRes = await axios.get(endpoints.auth.web3Nonce, { params: { address } });
-    const { nonce, message } = nonceRes.data;
+    // 1. Obter desafio (SIWE) do backend via POST (com fallback para GET)
+    let challengeData: any;
+    try {
+      const challengeRes = await axios.post(endpoints.auth.web3Nonce, { address });
+      challengeData = challengeRes.data?.data || challengeRes.data;
+    } catch {
+      const challengeRes = await axios.get(endpoints.auth.web3Nonce, { params: { address } });
+      challengeData = challengeRes.data?.data || challengeRes.data;
+    }
 
-    console.log('Web3 Nonce received:', { nonce, message, address });
+    const challengeId = challengeData?.challengeId;
+    const messageToSign = challengeData?.message || challengeData?.statement;
 
-    if (!message) {
-      throw new Error('Falha ao obter a mensagem de autenticação do servidor.');
+    console.log('Web3 Challenge received:', { challengeId, address, hasMessage: !!messageToSign });
+
+    if (!messageToSign) {
+      throw new Error('Falha ao obter mensagem de autenticação SIWE do servidor.');
     }
 
     if (!window.ethereum) {
-      throw new Error('MetaMask is not installed');
+      throw new Error('MetaMask não encontrada. Por favor, instale a extensão para continuar.');
     }
 
     const signature = await window.ethereum.request({
       method: 'personal_sign',
-      params: [message, address],
+      params: [messageToSign, address],
     });
 
     const verifyRes = await axios.post(endpoints.auth.web3Verify, {
+      challengeId,
       address,
-      message,
+      message: messageToSign,
       signature,
     });
 
-    const { accessToken } = verifyRes.data;
+    const token =
+      verifyRes.data?.accessToken ||
+      verifyRes.data?.data?.accessToken ||
+      verifyRes.data?.token ||
+      verifyRes.data?.data?.token;
 
-    if (!accessToken) {
-      throw new Error('Access token not found in response');
+    if (!token) {
+      throw new Error('Token de acesso não retornado pelo servidor.');
     }
 
-    setSession(accessToken);
+    setSession(token);
   } catch (error) {
     console.error('Error during Web3 sign in:', error);
     throw error;
