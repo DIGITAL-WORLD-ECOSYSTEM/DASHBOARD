@@ -22,6 +22,7 @@ import { RouterLink } from 'src/routes/components';
 import { DashboardContent } from 'src/layouts/dashboard';
 import { deleteCitizen, useGetCitizens, deleteCitizens } from 'src/actions/identity';
 
+import { Label } from 'src/components/label';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
@@ -188,30 +189,66 @@ export function UserListView() {
         <DirectoryHeroMetrics tableData={tableData} />
 
         <Card>
-          <Tabs
-            value={currentFilters.status}
-            onChange={handleFilterStatus}
+          <Box
             sx={[
               (theme) => ({
-                px: { md: 2.5 },
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                px: { xs: 2, md: 2.5 },
                 boxShadow: `inset 0 -2px 0 0 ${varAlpha(theme.vars.palette.grey['500Channel'], 0.08)}`,
               }),
             ]}
           >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
+            <Tabs
+              value={currentFilters.status}
+              onChange={handleFilterStatus}
+              sx={{
+                '& .MuiTabs-flexContainer': {
+                  gap: { xs: 0.5, md: 0 },
+                },
+              }}
+            >
+              {STATUS_OPTIONS.map((tab) => (
+                <Tab
+                  key={tab.value}
+                  iconPosition="end"
+                  value={tab.value}
+                  label={tab.label}
+                  icon={
+                    <Label
+                      variant={
+                        ((tab.value === 'all' || tab.value === currentFilters.status) && 'filled') ||
+                        'soft'
+                      }
+                      color={
+                        (tab.value === 'active' && 'success') ||
+                        (tab.value === 'pending' && 'warning') ||
+                        (tab.value === 'suspended' && 'error') ||
+                        'default'
+                      }
+                    >
+                      {['active', 'pending', 'suspended', 'inactive', 'blocked'].includes(tab.value)
+                        ? tableData.filter((user) => user.status === tab.value).length
+                        : tableData.length}
+                    </Label>
+                  }
+                />
+              ))}
+            </Tabs>
+
+            <Box sx={{ flexShrink: 0, py: 1.5 }}>
+              <UserExportMenu
+                users={dataFiltered}
+                variant="button"
+                scopeLabel={`Exportar ${dataFiltered.length} Membros (Filtro Atual)`}
               />
-            ))}
-          </Tabs>
+            </Box>
+          </Box>
 
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
-            filteredUsers={dataFiltered}
             options={{ 
               roles: ['admin', 'dev', 'user'], 
               kycStatus: ['draft', 'pending', 'under_review', 'approved', 'rejected', 'expired']

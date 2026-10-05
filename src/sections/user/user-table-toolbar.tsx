@@ -16,8 +16,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { Iconify } from 'src/components/iconify';
 
-import { UserExportMenu } from './user-export-menu';
-
 // ----------------------------------------------------------------------
 
 type Props = {
@@ -159,14 +157,6 @@ export function UserTableToolbar({ filters, options, onResetPage, filteredUsers 
             },
           }}
         />
-
-        <Box sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>
-          <UserExportMenu
-            users={filteredUsers || []}
-            variant="button"
-            scopeLabel={`Exportar ${filteredUsers?.length || 0} Membros (Filtro Atual)`}
-          />
-        </Box>
       </Box>
     </Box>
   );
