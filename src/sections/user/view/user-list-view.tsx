@@ -40,6 +40,7 @@ import {
 } from 'src/components/table';
 
 import { UserTableRow } from '../user-table-row';
+import { UserExportMenu } from '../user-export-menu';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { DirectoryHeroMetrics } from '../directory-hero-metrics';
 import { UserTableFiltersResult } from '../user-table-filters-result';
@@ -210,6 +211,7 @@ export function UserListView() {
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
+            filteredUsers={dataFiltered}
             options={{ 
               roles: ['admin', 'dev', 'user'], 
               kycStatus: ['draft', 'pending', 'under_review', 'approved', 'rejected', 'expired']
@@ -238,11 +240,11 @@ export function UserListView() {
               }
               action={
                 <>
-                  <Tooltip title="Exportar CSV">
-                    <IconButton color="primary" onClick={() => toast.success('Exportação iniciada...')}>
-                      <Iconify icon="solar:export-bold" />
-                    </IconButton>
-                  </Tooltip>
+                  <UserExportMenu
+                    users={dataFiltered.filter((row) => table.selected.includes(row.id))}
+                    variant="icon"
+                    scopeLabel={`Exportar ${table.selected.length} Selecionados`}
+                  />
                   <Tooltip title="Enviar Comunicado">
                     <IconButton color="primary" onClick={() => toast.success('Ação indisponível nesta versão.')}>
                       <Iconify icon="solar:letter-bold" />

@@ -1,6 +1,6 @@
 import type { SelectChangeEvent } from '@mui/material/Select';
 import type { UseSetStateReturn } from 'minimal-shared/hooks';
-import type { IUserTableFilters } from 'src/types/user';
+import type { IUserItem, IUserTableFilters } from 'src/types/user';
 
 import { useCallback } from 'react';
 
@@ -16,6 +16,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { Iconify } from 'src/components/iconify';
 
+import { UserExportMenu } from './user-export-menu';
+
 // ----------------------------------------------------------------------
 
 type Props = {
@@ -25,9 +27,10 @@ type Props = {
     roles: string[];
     kycStatus: string[];
   };
+  filteredUsers?: IUserItem[];
 };
 
-export function UserTableToolbar({ filters, options, onResetPage }: Props) {
+export function UserTableToolbar({ filters, options, onResetPage, filteredUsers }: Props) {
   const { state: currentFilters, setState: updateFilters } = filters;
 
   const handleFilterName = useCallback(
@@ -157,14 +160,13 @@ export function UserTableToolbar({ filters, options, onResetPage }: Props) {
           }}
         />
 
-        <Button 
-          variant="outlined" 
-          color="inherit" 
-          startIcon={<Iconify icon="solar:export-bold" />}
-          sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
-        >
-          Exportar
-        </Button>
+        <Box sx={{ display: { xs: 'none', sm: 'inline-flex' } }}>
+          <UserExportMenu
+            users={filteredUsers || []}
+            variant="button"
+            scopeLabel={`Exportar ${filteredUsers?.length || 0} Membros (Filtro Atual)`}
+          />
+        </Box>
       </Box>
     </Box>
   );
