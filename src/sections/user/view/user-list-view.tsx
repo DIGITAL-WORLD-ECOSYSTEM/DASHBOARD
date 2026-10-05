@@ -249,10 +249,6 @@ export function UserListView() {
           <UserTableToolbar
             filters={filters}
             onResetPage={table.onResetPage}
-            options={{ 
-              roles: ['admin', 'dev', 'user'], 
-              kycStatus: ['draft', 'pending', 'under_review', 'approved', 'rejected', 'expired']
-            }}
           />
 
           {canReset && (
