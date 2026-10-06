@@ -49,6 +49,18 @@ const ScrollbarRoot = styled(SimpleBar, {
   flexGrow: 1,
   display: 'flex',
   flexDirection: 'column',
+  height: '100%',
+  overflow: 'hidden',
+  '& .simplebar-wrapper': {
+    height: '100%',
+  },
+  '& .simplebar-mask': {
+    overflow: 'hidden',
+  },
+  '& .simplebar-content-wrapper': {
+    height: '100%',
+    overflow: 'auto',
+  },
   ...(fillContent && {
     '& .simplebar-content': {
       display: 'flex',

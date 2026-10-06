@@ -4,7 +4,6 @@ import type { NavSectionProps } from 'src/components/nav-section';
 
 import parse from 'autosuggest-highlight/parse';
 import match from 'autosuggest-highlight/match';
-import { varAlpha } from 'minimal-shared/utils';
 import { useBoolean } from 'minimal-shared/hooks';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
@@ -90,17 +89,56 @@ export function Searchbar({ data: navItems = [], sx, ...other }: SearchbarProps)
           display: 'flex',
           alignItems: 'center',
           [theme.breakpoints.up(breakpoint)]: {
-            pr: 1,
+            pl: 0.85,
+            pr: 1.15,
+            py: 0.45,
             borderRadius: 1.5,
             cursor: 'pointer',
-            bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-            transition: theme.transitions.create('background-color', {
-              easing: theme.transitions.easing.easeInOut,
-              duration: theme.transitions.duration.shortest,
-            }),
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
+            border: '1px solid rgba(145, 158, 171, 0.24)',
+            boxShadow: [
+              '0 3px 8px -1px rgba(15, 23, 42, 0.08)',
+              'inset 0 1.5px 0 #ffffff',
+              'inset 0 -1px 0 rgba(0, 0, 0, 0.05)',
+            ].join(', '),
+            transition: theme.transitions.create(
+              ['background', 'border-color', 'box-shadow', 'transform'],
+              {
+                easing: theme.transitions.easing.easeInOut,
+                duration: theme.transitions.duration.shorter,
+              }
+            ),
             '&:hover': {
-              bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.16),
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)',
+              borderColor: 'rgba(0, 167, 111, 0.45)',
+              boxShadow: [
+                '0 6px 16px -2px rgba(0, 167, 111, 0.22)',
+                'inset 0 1.5px 0 #ffffff',
+              ].join(', '),
+              transform: 'translateY(-1.5px)',
+              '& .search-icon': {
+                color: 'primary.main',
+              },
             },
+            '&:active': {
+              transform: 'translateY(1px)',
+              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+            },
+            ...theme.applyStyles('dark', {
+              background:
+                'linear-gradient(180deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              boxShadow:
+                '0 3px 8px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+              '&:hover': {
+                borderColor: 'rgba(0, 255, 127, 0.5)',
+                boxShadow:
+                  '0 0 14px rgba(0, 255, 127, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+              },
+              '&:active': {
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.4)',
+              },
+            }),
           },
         },
         ...(Array.isArray(sx) ? sx : [sx]),
@@ -109,25 +147,41 @@ export function Searchbar({ data: navItems = [], sx, ...other }: SearchbarProps)
     >
       <Box
         component={smUp ? 'span' : IconButton}
+        className="search-icon"
         sx={{
           [theme.breakpoints.up(breakpoint)]: {
-            p: 1,
+            p: 0.75,
             display: 'inline-flex',
-            color: 'action.active',
+            color: 'text.secondary',
+            transition: theme.transitions.create('color', { duration: '150ms' }),
           },
         }}
       >
-        <Iconify icon="eva:search-fill" />
+        <Iconify icon="eva:search-fill" width={18} />
       </Box>
 
       <Label
         sx={{
-          color: 'grey.800',
+          color: 'text.primary',
           cursor: 'inherit',
-          bgcolor: 'common.white',
-          fontSize: theme.typography.pxToRem(12),
-          boxShadow: theme.vars.customShadows.z1,
+          background: 'linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%)',
+          fontSize: 10,
+          fontWeight: 800,
+          fontFamily: 'var(--font-orbitron), "Orbitron", monospace',
+          letterSpacing: 0.5,
+          border: '1px solid rgba(145, 158, 171, 0.3)',
+          boxShadow: '0 2px 0 #CBD5E1, 0 3px 5px rgba(0, 0, 0, 0.1), inset 0 1px 0 #ffffff',
+          borderRadius: 0.75,
+          height: 20,
+          px: 0.8,
           display: { xs: 'none', [breakpoint]: 'inline-flex' },
+          ...theme.applyStyles('dark', {
+            background:
+              'linear-gradient(180deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            boxShadow:
+              '0 2px 0 #0f172a, 0 3px 5px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+          }),
         }}
       >
         ⌘K

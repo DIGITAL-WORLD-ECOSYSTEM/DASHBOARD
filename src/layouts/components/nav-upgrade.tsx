@@ -12,6 +12,7 @@ import { paths } from 'src/routes/paths';
 import { CONFIG } from 'src/global-config';
 
 import { Label } from 'src/components/label';
+import { CyberButton } from 'src/components/cyber-button';
 
 import { useUserProfile } from 'src/auth/facades';
 import { IdentityAvatar } from 'src/auth/components';
@@ -28,36 +29,69 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
     >
       <Box
         sx={(theme) => ({
-          p: 2,
+          p: 2.2,
           borderRadius: 2,
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
-          bgcolor: 'background.paper',
-          border: '1px solid rgba(0, 0, 0, 0.06)',
-          boxShadow: '0 4px 16px -2px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.8)',
+          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(248, 250, 252, 0.6) 100%)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid rgba(255, 255, 255, 0.8)',
+          boxShadow: [
+            '0 8px 24px -4px rgba(15, 23, 42, 0.08)',
+            'inset 0 1.5px 0 #ffffff',
+            'inset 0 -1px 0 rgba(145, 158, 171, 0.1)',
+          ].join(', '),
           ...theme.applyStyles('dark', {
-            bgcolor: 'rgba(2, 8, 23, 0.75)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+            background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.55) 0%, rgba(15, 23, 42, 0.7) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
           }),
         })}
       >
         <Box sx={{ position: 'relative' }}>
-          <IdentityAvatar src={photoURL} alt={displayName} sx={{ width: 48, height: 48 }}>
-            {displayName.charAt(0).toUpperCase()}
-          </IdentityAvatar>
+          <Box
+            sx={{
+              p: '2.5px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #00A76F 0%, rgba(145, 158, 171, 0.3) 50%, #00D2FF 100%)',
+              boxShadow: '0 4px 14px -2px rgba(0, 167, 111, 0.35), inset 0 1px 1px #ffffff',
+            }}
+          >
+            <IdentityAvatar src={photoURL} alt={displayName} sx={{ width: 48, height: 48 }}>
+              {displayName.charAt(0).toUpperCase()}
+            </IdentityAvatar>
+          </Box>
+
+          {/* 🟢 Indicador Online */}
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: 1,
+              right: 1,
+              width: 12,
+              height: 12,
+              bgcolor: '#22c55e',
+              border: '2px solid #ffffff',
+              borderRadius: '50%',
+              boxShadow: '0 0 8px rgba(34, 197, 94, 0.8)',
+            }}
+          />
 
           <Label
             color="success"
             variant="filled"
             sx={{
               top: -6,
-              px: 0.5,
-              left: 40,
-              height: 20,
+              px: 0.8,
+              left: 38,
+              height: 18,
               position: 'absolute',
-              borderBottomLeftRadius: 2,
+              fontSize: 10,
+              fontWeight: 800,
+              fontFamily: 'var(--font-orbitron), "Orbitron", sans-serif',
+              letterSpacing: 0.5,
+              borderRadius: 0.75,
             }}
           >
             {role?.toUpperCase() || 'USER'}
@@ -68,13 +102,13 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
           <Typography
             variant="subtitle2"
             noWrap
-            sx={{ mb: 1, color: 'var(--layout-nav-text-primary-color)' }}
+            sx={{ mb: 0.5, color: 'var(--layout-nav-text-primary-color)' }}
           >
             {displayName}
           </Typography>
 
           <Typography
-            variant="body2"
+            variant="caption"
             noWrap
             sx={{ color: 'var(--layout-nav-text-disabled-color)' }}
           >
@@ -82,14 +116,21 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
           </Typography>
         </Box>
 
-        <Button
-          variant="contained"
+        <CyberButton
+          size="small"
+          glowColor="primary"
           href={paths.minimalStore}
           target="_blank"
           rel="noopener noreferrer"
+          sx={{
+            height: 38,
+            width: '100%',
+            fontSize: 11,
+            letterSpacing: 0.5,
+          }}
         >
           Upgrade to Pro
-        </Button>
+        </CyberButton>
       </Box>
     </Box>
   );

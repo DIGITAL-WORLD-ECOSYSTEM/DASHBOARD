@@ -72,7 +72,6 @@ export function DashboardLayout({
 
   const isNavMini = settings.state.navLayout === 'mini';
   const isNavHorizontal = settings.state.navLayout === 'horizontal';
-  const isNavVertical = isNavMini || settings.state.navLayout === 'vertical';
 
   const canDisplayItemByRole = (allowedRoles: NavItemProps['allowedRoles']): boolean => {
     if (!allowedRoles) {
@@ -90,7 +89,7 @@ export function DashboardLayout({
       container: {
         maxWidth: false,
         sx: {
-          ...(isNavVertical && { px: { [layoutQuery]: 5 } }),
+          px: { xs: 1.5, [layoutQuery]: 2.5 },
           ...(isNavHorizontal && {
             bgcolor: 'var(--layout-nav-bg)',
             height: { [layoutQuery]: 'var(--layout-nav-horizontal-height)' },
@@ -152,7 +151,52 @@ export function DashboardLayout({
         </>
       ),
       rightArea: (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0, sm: 0.75 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: { xs: 0.5, sm: 0.85 },
+            '& .MuiIconButton-root:not(.account-button)': {
+              width: 38,
+              height: 38,
+              borderRadius: 1.5,
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
+              border: '1px solid rgba(145, 158, 171, 0.22)',
+              boxShadow:
+                '0 2px 6px -1px rgba(15, 23, 42, 0.08), inset 0 1.5px 0 #ffffff, inset 0 -1px 0 rgba(0, 0, 0, 0.05)',
+              transition: theme.transitions.create(
+                ['background', 'border-color', 'box-shadow', 'transform'],
+                { duration: theme.transitions.duration.shorter }
+              ),
+              '&:hover': {
+                background: 'linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)',
+                borderColor: 'rgba(0, 167, 111, 0.45)',
+                boxShadow:
+                  '0 6px 16px -2px rgba(0, 167, 111, 0.22), inset 0 1.5px 0 #ffffff',
+                transform: 'translateY(-1.5px)',
+              },
+              '&:active': {
+                transform: 'translateY(1px)',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+              },
+              ...theme.applyStyles('dark', {
+                background:
+                  'linear-gradient(180deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                boxShadow:
+                  '0 2px 8px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                '&:hover': {
+                  borderColor: 'rgba(0, 255, 127, 0.5)',
+                  boxShadow:
+                    '0 0 14px rgba(0, 255, 127, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                },
+                '&:active': {
+                  boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.4)',
+                },
+              }),
+            },
+          }}
+        >
           {/** @slot Searchbar */}
           <Searchbar data={navData} />
 
@@ -177,11 +221,97 @@ export function DashboardLayout({
     return (
       <HeaderSection
         layoutQuery={layoutQuery}
-        disableElevation={isNavVertical}
+        disableOffset
+        disableElevation
         {...slotProps?.header}
         slots={{ ...headerSlots, ...slotProps?.header?.slots }}
         slotProps={merge(headerSlotProps, slotProps?.header?.slotProps ?? {}) as any}
-        sx={slotProps?.header?.sx}
+        sx={[
+          {
+            position: 'sticky',
+            top: { xs: 8, [layoutQuery]: 16 },
+            mt: { xs: 1, [layoutQuery]: 2 },
+            mb: { xs: 1.5, [layoutQuery]: 2.5 },
+            left: 0,
+            right: 0,
+            mx: 'auto',
+            width: { xs: 'calc(100% - 24px)', [layoutQuery]: 'calc(100% - 32px)' },
+            borderRadius: { xs: 2, [layoutQuery]: '20px' },
+            overflow: 'hidden',
+
+            // 💎 VIDROMORFISMO 3D (TRANSLUCÊNCIA CRISTALINA + APPLE RETINA BLUR)
+            background:
+              'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 252, 0.68) 50%, rgba(241, 245, 249, 0.78) 100%)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            border: '1px solid rgba(255, 255, 255, 0.75)',
+            boxShadow: [
+              '0 20px 48px -10px rgba(15, 23, 42, 0.12)',
+              '0 8px 20px -4px rgba(15, 23, 42, 0.06)',
+              'inset 0 1.5px 0 rgba(255, 255, 255, 0.95)',
+              'inset 1.5px 0 0 rgba(255, 255, 255, 0.75)',
+              'inset 0 -1.5px 0 rgba(0, 0, 0, 0.04)',
+              'inset -1.5px 0 0 rgba(0, 0, 0, 0.03)',
+            ].join(', '),
+            zIndex: 'var(--layout-header-zIndex)',
+
+            // ✨ REFLEXO GLOSSY DIAGONAL 3D (WET GLASS SHEEN)
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '100%',
+              borderRadius: 'inherit',
+              background:
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 25%, transparent 55%)',
+              pointerEvents: 'none',
+              zIndex: 1,
+            },
+
+            // 💡 LINHA DE LUZ ESPECULAR INFERIOR CONTÍNUA (BISEL HOLOGRÁFICO)
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              width: '100%',
+              height: '2px',
+              background:
+                'linear-gradient(90deg, rgba(0, 167, 111, 0.6) 0%, rgba(145, 158, 171, 0.25) 35%, rgba(0, 210, 255, 0.5) 100%)',
+              pointerEvents: 'none',
+              zIndex: 2,
+            },
+
+            // 🌑 MODO DARK CYBER / OBSIDIAN GLASS
+            ...theme.applyStyles('dark', {
+              background:
+                'linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(2, 8, 23, 0.70) 50%, rgba(15, 23, 42, 0.82) 100%)',
+              backdropFilter: 'blur(24px) saturate(190%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(190%)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              boxShadow: [
+                '0 24px 60px -12px rgba(0, 0, 0, 0.75)',
+                '0 10px 24px -4px rgba(0, 0, 0, 0.55)',
+                'inset 0 1.5px 0 rgba(255, 255, 255, 0.22)',
+                'inset 1px 0 0 rgba(255, 255, 255, 0.08)',
+                'inset 0 -1.5px 0 rgba(0, 0, 0, 0.5)',
+              ].join(', '),
+              '&::before': {
+                background:
+                  'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 30%, transparent 60%)',
+              },
+              '&::after': {
+                background:
+                  'linear-gradient(90deg, rgba(0, 255, 127, 0.6) 0%, rgba(255, 255, 255, 0.12) 35%, rgba(0, 210, 255, 0.5) 100%)',
+              },
+            }),
+          },
+          ...(Array.isArray(slotProps?.header?.sx)
+            ? slotProps.header.sx
+            : [slotProps?.header?.sx]),
+        ]}
       />
     );
   };
@@ -226,14 +356,17 @@ export function DashboardLayout({
       cssVars={{ ...dashboardLayoutVars(theme), ...navVars.layout, ...cssVars }}
       sx={[
         {
+          minHeight: '100vh',
+          backgroundColor: theme.vars.palette.background.neutral,
+          ...theme.applyStyles('dark', {
+            backgroundColor: '#020817',
+          }),
           [`& .${layoutClasses.sidebarContainer}`]: {
             minHeight: '100vh',
-            backgroundColor: theme.vars.palette.background.neutral,
-            ...theme.applyStyles('dark', {
-              backgroundColor: '#020817',
-            }),
             [theme.breakpoints.up(layoutQuery)]: {
-              pl: isNavMini ? 'var(--layout-nav-mini-width)' : 'var(--layout-nav-vertical-width)',
+              pl: isNavMini
+                ? 'calc(var(--layout-nav-mini-width) + 16px)'
+                : 'calc(var(--layout-nav-vertical-width) + 16px)',
               transition: theme.transitions.create(['padding-left'], {
                 easing: 'var(--layout-transition-easing)',
                 duration: 'var(--layout-transition-duration)',

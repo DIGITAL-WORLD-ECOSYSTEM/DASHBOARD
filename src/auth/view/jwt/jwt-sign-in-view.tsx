@@ -1,6 +1,6 @@
 import * as z from 'zod';
-import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useState, useEffect } from 'react';
 import { useBoolean } from 'minimal-shared/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -24,7 +24,7 @@ import { Form, Field, schemaUtils } from 'src/components/hook-form';
 
 import { useAuthContext } from '../../hooks';
 import { getErrorMessage } from '../../utils';
-import { FormSocials, FormDivider } from '../../components';
+import { FormDivider } from '../../components';
 import { signInWithWeb3, signInWithPassword } from '../../context/jwt';
 
 // ----------------------------------------------------------------------

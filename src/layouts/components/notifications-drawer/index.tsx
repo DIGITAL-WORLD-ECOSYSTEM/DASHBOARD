@@ -135,8 +135,19 @@ export function NotificationsDrawer({ data = [], sx, ...other }: NotificationsDr
         sx={sx}
         {...other}
       >
-        <Badge badgeContent={totalUnRead} color="error">
-          <Iconify width={24} icon="solar:bell-bing-bold-duotone" />
+        <Badge
+          badgeContent={totalUnRead}
+          color="error"
+          sx={{
+            '& .MuiBadge-badge': {
+              fontWeight: 700,
+              fontSize: 10,
+              fontFamily: 'var(--font-orbitron), "Orbitron", sans-serif',
+              boxShadow: '0 0 8px rgba(255, 86, 48, 0.7)',
+            },
+          }}
+        >
+          <Iconify width={22} icon="solar:bell-bing-bold-duotone" />
         </Badge>
       </IconButton>
 

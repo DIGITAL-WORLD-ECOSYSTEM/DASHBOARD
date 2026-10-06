@@ -10,12 +10,6 @@
 @import '@fontsource/barlow/800.css';
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
 
-:root {
-  --font-orbitron: 'Orbitron', sans-serif;
-  --font-barlow: 'Barlow', sans-serif;
-  --font-public-sans: 'Public Sans Variable', sans-serif;
-}
-
 /** **************************************
 * Fonts: options
 *************************************** */
@@ -37,6 +31,12 @@
 
 /* chart */
 @import './components/chart/styles.css';
+
+:root {
+  --font-orbitron: 'Orbitron', sans-serif;
+  --font-barlow: 'Barlow', sans-serif;
+  --font-public-sans: 'Public Sans Variable', sans-serif;
+}
 
 /** **************************************
 * Baseline

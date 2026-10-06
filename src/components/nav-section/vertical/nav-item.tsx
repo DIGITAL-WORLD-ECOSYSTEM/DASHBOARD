@@ -147,11 +147,25 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })<StyledState>(({
 
   const rootItemStyles: CSSObject = {
     minHeight: 'var(--nav-item-root-height)',
-    transition: theme.transitions.create(['background-color', 'box-shadow', 'transform', 'border-color'], {
-      duration: theme.transitions.duration.shorter,
-    }),
+    border: '1px solid transparent',
+    transition: theme.transitions.create(
+      ['background-color', 'box-shadow', 'transform', 'border-color', 'background'],
+      { duration: theme.transitions.duration.shorter }
+    ),
     '&:hover': {
-      transform: 'translateX(3px)',
+      transform: 'translateY(-1px) translateX(2px)',
+      background:
+        'linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(241, 245, 249, 0.85) 100%)',
+      borderColor: 'rgba(145, 158, 171, 0.22)',
+      boxShadow:
+        '0 4px 14px -2px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 1)',
+      ...theme.applyStyles('dark', {
+        background:
+          'linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%)',
+        borderColor: 'rgba(255, 255, 255, 0.12)',
+        boxShadow:
+          '0 4px 16px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+      }),
     },
     ...(open && {
       color: 'var(--nav-item-root-open-color)',
@@ -159,17 +173,29 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })<StyledState>(({
     }),
     ...(active && {
       color: 'var(--nav-item-root-active-color)',
-      backgroundColor: 'var(--nav-item-root-active-bg)',
-      border: `1px solid ${varAlpha(theme.vars.palette.primary.mainChannel, 0.2)}`,
-      boxShadow: `0 3px 12px -2px ${varAlpha(theme.vars.palette.primary.mainChannel, 0.24)}, inset 0 1px 1px rgba(255, 255, 255, 0.6)`,
+      background:
+        'linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 253, 244, 0.95) 100%)',
+      borderColor: varAlpha(theme.vars.palette.primary.mainChannel, 0.35),
+      borderLeft: `4px solid ${theme.palette.primary.main}`,
+      boxShadow: [
+        `0 8px 24px -4px ${varAlpha(theme.vars.palette.primary.mainChannel, 0.28)}`,
+        '0 2px 6px -1px rgba(15, 23, 42, 0.08)',
+        'inset 0 1.5px 0 #ffffff',
+        `inset 0 -1.5px 0 ${varAlpha(theme.vars.palette.primary.mainChannel, 0.15)}`,
+      ].join(', '),
       '&:hover': {
-        backgroundColor: 'var(--nav-item-root-active-hover-bg)',
+        background:
+          'linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(235, 252, 241, 0.98) 100%)',
         transform: 'none',
       },
       ...theme.applyStyles('dark', {
         color: 'var(--nav-item-root-active-color-on-dark)',
-        border: '1px solid rgba(0, 255, 127, 0.25)',
-        boxShadow: '0 0 16px -2px rgba(0, 255, 127, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+        background:
+          'linear-gradient(180deg, rgba(6, 78, 59, 0.35) 0%, rgba(2, 44, 34, 0.45) 100%)',
+        borderColor: 'rgba(0, 255, 127, 0.35)',
+        borderLeft: '4px solid #00ff7f',
+        boxShadow:
+          '0 0 24px -2px rgba(0, 255, 127, 0.32), inset 0 1.5px 0 rgba(255, 255, 255, 0.2), inset 0 -1px 0 rgba(0, 255, 127, 0.2)',
       }),
     }),
   };
@@ -195,7 +221,6 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })<StyledState>(({
     paddingBottom: 'var(--nav-item-pb)',
     borderRadius: 'var(--nav-item-radius)',
     color: 'var(--nav-item-color)',
-    '&:hover': { backgroundColor: 'var(--nav-item-hover-bg)' },
     variants: [
       { props: { variant: 'rootItem' }, style: rootItemStyles },
       { props: { variant: 'subItem' }, style: subItemStyles },
@@ -207,11 +232,43 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })<StyledState>(({
 /**
  * @slot icon
  */
-const ItemIcon = styled('span', { shouldForwardProp })<StyledState>(() => ({
+const ItemIcon = styled('span', { shouldForwardProp })<StyledState>(({ theme, active }) => ({
   ...navItemStyles.icon,
-  width: 'var(--nav-icon-size)',
-  height: 'var(--nav-icon-size)',
-  margin: 'var(--nav-icon-margin)',
+  width: 32,
+  height: 32,
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: 8,
+  flexShrink: 0,
+  marginRight: 10,
+  transition: theme.transitions.create(['background-color', 'border-color', 'box-shadow', 'color', 'transform']),
+  background: active
+    ? 'linear-gradient(135deg, rgba(0, 167, 111, 0.2) 0%, rgba(0, 210, 255, 0.14) 100%)'
+    : 'linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)',
+  border: active
+    ? `1px solid ${varAlpha(theme.vars.palette.primary.mainChannel, 0.45)}`
+    : '1px solid rgba(145, 158, 171, 0.22)',
+  boxShadow: active
+    ? `0 0 14px 0 ${varAlpha(theme.vars.palette.primary.mainChannel, 0.35)}, inset 0 1px 0 #ffffff`
+    : '0 1px 3px rgba(0, 0, 0, 0.05), inset 0 1px 0 #ffffff',
+  color: active ? theme.palette.primary.main : 'inherit',
+  ...theme.applyStyles('dark', {
+    background: active
+      ? 'linear-gradient(135deg, rgba(0, 255, 127, 0.25) 0%, rgba(0, 210, 255, 0.15) 100%)'
+      : 'linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%)',
+    border: active
+      ? '1px solid rgba(0, 255, 127, 0.5)'
+      : '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: active
+      ? '0 0 16px 0 rgba(0, 255, 127, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+      : '0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
+    color: active ? '#00ff7f' : 'inherit',
+  }),
+  '& > svg, & > span': {
+    width: 20,
+    height: 20,
+  },
 }));
 
 /**

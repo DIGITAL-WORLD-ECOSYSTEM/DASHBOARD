@@ -50,6 +50,7 @@ const commonRules = () => ({
  */
 const importRules = () => ({
   ...importPlugin.configs.recommended.rules,
+  'import/no-unresolved': 0,
   'import/named': 0,
   'import/export': 0,
   'import/default': 0,

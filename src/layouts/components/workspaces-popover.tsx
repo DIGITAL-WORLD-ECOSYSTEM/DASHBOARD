@@ -1,4 +1,3 @@
-import type { Theme, SxProps } from '@mui/material/styles';
 import type { ButtonBaseProps } from '@mui/material/ButtonBase';
 
 import { useState, useCallback } from 'react';
@@ -45,37 +44,57 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
     [onClose]
   );
 
-  const buttonBg: SxProps<Theme> = {
-    height: 1,
-    zIndex: -1,
-    opacity: 0,
-    content: "''",
-    borderRadius: 1,
-    position: 'absolute',
-    visibility: 'hidden',
-    bgcolor: 'action.hover',
-    width: 'calc(100% + 8px)',
-    transition: (theme) =>
-      theme.transitions.create(['opacity', 'visibility'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.shorter,
-      }),
-    ...(open && {
-      opacity: 1,
-      visibility: 'visible',
-    }),
-  };
-
   const renderButton = () => (
     <ButtonBase
       disableRipple
       onClick={onOpen}
       sx={[
-        {
-          py: 0.5,
-          gap: { xs: 0.5, [mediaQuery]: 1 },
-          '&::before': buttonBg,
-        },
+        (theme) => ({
+          py: 0.65,
+          px: 1.35,
+          borderRadius: 1.5,
+          gap: { xs: 0.75, [mediaQuery]: 1 },
+          background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.75) 100%)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255, 255, 255, 0.9)',
+          boxShadow: [
+            '0 3px 8px -1px rgba(15, 23, 42, 0.08)',
+            'inset 0 1.5px 0 #ffffff',
+            'inset 0 -1px 0 rgba(0, 0, 0, 0.05)',
+          ].join(', '),
+          transition: theme.transitions.create(
+            ['background', 'border-color', 'box-shadow', 'transform'],
+            { duration: theme.transitions.duration.shorter }
+          ),
+          '&:hover': {
+            background: 'linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)',
+            borderColor: 'rgba(0, 167, 111, 0.45)',
+            boxShadow: [
+              '0 6px 16px -2px rgba(0, 167, 111, 0.22)',
+              'inset 0 1.5px 0 #ffffff',
+            ].join(', '),
+            transform: 'translateY(-1.5px)',
+          },
+          '&:active': {
+            transform: 'translateY(1px)',
+            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1)',
+          },
+          ...theme.applyStyles('dark', {
+            background:
+              'linear-gradient(180deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow:
+              '0 3px 8px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+            '&:hover': {
+              borderColor: 'rgba(0, 255, 127, 0.5)',
+              boxShadow:
+                '0 0 14px rgba(0, 255, 127, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+            },
+            '&:active': {
+              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.4)',
+            },
+          }),
+        }),
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
       {...other}
@@ -84,28 +103,53 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
         component="img"
         alt={workspace?.name}
         src={workspace?.logo}
-        sx={{ width: 24, height: 24, borderRadius: '50%' }}
+        sx={{
+          width: 22,
+          height: 22,
+          borderRadius: 0.75,
+          boxShadow: '0 2px 5px rgba(0,0,0,0.12)',
+        }}
       />
 
       <Box
         component="span"
-        sx={{ typography: 'subtitle2', display: { xs: 'none', [mediaQuery]: 'inline-flex' } }}
+        sx={{
+          typography: 'subtitle2',
+          fontWeight: 700,
+          letterSpacing: 0.3,
+          display: { xs: 'none', [mediaQuery]: 'inline-flex' },
+        }}
       >
         {workspace?.name}
       </Box>
 
       <Label
         color={workspace?.plan === 'Free' ? 'default' : 'info'}
-        sx={{
-          height: 22,
+        sx={(theme) => ({
+          height: 20,
+          px: 0.8,
           cursor: 'inherit',
+          fontSize: 10,
+          fontWeight: 800,
+          fontFamily: 'var(--font-orbitron), "Orbitron", sans-serif',
+          letterSpacing: 0.5,
+          borderRadius: 0.75,
+          background: 'linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%)',
+          border: '1px solid rgba(145, 158, 171, 0.25)',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.06), inset 0 1px 0 #ffffff',
+          color: 'text.primary',
           display: { xs: 'none', [mediaQuery]: 'inline-flex' },
-        }}
+          ...theme.applyStyles('dark', {
+            background: 'rgba(255, 255, 255, 0.08)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          }),
+        })}
       >
         {workspace?.plan}
       </Label>
 
-      <Iconify width={16} icon="carbon:chevron-sort" sx={{ color: 'text.disabled' }} />
+      <Iconify width={15} icon="carbon:chevron-sort" sx={{ color: 'text.secondary', ml: -0.25 }} />
     </ButtonBase>
   );
 
