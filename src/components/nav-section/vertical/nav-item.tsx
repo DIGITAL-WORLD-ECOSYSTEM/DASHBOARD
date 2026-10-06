@@ -1,7 +1,7 @@
 import type { CSSObject } from '@mui/material/styles';
 import type { NavItemProps } from '../types';
 
-import { mergeClasses } from 'minimal-shared/utils';
+import { varAlpha, mergeClasses } from 'minimal-shared/utils';
 
 import Tooltip from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
@@ -147,6 +147,12 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })<StyledState>(({
 
   const rootItemStyles: CSSObject = {
     minHeight: 'var(--nav-item-root-height)',
+    transition: theme.transitions.create(['background-color', 'box-shadow', 'transform', 'border-color'], {
+      duration: theme.transitions.duration.shorter,
+    }),
+    '&:hover': {
+      transform: 'translateX(3px)',
+    },
     ...(open && {
       color: 'var(--nav-item-root-open-color)',
       backgroundColor: 'var(--nav-item-root-open-bg)',
@@ -154,9 +160,16 @@ const ItemRoot = styled(ButtonBase, { shouldForwardProp })<StyledState>(({
     ...(active && {
       color: 'var(--nav-item-root-active-color)',
       backgroundColor: 'var(--nav-item-root-active-bg)',
-      '&:hover': { backgroundColor: 'var(--nav-item-root-active-hover-bg)' },
+      border: `1px solid ${varAlpha(theme.vars.palette.primary.mainChannel, 0.2)}`,
+      boxShadow: `0 3px 12px -2px ${varAlpha(theme.vars.palette.primary.mainChannel, 0.24)}, inset 0 1px 1px rgba(255, 255, 255, 0.6)`,
+      '&:hover': {
+        backgroundColor: 'var(--nav-item-root-active-hover-bg)',
+        transform: 'none',
+      },
       ...theme.applyStyles('dark', {
         color: 'var(--nav-item-root-active-color-on-dark)',
+        border: '1px solid rgba(0, 255, 127, 0.25)',
+        boxShadow: '0 0 16px -2px rgba(0, 255, 127, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
       }),
     }),
   };

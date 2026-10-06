@@ -23,10 +23,26 @@ export function NavUpgrade({ sx, ...other }: BoxProps) {
 
   return (
     <Box
-      sx={[{ px: 2, py: 5, textAlign: 'center' }, ...(Array.isArray(sx) ? sx : [sx])]}
+      sx={[{ px: 2, py: 2.5, textAlign: 'center' }, ...(Array.isArray(sx) ? sx : [sx])]}
       {...other}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+      <Box
+        sx={(theme) => ({
+          p: 2,
+          borderRadius: 2,
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+          bgcolor: 'background.paper',
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          boxShadow: '0 4px 16px -2px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.8)',
+          ...theme.applyStyles('dark', {
+            bgcolor: 'rgba(2, 8, 23, 0.75)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 8px 24px -4px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1)',
+          }),
+        })}
+      >
         <Box sx={{ position: 'relative' }}>
           <IdentityAvatar src={photoURL} alt={displayName} sx={{ width: 48, height: 48 }}>
             {displayName.charAt(0).toUpperCase()}

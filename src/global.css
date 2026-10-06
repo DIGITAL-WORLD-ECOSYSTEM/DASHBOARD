@@ -8,6 +8,13 @@
 @import '@fontsource/barlow/600.css';
 @import '@fontsource/barlow/700.css';
 @import '@fontsource/barlow/800.css';
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --font-orbitron: 'Orbitron', sans-serif;
+  --font-barlow: 'Barlow', sans-serif;
+  --font-public-sans: 'Public Sans Variable', sans-serif;
+}
 
 /** **************************************
 * Fonts: options
@@ -67,3 +74,78 @@ input[type='number']::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
+
+/** **************************************
+* UI Protection / App-Like Behavior
+*************************************** */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+.selectable {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  cursor: text;
+}
+
+/** **************************************
+* Print Engine Styles (A4 Legal Publishing)
+*************************************** */
+.print-only {
+  display: none !important;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+  }
+
+  header,
+  footer,
+  nav,
+  aside,
+  [role="banner"],
+  [role="contentinfo"],
+  .MuiSpeedDial-root,
+  .MuiSpeedDialAction-root,
+  .MuiFab-root,
+  .no-print {
+    display: none !important;
+  }
+
+  html, body, #root, #root__layout, main {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+    min-height: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 16mm 16mm 16mm 16mm;
+  }
+}
+

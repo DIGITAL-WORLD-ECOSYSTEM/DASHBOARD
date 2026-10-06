@@ -123,10 +123,32 @@ const NavRoot = styled('div', {
     position: 'fixed',
     flexDirection: 'column',
     zIndex: 'var(--layout-nav-zIndex)',
-    backgroundColor: 'var(--layout-nav-bg)',
     width: isNavMini ? 'var(--layout-nav-mini-width)' : 'var(--layout-nav-vertical-width)',
-    borderRight: `1px solid var(--layout-nav-border-color, ${varAlpha(theme.vars.palette.grey['500Channel'], 0.12)})`,
-    transition: theme.transitions.create(['width'], {
+
+    // 🏛️ ELEVAÇÃO TRIDIMENSIONAL & ACABAMENTO DE MATERIAL (OBJETO FÍSICO)
+    backgroundColor: '#ffffff',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderRight: '1px solid rgba(145, 158, 171, 0.18)',
+    boxShadow: [
+      '14px 0 36px -10px rgba(15, 23, 42, 0.14)',
+      '4px 0 12px -2px rgba(15, 23, 42, 0.06)',
+      'inset -1px 0 0 rgba(255, 255, 255, 0.9)',
+    ].join(', '),
+
+    // 🌑 MODO DARK / CYBER (OBSIDIAN TRANSLÚCIDO COM CHANFRO DE LUZ)
+    ...theme.applyStyles('dark', {
+      backgroundColor: 'rgba(2, 8, 23, 0.88)',
+      borderRight: '1px solid rgba(255, 255, 255, 0.08)',
+      boxShadow: [
+        '20px 0 45px -10px rgba(0, 0, 0, 0.7)',
+        '6px 0 16px -4px rgba(0, 0, 0, 0.5)',
+        'inset -1px 0 0 rgba(255, 255, 255, 0.12)',
+        'inset 1px 0 0 rgba(255, 255, 255, 0.03)',
+      ].join(', '),
+    }),
+
+    transition: theme.transitions.create(['width', 'box-shadow', 'background-color'], {
       easing: 'var(--layout-transition-easing)',
       duration: 'var(--layout-transition-duration)',
     }),

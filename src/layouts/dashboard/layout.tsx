@@ -227,6 +227,11 @@ export function DashboardLayout({
       sx={[
         {
           [`& .${layoutClasses.sidebarContainer}`]: {
+            minHeight: '100vh',
+            backgroundColor: theme.vars.palette.background.neutral,
+            ...theme.applyStyles('dark', {
+              backgroundColor: '#020817',
+            }),
             [theme.breakpoints.up(layoutQuery)]: {
               pl: isNavMini ? 'var(--layout-nav-mini-width)' : 'var(--layout-nav-vertical-width)',
               transition: theme.transitions.create(['padding-left'], {
