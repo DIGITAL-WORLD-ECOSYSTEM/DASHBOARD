@@ -11,6 +11,7 @@ import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { alpha } from '@mui/material/styles';
 import ListItemText from '@mui/material/ListItemText';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import AvatarGroup, { avatarGroupClasses } from '@mui/material/AvatarGroup';
@@ -199,17 +200,34 @@ export function ChatHeaderDetails({ collapseNav, participants, loading, conversa
     return (
       <Box
         sx={{
-          px: 2,
-          py: 0.75,
+          px: 2.5,
+          py: 0.85,
           bgcolor,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
           display: 'flex',
           alignItems: 'center',
-          gap: 1,
-          borderBottom: (theme) => `1px solid ${theme.vars.palette.divider}`,
+          gap: 1.2,
+          borderBottom: (theme) => `1px solid ${alpha(theme.palette.divider, 0.4)}`,
         }}
       >
-        <Iconify icon={icon as any} width={16} sx={{ color }} />
-        <Box sx={{ typography: 'caption', color, fontWeight: 'fontWeightBold' }}>{text}</Box>
+        <Box
+          sx={{
+            width: 22,
+            height: 22,
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: (theme) => alpha(theme.palette.common.white, 0.6),
+            ...((theme) => theme.applyStyles('dark', {
+              bgcolor: 'rgba(255, 255, 255, 0.08)',
+            })),
+          }}
+        >
+          <Iconify icon={icon as any} width={14} sx={{ color }} />
+        </Box>
+        <Box sx={{ typography: 'caption', color, fontWeight: 700, letterSpacing: 0.2 }}>{text}</Box>
       </Box>
     );
   };
@@ -219,32 +237,70 @@ export function ChatHeaderDetails({ collapseNav, participants, loading, conversa
       <Box sx={{ display: 'flex', alignItems: 'center', p: 2, pb: 1, width: 1 }}>
         {isGroup ? renderGroup() : renderSingle()}
 
-        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
-          <IconButton>
-            <Iconify icon="eva:search-fill" />
+        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+          <IconButton
+            sx={{
+              borderRadius: '10px',
+              border: (theme) => `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+              bgcolor: (theme) => alpha(theme.palette.background.paper, 0.4),
+              transition: 'all 0.2s',
+              '&:hover': {
+                bgcolor: (theme) => alpha(theme.palette.action.hover, 0.8),
+                transform: 'translateY(-1px)',
+              },
+            }}
+          >
+            <Iconify icon="eva:search-fill" width={20} />
           </IconButton>
 
-          <IconButton>
-            <Iconify icon="solar:phone-bold" />
+          <IconButton
+            sx={{
+              borderRadius: '10px',
+              border: (theme) => `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+              bgcolor: (theme) => alpha(theme.palette.background.paper, 0.4),
+              transition: 'all 0.2s',
+              '&:hover': {
+                bgcolor: (theme) => alpha(theme.palette.action.hover, 0.8),
+                transform: 'translateY(-1px)',
+              },
+            }}
+          >
+            <Iconify icon="solar:phone-bold" width={20} />
           </IconButton>
 
-          <IconButton>
-            <Iconify icon="solar:videocamera-record-bold" />
+          <IconButton
+            sx={{
+              borderRadius: '10px',
+              border: (theme) => `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+              bgcolor: (theme) => alpha(theme.palette.background.paper, 0.4),
+              transition: 'all 0.2s',
+              '&:hover': {
+                bgcolor: (theme) => alpha(theme.palette.action.hover, 0.8),
+                transform: 'translateY(-1px)',
+              },
+            }}
+          >
+            <Iconify icon="solar:videocamera-record-bold" width={20} />
           </IconButton>
           
-          <Divider orientation="vertical" flexItem sx={{ mx: 1, height: 24, my: 'auto' }} />
+          <Divider orientation="vertical" flexItem sx={{ mx: 0.5, height: 24, my: 'auto' }} />
 
           <IconButton 
             onClick={handleToggleNav}
             sx={{
-              color: !collapseDesktop ? 'primary.main' : 'default',
-              bgcolor: !collapseDesktop ? 'primary.lighter' : 'transparent',
+              borderRadius: '10px',
+              transition: 'all 0.2s',
+              color: !collapseDesktop ? 'primary.main' : 'text.secondary',
+              border: (theme) => !collapseDesktop ? `1px solid ${alpha(theme.palette.primary.main, 0.4)}` : `1px solid ${alpha(theme.palette.divider, 0.5)}`,
+              bgcolor: (theme) => !collapseDesktop ? alpha(theme.palette.primary.main, 0.12) : alpha(theme.palette.background.paper, 0.4),
+              boxShadow: (theme) => !collapseDesktop ? `0 2px 8px ${alpha(theme.palette.primary.main, 0.25)}` : 'none',
               '&:hover': {
-                bgcolor: !collapseDesktop ? 'primary.lighter' : 'action.hover',
+                bgcolor: (theme) => !collapseDesktop ? alpha(theme.palette.primary.main, 0.20) : alpha(theme.palette.action.hover, 0.8),
+                transform: 'translateY(-1px)',
               }
             }}
           >
-            <Iconify icon="solar:info-circle-bold" />
+            <Iconify icon="solar:info-circle-bold" width={20} />
           </IconButton>
         </Box>
       </Box>

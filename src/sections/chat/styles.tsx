@@ -28,7 +28,23 @@ export const CollapseButton = styled(
   justifyContent: 'space-between',
   paddingRight: theme.spacing(1.5),
   color: theme.vars.palette.text.secondary,
-  backgroundColor: theme.vars.palette.background.neutral,
+  background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.20) 100%)',
+  backdropFilter: 'blur(10px)',
+  WebkitBackdropFilter: 'blur(10px)',
+  borderBottom: `solid 1px ${theme.vars.palette.divider}`,
+  boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+  transition: theme.transitions.create(['all']),
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+  },
+  ...theme.applyStyles('dark', {
+    background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    },
+  }),
 }));
 
 // ----------------------------------------------------------------------
@@ -41,9 +57,12 @@ export const ToggleButton = styled(ButtonBase)<ButtonBaseProps>(({ theme }) => (
   height: 32,
   position: 'absolute',
   borderRadius: `0 12px 12px 0`,
-  boxShadow: theme.vars.customShadows.primary,
+  boxShadow: '0 4px 14px -2px rgba(0, 167, 111, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
   color: theme.vars.palette.primary.contrastText,
-  backgroundColor: theme.vars.palette.primary.main,
+  background: 'linear-gradient(135deg, #00A76F 0%, #007850 100%)',
   transition: theme.transitions.create(['all'], { duration: theme.transitions.duration.shorter }),
-  '&:hover': { backgroundColor: theme.vars.palette.primary.darker },
+  '&:hover': { 
+    background: 'linear-gradient(135deg, #00B578 0%, #00895C 100%)',
+    transform: 'scale(1.05)',
+  },
 }));

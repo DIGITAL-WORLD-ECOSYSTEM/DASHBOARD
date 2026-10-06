@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { alpha } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
@@ -73,14 +74,43 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
   const renderBody = () => (
     <Stack
       sx={{
-        p: 1.5,
+        p: 1.75,
         minWidth: 48,
-        maxWidth: 320,
-        borderRadius: 1,
+        maxWidth: 360,
+        borderRadius: me ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
         typography: 'body2',
-        bgcolor: 'background.neutral',
-        ...(me && { color: 'grey.800', bgcolor: 'primary.lighter' }),
-        ...(hasImage && { p: 0, bgcolor: 'transparent' }),
+        lineHeight: 1.55,
+        position: 'relative',
+        transition: (theme) => theme.transitions.create(['box-shadow', 'transform']),
+        // 💬 BOLHA DO USUÁRIO (ME) - ESMERALDA 3D VOLUMÉTRICA
+        ...(me && {
+          color: '#ffffff',
+          background: 'linear-gradient(135deg, #00A76F 0%, #007850 100%)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
+          boxShadow: [
+            'inset 0 1.5px 0 rgba(255, 255, 255, 0.45)',
+            'inset 0 -1px 0 rgba(0, 0, 0, 0.25)',
+            '0 6px 18px -4px rgba(0, 167, 111, 0.40)',
+          ].join(', '),
+        }),
+        // 💬 BOLHA RECEBIDA - VIDRO FOSCO REFRATIVO 3D
+        ...(!me && {
+          color: 'text.primary',
+          background: (theme) => alpha(theme.palette.background.paper, 0.75),
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: (theme) => `1px solid ${alpha(theme.palette.common.white, 0.6)}`,
+          boxShadow: (theme) => [
+            `inset 0 1.5px 0 ${alpha(theme.palette.common.white, 0.85)}`,
+            '0 4px 14px -3px rgba(15, 23, 42, 0.08)',
+          ].join(', '),
+          ...((theme) => theme.applyStyles('dark', {
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.09)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 14px -3px rgba(0, 0, 0, 0.5)',
+          })),
+        }),
+        ...(hasImage && { p: 0, bgcolor: 'transparent', boxShadow: 'none', border: 'none' }),
       }}
     >
       {hasImage ? (
@@ -92,46 +122,57 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
           sx={{
             width: 400,
             height: 'auto',
-            borderRadius: 1.5,
+            borderRadius: 2,
             cursor: 'pointer',
             objectFit: 'cover',
             aspectRatio: '16/11',
-            '&:hover': { opacity: 0.9 },
+            boxShadow: '0 8px 24px -4px rgba(15, 23, 42, 0.15)',
+            transition: 'all 0.2s',
+            '&:hover': { opacity: 0.95, transform: 'scale(1.01)' },
           }}
         />
       ) : message.messageType === 'invoice' ? (
-        <Stack spacing={1.5} sx={{ minWidth: 240 }}>
+        <Stack spacing={1.5} sx={{ minWidth: 240, color: 'text.primary' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Iconify icon="solar:bill-list-bold" sx={{ color: 'warning.main' }} />
-            <Typography variant="subtitle2">Invoice Recebida</Typography>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Invoice Recebida</Typography>
           </Box>
           <Divider sx={{ borderStyle: 'dashed' }} />
           <Typography variant="body2">{body}</Typography>
           {message.systemData && (
-            <Typography variant="h6" sx={{ color: 'text.primary' }}>
+            <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 800 }}>
               {message.systemData.amount} {message.systemData.currency}
             </Typography>
           )}
-          <Button variant="contained" color="primary" size="small" fullWidth>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            size="small" 
+            fullWidth
+            sx={{
+              borderRadius: 1.5,
+              boxShadow: (theme) => `0 4px 12px ${alpha(theme.palette.primary.main, 0.35)}`,
+            }}
+          >
             Pagar Agora
           </Button>
         </Stack>
       ) : message.messageType === 'proposal' ? (
-        <Stack spacing={1.5} sx={{ minWidth: 240 }}>
+        <Stack spacing={1.5} sx={{ minWidth: 240, color: 'text.primary' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Iconify icon={'solar:document-text-bold' as any} sx={{ color: 'info.main' }} />
-            <Typography variant="subtitle2">Proposta #{message.systemData?.proposalId}</Typography>
+            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Proposta #{message.systemData?.proposalId}</Typography>
           </Box>
           <Divider sx={{ borderStyle: 'dashed' }} />
           <Typography variant="body2">{body}</Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
             {message.systemData?.title}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button variant="soft" color="success" size="small" fullWidth>
+            <Button variant="soft" color="success" size="small" fullWidth sx={{ borderRadius: 1.5 }}>
               Aprovar
             </Button>
-            <Button variant="soft" color="error" size="small" fullWidth>
+            <Button variant="soft" color="error" size="small" fullWidth sx={{ borderRadius: 1.5 }}>
               Rejeitar
             </Button>
           </Box>
@@ -143,31 +184,42 @@ export function ChatMessageItem({ message, participants, onOpenLightbox }: Props
   );
 
   const renderSystemMessage = () => (
-    <Box sx={{ width: 1, display: 'flex', justifyContent: 'center', my: 2 }}>
+    <Box sx={{ width: 1, display: 'flex', justifyContent: 'center', my: 2.5 }}>
       <Stack
         spacing={1}
         sx={{
           alignItems: 'center',
           p: 2,
-          bgcolor: 'background.neutral',
-          borderRadius: 2,
-          border: (theme) => `1px dashed ${theme.vars.palette.divider}`,
+          background: (theme) => alpha(theme.palette.background.paper, 0.65),
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderRadius: 2.5,
+          border: (theme) => `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+          boxShadow: (theme) => [
+            `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.8)}`,
+            '0 6px 20px -4px rgba(15, 23, 42, 0.06)',
+          ].join(', '),
           minWidth: 320,
+          ...((theme) => theme.applyStyles('dark', {
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 6px 20px -4px rgba(0, 0, 0, 0.4)',
+          })),
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Iconify icon="solar:info-circle-bold" sx={{ color: 'text.secondary' }} />
-          <Typography variant="subtitle2">{body}</Typography>
+          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{body}</Typography>
         </Box>
         {message.systemData && (
           <Typography
             variant="h6"
-            sx={{ color: message.systemData.action === 'pix_in' ? 'success.main' : 'text.primary' }}
+            sx={{ fontWeight: 800, color: message.systemData.action === 'pix_in' ? 'success.main' : 'text.primary' }}
           >
             + R$ {message.systemData.amount.toFixed(2)}
           </Typography>
         )}
-        <Button variant="outlined" size="small" sx={{ mt: 1 }}>
+        <Button variant="outlined" size="small" sx={{ mt: 1, borderRadius: 1.5 }}>
           Ver Transação
         </Button>
       </Stack>

@@ -2,7 +2,9 @@ import type { IChatParticipant } from 'src/types/chat';
 
 import { useState, useEffect, useCallback, startTransition } from 'react';
 
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { alpha } from '@mui/material/styles';
 
 import { paths } from 'src/routes/paths';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
@@ -79,13 +81,58 @@ export function ChatView() {
   return (
     <DashboardContent
       maxWidth={false}
-      sx={{ display: 'flex', flex: '1 1 auto', flexDirection: 'column' }}
+      sx={{
+        display: 'flex',
+        flex: '1 1 auto',
+        flexDirection: 'column',
+        height: { xs: 'calc(100dvh - 64px)', md: 'calc(100vh - 72px)' },
+        maxHeight: { xs: 'calc(100dvh - 64px)', md: 'calc(100vh - 72px)' },
+        overflow: 'hidden',
+        pt: { xs: 1, md: 1.5 },
+        pb: { xs: 1.5, md: 2 },
+      }}
     >
-      <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
-        Chat {connectionState !== 'DISCONNECTED' && `(${connectionState.toLowerCase()})`}
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: { xs: 1.5, md: 2 }, flexShrink: 0 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, letterSpacing: -0.5 }}>
+            Chat & Comunicação
+          </Typography>
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.75,
+              px: 1.25,
+              py: 0.4,
+              borderRadius: 10,
+              fontSize: 12,
+              fontWeight: 700,
+              bgcolor: (theme) => alpha(connectionState === 'DISCONNECTED' ? theme.palette.error.main : theme.palette.success.main, 0.12),
+              color: connectionState === 'DISCONNECTED' ? 'error.main' : 'success.main',
+              border: (theme) => `1px solid ${alpha(connectionState === 'DISCONNECTED' ? theme.palette.error.main : theme.palette.success.main, 0.25)}`,
+              boxShadow: (theme) => `0 2px 8px ${alpha(connectionState === 'DISCONNECTED' ? theme.palette.error.main : theme.palette.success.main, 0.2)}`,
+            }}
+          >
+            <Box
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                bgcolor: connectionState === 'DISCONNECTED' ? 'error.main' : 'success.main',
+                boxShadow: (theme) => `0 0 6px ${connectionState === 'DISCONNECTED' ? theme.palette.error.main : theme.palette.success.main}`,
+              }}
+            />
+            {connectionState === 'DISCONNECTED' ? 'Desconectado' : 'Tempo Real Ativo'}
+          </Box>
+        </Box>
+      </Box>
 
       <ChatLayout
+        sx={{
+          flex: '1 1 0',
+          minHeight: 0,
+          height: 1,
+        }}
         slots={{
           kpiBar: <ChatKpiBar />,
           header: selectedConversationId ? (
@@ -95,9 +142,9 @@ export function ChatView() {
               loading={conversationLoading}
               conversation={conversation}
             />
-          ) : (
+          ) : recipients.length > 0 ? (
             <ChatHeaderCompose contacts={contacts} onAddRecipients={handleAddRecipients} />
-          ),
+          ) : null,
           nav: (
             <ChatNav
               contacts={contacts}
@@ -122,19 +169,27 @@ export function ChatView() {
                     loading={conversationLoading}
                   />
                 )
+              ) : recipients.length > 0 ? (
+                <ChatMessageList
+                  messages={[]}
+                  participants={recipients}
+                  loading={false}
+                />
               ) : (
                 <ChatDashboard />
               )}
 
-              <ChatMessageInput
-                recipients={recipients}
-                onAddRecipients={handleAddRecipients}
-                selectedConversationId={selectedConversationId}
-                disabled={!recipients.length && !selectedConversationId}
-              />
+              {(!!selectedConversationId || !!recipients.length) && (
+                <ChatMessageInput
+                  recipients={recipients}
+                  onAddRecipients={handleAddRecipients}
+                  selectedConversationId={selectedConversationId}
+                  disabled={!recipients.length && !selectedConversationId}
+                />
+              )}
             </>
           ),
-          details: conversation && selectedConversationId && (
+          details: conversation && selectedConversationId ? (
             <ChatRoom
               collapseNav={roomNav}
               participants={filteredParticipants}
@@ -142,7 +197,7 @@ export function ChatView() {
               messages={conversation?.messages ?? []}
               conversation={conversation}
             />
-          ),
+          ) : null,
         }}
       />
     </DashboardContent>

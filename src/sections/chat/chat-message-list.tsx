@@ -50,9 +50,11 @@ export function ChatMessageList({ messages = [], participants, loading }: Props)
         ref={messagesEndRef}
         sx={{
           px: 3,
-          pt: 5,
+          pt: 3,
           pb: 3,
-          flex: '1 1 auto',
+          flex: '1 1 0',
+          minHeight: 0,
+          height: 1,
         }}
       >
         {messages.map((message) => (

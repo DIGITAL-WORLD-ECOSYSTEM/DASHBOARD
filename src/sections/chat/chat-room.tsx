@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
+import { alpha } from '@mui/material/styles';
 
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
@@ -61,13 +62,33 @@ export function ChatRoom({
 
     if (conversation.chatCategory === 'p2p') {
       return (
-        <Stack spacing={2} sx={{ p: 2, bgcolor: 'background.neutral' }}>
-          <Typography variant="subtitle2">Ações Financeiras P2P</Typography>
+        <Stack 
+          spacing={2} 
+          sx={{ 
+            p: 2, 
+            borderRadius: 2,
+            background: (theme) => alpha(theme.palette.background.paper, 0.70),
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: (theme) => `solid 1px ${alpha(theme.palette.common.white, 0.6)}`,
+            boxShadow: (theme) => [
+              `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.8)}`,
+              '0 4px 14px -3px rgba(15, 23, 42, 0.06)',
+            ].join(', '),
+            ...((theme) => theme.applyStyles('dark', {
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+            })),
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Ações Financeiras P2P</Typography>
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleP2PAction('/banking/transferencias')}
             fullWidth
+            sx={{ borderRadius: 1.5 }}
           >
             Transferir Pix
           </Button>
@@ -76,6 +97,7 @@ export function ChatRoom({
             color="inherit"
             onClick={() => handleP2PAction('/banking/solicitacoes')}
             fullWidth
+            sx={{ borderRadius: 1.5 }}
           >
             Solicitar Pagamento
           </Button>
@@ -84,6 +106,7 @@ export function ChatRoom({
             color="info"
             onClick={() => handleP2PAction('/banking/cripto')}
             fullWidth
+            sx={{ borderRadius: 1.5 }}
           >
             Enviar Cripto
           </Button>
@@ -93,9 +116,28 @@ export function ChatRoom({
 
     if (conversation.chatCategory === 'ticket') {
       return (
-        <Stack spacing={1.5} sx={{ p: 2, bgcolor: 'background.neutral' }}>
-          <Typography variant="subtitle2">Auditoria de Suporte</Typography>
-          <Divider />
+        <Stack 
+          spacing={1.5} 
+          sx={{ 
+            p: 2, 
+            borderRadius: 2,
+            background: (theme) => alpha(theme.palette.background.paper, 0.70),
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: (theme) => `solid 1px ${alpha(theme.palette.common.white, 0.6)}`,
+            boxShadow: (theme) => [
+              `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.8)}`,
+              '0 4px 14px -3px rgba(15, 23, 42, 0.06)',
+            ].join(', '),
+            ...((theme) => theme.applyStyles('dark', {
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+            })),
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>Auditoria de Suporte</Typography>
+          <Divider sx={{ borderStyle: 'dashed' }} />
           <Typography variant="caption" color="text.secondary">
             Dispositivo: iPhone 14 Pro
           </Typography>
@@ -108,7 +150,7 @@ export function ChatRoom({
           <Typography variant="caption" color="text.secondary">
             KYC: Aprovado
           </Typography>
-          <Button size="small" variant="outlined" color="error" fullWidth sx={{ mt: 2 }}>
+          <Button size="small" variant="outlined" color="error" fullWidth sx={{ mt: 1.5, borderRadius: 1.5 }}>
             Encerrar Chamado
           </Button>
         </Stack>
@@ -117,14 +159,24 @@ export function ChatRoom({
 
     if (conversation.chatCategory === 'dao') {
       return (
-        <Stack spacing={1.5} sx={{ p: 2, bgcolor: 'info.lighter', borderRadius: 2, m: 2 }}>
-          <Typography variant="subtitle2" color="info.darker">
+        <Stack 
+          spacing={1.5} 
+          sx={{ 
+            p: 2, 
+            borderRadius: 2,
+            m: 2,
+            background: (theme) => alpha(theme.palette.info.main, 0.12),
+            border: (theme) => `solid 1px ${alpha(theme.palette.info.main, 0.3)}`,
+            boxShadow: (theme) => `0 4px 16px -2px ${alpha(theme.palette.info.main, 0.2)}`,
+          }}
+        >
+          <Typography variant="subtitle2" color="info.main" sx={{ fontWeight: 700 }}>
             Poder da Comunidade
           </Typography>
-          <Typography variant="h4" color="info.main">
+          <Typography variant="h4" color="info.main" sx={{ fontWeight: 800 }}>
             450k ASP
           </Typography>
-          <Typography variant="caption" color="info.dark">
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
             3 Propostas em Votação
           </Typography>
         </Stack>
@@ -145,9 +197,9 @@ export function ChatRoom({
     loading ? (
       <ChatRoomSkeleton />
     ) : (
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: 1 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: 1, minHeight: 0, overflow: 'hidden' }}>
         {/* Modular Tabs Row */}
-        <Box sx={{ px: 2, pt: 1, borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}` }}>
+        <Box sx={{ px: 2, pt: 1, flexShrink: 0, borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}` }}>
           <Tabs
             value={currentTab}
             onChange={(e, newValue) => setCurrentTab(newValue)}
@@ -168,7 +220,7 @@ export function ChatRoom({
           </Tabs>
         </Box>
 
-        <Scrollbar sx={{ flexGrow: 1 }}>
+        <Scrollbar sx={{ flex: '1 1 0', minHeight: 0, height: 1 }}>
           {currentTab === 'info' && (
             <Box>
               <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -180,7 +232,25 @@ export function ChatRoom({
               </Box>
 
               <Stack spacing={2} sx={{ p: 2 }}>
-                <Box sx={{ p: 2, bgcolor: 'background.neutral', borderRadius: 1.5, border: (theme) => `solid 1px ${theme.vars.palette.divider}` }}>
+                <Box 
+                  sx={{ 
+                    p: 2, 
+                    borderRadius: 2, 
+                    background: (theme) => alpha(theme.palette.background.paper, 0.70),
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    border: (theme) => `solid 1px ${alpha(theme.palette.common.white, 0.6)}`,
+                    boxShadow: (theme) => [
+                      `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.8)}`,
+                      '0 4px 14px -3px rgba(15, 23, 42, 0.06)',
+                    ].join(', '),
+                    ...((theme) => theme.applyStyles('dark', {
+                      background: 'rgba(255, 255, 255, 0.04)',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+                    })),
+                  }}
+                >
                   <Stack spacing={2}>
                     <Box>
                       <Typography variant="overline" sx={{ color: 'text.disabled', display: 'block', mb: 0.5 }}>
@@ -258,10 +328,12 @@ export function ChatRoom({
         sx={[
           (theme) => ({
             minHeight: 0,
+            height: 1,
             flex: '1 1 auto',
             width: NAV_WIDTH,
             flexDirection: 'column',
             display: { xs: 'none', lg: 'flex' },
+            overflow: 'hidden',
             borderLeft: `solid 1px ${theme.vars.palette.divider}`,
             transition: theme.transitions.create(['width'], {
               duration: theme.transitions.duration.shorter,

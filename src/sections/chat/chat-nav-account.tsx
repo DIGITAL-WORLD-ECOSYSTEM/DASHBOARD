@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
+import { alpha } from '@mui/material/styles';
 import ListItemText from '@mui/material/ListItemText';
 import { svgIconClasses } from '@mui/material/SvgIcon';
 import Badge, { badgeClasses } from '@mui/material/Badge';
@@ -137,7 +138,24 @@ export function ChatNavAccount() {
           src={user?.photoURL}
           alt={user?.displayName}
           onClick={menuActions.onOpen}
-          sx={{ cursor: 'pointer', width: 48, height: 48 }}
+          sx={[
+            (theme: any) => ({
+              cursor: 'pointer',
+              width: 46,
+              height: 46,
+              boxShadow: '0 4px 12px -2px rgba(15, 23, 42, 0.12)',
+              border: `2px solid ${alpha(theme.palette.common.white, 0.8)}`,
+              transition: 'all 0.2s',
+              '&:hover': {
+                transform: 'scale(1.05)',
+                boxShadow: `0 6px 16px -2px ${alpha(theme.palette.primary.main, 0.3)}`,
+              },
+              ...theme.applyStyles('dark', {
+                border: '2px solid rgba(255, 255, 255, 0.15)',
+                boxShadow: '0 4px 12px -2px rgba(0, 0, 0, 0.5)',
+              }),
+            }),
+          ]}
         >
           {user?.displayName?.charAt(0).toUpperCase()}
         </IdentityAvatar>

@@ -26,20 +26,35 @@ export function ChatRoomAttachments({ attachments }: Props) {
 
   const renderList = () =>
     attachments.map((attachment, index) => (
-      <Box key={attachment.name + index} sx={{ gap: 1.5, display: 'flex', alignItems: 'center' }}>
+      <Box 
+        key={attachment.name + index} 
+        sx={{ 
+          gap: 1.5, 
+          display: 'flex', 
+          alignItems: 'center',
+          p: 1,
+          borderRadius: 1.5,
+          border: (theme) => `1px solid ${theme.vars.palette.divider}`,
+          transition: 'all 0.2s',
+          '&:hover': {
+            bgcolor: 'action.hover',
+            transform: 'translateX(2px)',
+          }
+        }}
+      >
         <FileThumbnail
           showImage
           file={attachment.preview}
           onDownload={() => console.info('DOWNLOAD')}
           slotProps={{ icon: { sx: { width: 24, height: 24 } } }}
-          sx={{ width: 40, height: 40, bgcolor: 'background.neutral' }}
+          sx={{ width: 40, height: 40, borderRadius: 1 }}
         />
 
         <ListItemText
           primary={attachment.name}
           secondary={fDateTime(attachment.createdAt)}
           slotProps={{
-            primary: { noWrap: true, sx: { typography: 'body2' } },
+            primary: { noWrap: true, sx: { typography: 'body2', fontWeight: 600 } },
             secondary: {
               noWrap: true,
               sx: {

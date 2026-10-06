@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import { alpha } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import InputAdornment from '@mui/material/InputAdornment';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -225,12 +226,34 @@ export function ChatNav({
         sx={{
           mt: 2.5,
           '& .MuiOutlinedInput-root': {
-            borderRadius: 1.5,
-            bgcolor: 'background.neutral',
-            transition: (theme) => theme.transitions.create(['background-color', 'border-color']),
-            '&.Mui-focused': {
-              bgcolor: 'background.paper',
+            borderRadius: 2,
+            bgcolor: (theme) => alpha(theme.palette.background.paper, 0.65),
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: (theme) => `1px solid ${alpha(theme.palette.common.white, 0.45)}`,
+            boxShadow: 'inset 0 1px 2px rgba(15, 23, 42, 0.05)',
+            transition: (theme) => theme.transitions.create(['background-color', 'border-color', 'box-shadow']),
+            '&:hover': {
+              borderColor: 'primary.light',
             },
+            '&.Mui-focused': {
+              bgcolor: (theme) => alpha(theme.palette.background.paper, 0.90),
+              borderColor: 'primary.main',
+              boxShadow: (theme) => `0 0 0 3px ${alpha(theme.palette.primary.main, 0.20)}`,
+            },
+            ...((theme: any) => theme.applyStyles('dark', {
+              bgcolor: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.3)',
+              '&:hover': {
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+              },
+              '&.Mui-focused': {
+                bgcolor: 'rgba(255, 255, 255, 0.07)',
+                borderColor: 'primary.main',
+                boxShadow: '0 0 0 3px rgba(0, 167, 111, 0.25)',
+              },
+            })),
           },
         }}
       />
@@ -247,7 +270,7 @@ export function ChatNav({
   ];
 
   const renderFilterDropdown = () => (
-    <Box sx={{ px: 2.5, pb: 2, borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}` }}>
+    <Box sx={{ px: 2.5, pb: 2, flexShrink: 0, borderBottom: (theme) => `solid 1px ${theme.vars.palette.divider}` }}>
       {!collapseDesktop && (
         <Select
           fullWidth
@@ -267,17 +290,26 @@ export function ChatNav({
             );
           }}
           sx={{
-            borderRadius: 1.5,
-            bgcolor: 'background.paper',
+            borderRadius: 2,
+            bgcolor: (theme) => alpha(theme.palette.background.paper, 0.65),
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: (theme) => `1px solid ${alpha(theme.palette.common.white, 0.45)}`,
+            boxShadow: (theme) => [
+              `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.8)}`,
+              '0 2px 6px -1px rgba(15, 23, 42, 0.04)',
+            ].join(', '),
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'divider',
+              border: 'none',
             },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'text.disabled',
+            '&:hover': {
+              borderColor: 'primary.light',
             },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'primary.main',
-            },
+            ...((theme) => theme.applyStyles('dark', {
+              bgcolor: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.10)',
+            })),
           }}
         >
           {TABS.map((tab) => (
@@ -300,6 +332,8 @@ export function ChatNav({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: 1,
+          flexShrink: 0,
         }}
       >
         {!collapseDesktop && (
@@ -309,27 +343,54 @@ export function ChatNav({
           </>
         )}
 
-        <IconButton onClick={handleToggleNav}>
+        <IconButton 
+          onClick={handleToggleNav}
+          sx={{
+            borderRadius: '10px',
+            transition: 'all 0.2s',
+            border: (theme) => `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+            bgcolor: (theme) => alpha(theme.palette.background.paper, 0.4),
+            '&:hover': {
+              bgcolor: (theme) => alpha(theme.palette.action.hover, 0.8),
+              transform: 'translateY(-1px)',
+            },
+          }}
+        >
           <Iconify
             icon={collapseDesktop ? 'eva:arrow-ios-forward-fill' : 'eva:arrow-ios-back-fill'}
           />
         </IconButton>
 
         {!collapseDesktop && (
-          <IconButton onClick={handleClickCompose}>
-            <Iconify width={24} icon="solar:user-plus-bold" />
+          <IconButton 
+            onClick={handleClickCompose}
+            sx={{
+              borderRadius: '10px',
+              transition: 'all 0.2s',
+              color: 'primary.main',
+              border: (theme) => `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+              boxShadow: (theme) => `0 2px 8px -2px ${alpha(theme.palette.primary.main, 0.2)}`,
+              '&:hover': {
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+                transform: 'translateY(-1px)',
+                boxShadow: (theme) => `0 4px 12px -2px ${alpha(theme.palette.primary.main, 0.35)}`,
+              },
+            }}
+          >
+            <Iconify width={20} icon="solar:user-plus-bold" />
           </IconButton>
         )}
       </Box>
 
-      <Box sx={{ p: 2.5, pt: 0 }}>{!collapseDesktop && renderSearchInput()}</Box>
+      <Box sx={{ p: 2.5, pt: 0, flexShrink: 0 }}>{!collapseDesktop && renderSearchInput()}</Box>
 
       {renderFilterDropdown()}
 
       {loading ? (
         renderLoading()
       ) : (
-        <Scrollbar sx={{ pb: 1 }}>
+        <Scrollbar sx={{ pb: 1, flex: '1 1 0', minHeight: 0, height: 1 }}>
           {searchContacts.query && !!conversations.allIds.length
             ? renderListResults()
             : renderList()}
@@ -348,10 +409,12 @@ export function ChatNav({
         sx={[
           (theme) => ({
             minHeight: 0,
+            height: 1,
             flex: '1 1 auto',
             width: NAV_WIDTH,
             flexDirection: 'column',
             display: { xs: 'none', md: 'flex' },
+            overflow: 'hidden',
             borderRight: `solid 1px ${theme.vars.palette.divider}`,
             transition: theme.transitions.create(['width'], {
               duration: theme.transitions.duration.shorter,
