@@ -357,9 +357,18 @@ export function DashboardLayout({
       sx={[
         {
           minHeight: '100vh',
-          backgroundColor: theme.vars.palette.background.neutral,
+          background: [
+            'radial-gradient(at 0% 0%, rgba(0, 167, 111, 0.05) 0px, transparent 45%)',
+            'radial-gradient(at 100% 0%, rgba(0, 210, 255, 0.05) 0px, transparent 45%)',
+            'radial-gradient(at 50% 50%, rgba(145, 158, 171, 0.04) 0px, transparent 60%)',
+            theme.vars.palette.background.neutral,
+          ].join(', '),
           ...theme.applyStyles('dark', {
-            backgroundColor: '#020817',
+            background: [
+              'radial-gradient(at 0% 0%, rgba(0, 255, 127, 0.06) 0px, transparent 50%)',
+              'radial-gradient(at 100% 0%, rgba(0, 210, 255, 0.05) 0px, transparent 50%)',
+              '#020817',
+            ].join(', '),
           }),
           [`& .${layoutClasses.sidebarContainer}`]: {
             minHeight: '100vh',

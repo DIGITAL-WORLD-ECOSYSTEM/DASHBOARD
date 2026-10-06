@@ -54,39 +54,94 @@ export function AppMyActions({ ...other }) {
         {_mockActions.map((item) => (
           <Box
             key={item.id}
-            sx={{
+            sx={(theme) => ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               p: 2,
               borderRadius: 2,
-              bgcolor: 'background.neutral',
-            }}
+              position: 'relative',
+              overflow: 'hidden',
+              background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
+              border: '1px solid rgba(145, 158, 171, 0.22)',
+              boxShadow: [
+                '0 4px 12px -2px rgba(15, 23, 42, 0.05)',
+                'inset 0 1.5px 0 #ffffff',
+                'inset 0 -1px 0 rgba(0, 0, 0, 0.03)',
+              ].join(', '),
+              transition: theme.transitions.create(['transform', 'box-shadow', 'border-color']),
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                borderColor: item.color,
+                boxShadow: '0 8px 20px -4px rgba(15, 23, 42, 0.1), inset 0 1.5px 0 #ffffff',
+              },
+              ...theme.applyStyles('dark', {
+                background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.75) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+                '&:hover': {
+                  borderColor: item.color,
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                },
+              }),
+            })}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Box
-                sx={{
-                  width: 40,
-                  height: 40,
+                sx={(theme) => ({
+                  width: 44,
+                  height: 44,
                   display: 'flex',
-                  borderRadius: '50%',
+                  borderRadius: '12px',
                   alignItems: 'center',
                   justifyContent: 'center',
                   color: item.color,
-                  bgcolor: (theme) => `rgba(${theme.vars.palette.grey['500Channel']} / 0.12)`,
-                }}
+                  bgcolor: (t) => `rgba(${t.vars.palette.grey['500Channel']} / 0.12)`,
+                  border: '1px solid rgba(145, 158, 171, 0.2)',
+                  boxShadow: 'inset 0 1px 0 #ffffff',
+                  ...theme.applyStyles('dark', {
+                    bgcolor: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                  }),
+                })}
               >
                 <Iconify icon={item.icon as any} width={24} />
               </Box>
               <Box>
-                <Typography variant="subtitle2">{item.title}</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>{item.title}</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary', fontSize: 13 }}>
                   {item.description}
                 </Typography>
               </Box>
             </Box>
 
-            <Button size="small" variant="outlined" color="inherit">
+            <Button
+              size="small"
+              variant="contained"
+              sx={(theme) => ({
+                fontWeight: 700,
+                fontSize: 12,
+                px: 2,
+                py: 0.6,
+                borderRadius: 1.25,
+                bgcolor: 'text.primary',
+                color: 'background.paper',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
+                transition: theme.transitions.create(['transform', 'box-shadow']),
+                '&:hover': {
+                  bgcolor: 'text.primary',
+                  transform: 'translateY(-1.5px)',
+                  boxShadow: '0 6px 16px rgba(15, 23, 42, 0.25)',
+                },
+                ...theme.applyStyles('dark', {
+                  bgcolor: '#ffffff',
+                  color: '#000000',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                }),
+              })}
+            >
               {item.actionLabel}
             </Button>
           </Box>
