@@ -3,7 +3,7 @@ import type { RouteObject } from 'react-router';
 import { Outlet } from 'react-router';
 import { lazy, Suspense } from 'react';
 
-import { DashboardLayout } from 'src/layouts/dashboard';
+import { DevOSLayout } from 'src/layouts/devos';
 
 import { LoadingScreen } from 'src/components/loading-screen';
 
@@ -42,22 +42,33 @@ function SuspenseOutlet() {
   );
 }
 
-const devosLayout = () => (
-  <DashboardLayout>
+const DevOSLayoutWrapper = () => (
+  <DevOSLayout>
     <SuspenseOutlet />
-  </DashboardLayout>
+  </DevOSLayout>
+);
+
+// ----------------------------------------------------------------------
+// Regra Especial de Segurança para Etapa 1.1 (Seção 5):
+// - Em ambiente local de desenvolvimento (Vite dev server), renderiza o cockpit diretamente com mock banner.
+// - Em build de produção, import.meta.env.DEV é substituído estaticamente por false na compilação,
+//   eliminando completamente o branch de dev (dead code elimination) e mantendo AuthGuard e RoleBasedGuard intactos.
+// - Nenhum guard global compartilhado é modificado.
+// ----------------------------------------------------------------------
+const devosElement = import.meta.env.DEV ? (
+  <DevOSLayoutWrapper />
+) : (
+  <AuthGuard>
+    <RoleBasedGuard allowedRoles={['dev']} hasContent>
+      <DevOSLayoutWrapper />
+    </RoleBasedGuard>
+  </AuthGuard>
 );
 
 export const devosRoutes: RouteObject[] = [
   {
     path: 'dev',
-    element: (
-      <AuthGuard>
-        <RoleBasedGuard allowedRoles={['dev']} hasContent>
-          {devosLayout()}
-        </RoleBasedGuard>
-      </AuthGuard>
-    ),
+    element: devosElement,
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'identity', element: <IdentityPage /> },
