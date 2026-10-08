@@ -1,16 +1,16 @@
 import { CONFIG } from 'src/global-config';
 
-import { DevPanelView } from 'src/sections/overview/dev-panel/view';
+import { ObservabilityView } from 'src/sections/devos/observability/view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `DevOS Command Center - ${CONFIG.appName}` };
+const metadata = { title: `DevOS Cockpit - Observabilidade - ${CONFIG.appName}` };
 
 export default function DevOSDashboardPage() {
   return (
     <>
       <title>{metadata.title}</title>
-      <DevPanelView />
+      <ObservabilityView />
     </>
   );
 }
