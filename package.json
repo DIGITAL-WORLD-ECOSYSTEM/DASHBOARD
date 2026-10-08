@@ -110,6 +110,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@tauri-apps/cli": "^2.12.1",
     "@types/autosuggest-highlight": "^3.2.3",
     "@types/dompurify": "^3.2.0",
     "@types/node": "^24.5.2",
