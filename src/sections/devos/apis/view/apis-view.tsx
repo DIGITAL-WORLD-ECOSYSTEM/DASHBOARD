@@ -15,8 +15,6 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 import { paths } from 'src/routes/paths';
 
-import axios from 'src/lib/axios';
-
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
@@ -77,27 +75,10 @@ const MOCK_INTEGRATIONS = [
 export function ApisView() {
   const [currentTab, setCurrentTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [integrations, setIntegrations] = useState<any[]>(MOCK_INTEGRATIONS);
-
-  // Drawer State
+  // Deterministic in-memory mock store (Zero production side effects)
+  const [integrations] = useState<any[]>(MOCK_INTEGRATIONS);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIntegration, setSelectedIntegration] = useState<any>(null);
-
-  useEffect(() => {
-    // Busca dados reais do backend (substituindo o MOCK no futuro)
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/v1/devos/apis');
-        if (response.data?.integrations && response.data.integrations.length > 0) {
-          // Quando houver dados reais no D1, eles sobrepõem o MOCK
-          setIntegrations(response.data.integrations);
-        }
-      } catch (error) {
-        console.error('Falha ao buscar integrações reais:', error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const filteredIntegrations = integrations.filter((integration) => {
     const matchesTab = currentTab === 'All' || integration.category === currentTab;

@@ -12,8 +12,6 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import axios from 'src/lib/axios';
-
 import { Iconify } from 'src/components/iconify';
 
 import { NuclearModal } from './nuclear-modal';
@@ -42,20 +40,12 @@ export function ApiConfigDrawer({ open, onClose, integration }: ApiConfigDrawerP
 
   if (!integration) return null;
 
-  const executeRotation = async () => {
-    try {
-      await axios.post('/api/v1/devos/apis/rotate', {
-        providerId: integration.provider,
-        keyName: 'default_master',
-        plainTextSecret: secretValue,
-        ownerTeam: integration.owner,
-        expiresInDays: 90,
-      });
-      alert('Chave rotacionada com sucesso e assinada no D1!');
-    } catch (e) {
-      console.error('Falha na rotação', e);
-      alert('Falha catastrófica ao tentar rotacionar a chave.');
-    }
+  // ACH-001 Neutralizado: Simulação puramente local em memória (Zero Production Side Effects)
+  const executeRotation = () => {
+    setSecretValue('sk_live_v8_simulated_rotation_token_mock_only');
+    alert(
+      `[SIMULATION ONLY] Rotação simulada para ${integration.name || 'integração'} realizada com sucesso no estado local. Nenhuma requisição enviada ao backend ou D1.`
+    );
   };
 
   const handleOpenNuclear = (actionName: string, expectedText: string, onConfirm: () => void) => {
@@ -225,7 +215,7 @@ export function ApiConfigDrawer({ open, onClose, integration }: ApiConfigDrawerP
             handleOpenNuclear(
               'Salvar Configurações Globais',
               `SALVAR_${integration.id?.toUpperCase()}`,
-              () => alert('Configurações Salvas no D1!')
+              () => alert('[SIMULATION ONLY] Configurações simuladas com sucesso no estado local.')
             )
           }
         >
