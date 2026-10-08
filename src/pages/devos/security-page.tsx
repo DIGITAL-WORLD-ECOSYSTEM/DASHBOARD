@@ -1,15 +1,16 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { CONFIG } from 'src/global-config';
+
+import { SecurityView } from 'src/sections/devos/security/view';
+
+// ----------------------------------------------------------------------
+
+const metadata = { title: `DevOS Cockpit - Security & Devices - ${CONFIG.appName}` };
 
 export default function SecurityPage() {
   return (
-    <Box>
-      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-        Security Page
-      </Typography>
-      <Typography color="text.secondary" sx={{ mt: 2 }}>
-        Module under construction. Reserved for DevOS engineering suite.
-      </Typography>
-    </Box>
+    <>
+      <title>{metadata.title}</title>
+      <SecurityView />
+    </>
   );
 }
