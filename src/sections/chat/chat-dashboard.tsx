@@ -4,11 +4,11 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha, useTheme } from '@mui/material/styles';
 
-import { Iconify } from 'src/components/iconify';
-import { Scrollbar } from 'src/components/scrollbar';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
+
+import { Iconify } from 'src/components/iconify';
+import { Scrollbar } from 'src/components/scrollbar';
 
 import { useUserProfile } from 'src/auth/facades';
 
@@ -124,28 +124,28 @@ export function ChatDashboard() {
                     gap: 2,
                     cursor: 'pointer',
                     borderRadius: 2.2,
-                    background: (theme) => alpha(theme.palette.background.paper, 0.70),
+                    background: alpha(theme.palette.background.paper, 0.70),
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    border: (theme) => `1px solid ${alpha(theme.palette.common.white, 0.6)}`,
-                    boxShadow: (theme) => [
+                    border: `1px solid ${alpha(theme.palette.common.white, 0.6)}`,
+                    boxShadow: [
                       `inset 0 1.5px 0 ${alpha(theme.palette.common.white, 0.85)}`,
                       '0 6px 18px -4px rgba(15, 23, 42, 0.06)',
                     ].join(', '),
-                    transition: (theme) => theme.transitions.create(['border-color', 'background-color', 'transform', 'box-shadow']),
+                    transition: theme.transitions.create(['border-color', 'background-color', 'transform', 'box-shadow']),
                     '&:hover': {
                       borderColor: `${action.color}.main`,
                       transform: 'translateY(-2px)',
-                      boxShadow: (theme) => [
+                      boxShadow: [
                         `inset 0 1.5px 0 rgba(255, 255, 255, 0.9)`,
                         `0 10px 24px -4px ${alpha(theme.palette[action.color as 'primary' | 'secondary' | 'warning'].main, 0.3)}`,
                       ].join(', '),
                     },
-                    ...((theme) => theme.applyStyles('dark', {
+                    ...theme.applyStyles('dark', {
                       background: 'rgba(255, 255, 255, 0.04)',
                       border: '1px solid rgba(255, 255, 255, 0.08)',
                       boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 6px 18px -4px rgba(0, 0, 0, 0.5)',
-                    })),
+                    }),
                   }}
                 >
                   <Box
@@ -192,28 +192,28 @@ export function ChatDashboard() {
                     gap: 2,
                     cursor: 'pointer',
                     borderRadius: 2.2,
-                    background: (theme) => alpha(theme.palette.background.paper, 0.70),
+                    background: alpha(theme.palette.background.paper, 0.70),
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    border: (theme) => `1px solid ${alpha(theme.palette.common.white, 0.6)}`,
-                    boxShadow: (theme) => [
+                    border: `1px solid ${alpha(theme.palette.common.white, 0.6)}`,
+                    boxShadow: [
                       `inset 0 1.5px 0 ${alpha(theme.palette.common.white, 0.85)}`,
                       '0 6px 18px -4px rgba(15, 23, 42, 0.06)',
                     ].join(', '),
-                    transition: (theme) => theme.transitions.create(['border-color', 'background-color', 'transform', 'box-shadow']),
+                    transition: theme.transitions.create(['border-color', 'background-color', 'transform', 'box-shadow']),
                     '&:hover': {
                       borderColor: `${file.color}.main`,
                       transform: 'translateY(-2px)',
-                      boxShadow: (theme) => [
+                      boxShadow: [
                         `inset 0 1.5px 0 rgba(255, 255, 255, 0.9)`,
                         `0 10px 24px -4px ${alpha(theme.palette[file.color as 'error' | 'info' | 'primary'].main, 0.25)}`,
                       ].join(', '),
                     },
-                    ...((theme) => theme.applyStyles('dark', {
+                    ...theme.applyStyles('dark', {
                       background: 'rgba(255, 255, 255, 0.04)',
                       border: '1px solid rgba(255, 255, 255, 0.08)',
                       boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 6px 18px -4px rgba(0, 0, 0, 0.5)',
-                    })),
+                    }),
                   }}
                 >
                   <Box

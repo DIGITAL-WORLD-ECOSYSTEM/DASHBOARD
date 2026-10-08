@@ -11,8 +11,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';

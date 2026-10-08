@@ -3,8 +3,8 @@ import type { IChatParticipant } from 'src/types/chat';
 import { useState, useEffect, useCallback, startTransition } from 'react';
 
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { useRouter, useSearchParams } from 'src/routes/hooks';
