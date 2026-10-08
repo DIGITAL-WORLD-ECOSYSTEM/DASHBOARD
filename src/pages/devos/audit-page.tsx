@@ -1,15 +1,16 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { CONFIG } from 'src/global-config';
+
+import { AuditView } from 'src/sections/devos/audit/view';
+
+// ----------------------------------------------------------------------
+
+const metadata = { title: `DevOS Cockpit - Audit Trail - ${CONFIG.appName}` };
 
 export default function AuditPage() {
   return (
-    <Box>
-      <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-        Audit Page
-      </Typography>
-      <Typography color="text.secondary" sx={{ mt: 2 }}>
-        Module under construction. Reserved for DevOS engineering suite.
-      </Typography>
-    </Box>
+    <>
+      <title>{metadata.title}</title>
+      <AuditView />
+    </>
   );
 }
