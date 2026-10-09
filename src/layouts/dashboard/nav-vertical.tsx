@@ -167,26 +167,6 @@ const NavRoot = styled('div', {
       zIndex: 1,
     },
 
-    // 💡 FILETE DE LUZ GRADIENTE NO BORDO DIREITO (BISEL DE VIDRO POLIDO)
-    '&::after': {
-      content: '""',
-      position: 'absolute',
-      top: 10,
-      right: 0,
-      width: '2px',
-      height: 'calc(100% - 20px)',
-      borderRadius: '2px',
-      background: [
-        'linear-gradient(180deg,',
-        'rgba(0, 167, 111, 0.5) 0%,',
-        'rgba(145, 158, 171, 0.25) 35%,',
-        'rgba(145, 158, 171, 0.1) 65%,',
-        'rgba(0, 167, 111, 0.4) 100%)',
-      ].join(' '),
-      pointerEvents: 'none',
-      zIndex: 2,
-    },
-
     // 🌑 MODO DARK / CYBER (OBSIDIAN TRANSLÚCIDO FLUTUANTE COM CHANFRO DE LUZ)
     ...theme.applyStyles('dark', {
       background:
@@ -204,14 +184,6 @@ const NavRoot = styled('div', {
       '&::before': {
         background:
           'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 30%, transparent 60%)',
-      },
-      '&::after': {
-        background: [
-          'linear-gradient(180deg,',
-          'rgba(0, 255, 127, 0.55) 0%,',
-          'rgba(255, 255, 255, 0.14) 40%,',
-          'rgba(0, 210, 255, 0.5) 100%)',
-        ].join(' '),
       },
     }),
 

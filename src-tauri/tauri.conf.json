@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "ASPPIBRA DevOS — Mission Control",
+        "title": "DevOS — v2.2.3",
         "width": 1440,
         "height": 900,
         "resizable": true,

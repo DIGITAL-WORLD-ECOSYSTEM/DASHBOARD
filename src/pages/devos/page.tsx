@@ -4,7 +4,7 @@ import { ObservabilityView } from 'src/sections/devos/observability/view';
 
 // ----------------------------------------------------------------------
 
-const metadata = { title: `DevOS Cockpit - Observabilidade - ${CONFIG.appName}` };
+const metadata = { title: `DevOS Cockpit - Observability - ${CONFIG.appName}` };
 
 export default function DevOSDashboardPage() {
   return (

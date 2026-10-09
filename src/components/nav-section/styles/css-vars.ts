@@ -69,17 +69,17 @@ function miniVars(theme: Theme) {
 
   return {
     ...colorVars(theme, 'mini'),
-    '--nav-item-gap': '4px',
-    '--nav-item-radius': `${shape.borderRadius}px`,
+    '--nav-item-gap': '6px',
+    '--nav-item-radius': `${Number(shape.borderRadius) * 1.25}px`,
     // root
-    '--nav-item-root-height': '56px',
-    '--nav-item-root-padding': '8px 4px 6px 4px',
+    '--nav-item-root-height': '46px',
+    '--nav-item-root-padding': '0',
     // sub
     '--nav-item-sub-height': '34px',
     '--nav-item-sub-padding': '0 8px',
     // icon
-    '--nav-icon-size': '22px',
-    '--nav-icon-root-margin': '0 0 6px 0',
+    '--nav-icon-size': '26px',
+    '--nav-icon-root-margin': '0',
     '--nav-icon-sub-margin': '0 8px 0 0',
   };
 }

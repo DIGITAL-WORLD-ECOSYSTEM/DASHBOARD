@@ -1,314 +1,530 @@
-import type { ReactNode } from 'react';
+import type { Breakpoint } from '@mui/material/styles';
+import type { NavSectionProps } from 'src/components/nav-section';
+
+import { useEffect } from 'react';
+import { useBoolean } from 'minimal-shared/hooks';
+import { varAlpha, mergeClasses } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
-import Link from '@mui/material/Link';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
+import Drawer from '@mui/material/Drawer';
 import Container from '@mui/material/Container';
+import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import { paths } from 'src/routes/paths';
 import { usePathname } from 'src/routes/hooks';
 import { RouterLink } from 'src/routes/components';
 
+import { Logo } from 'src/components/logo';
 import { Iconify } from 'src/components/iconify';
+import { Scrollbar } from 'src/components/scrollbar';
+import { useSettingsContext } from 'src/components/settings';
+import { NavSectionVertical } from 'src/components/nav-section';
+
+import { MenuButton } from '../components/menu-button';
+import { NavVertical } from '../dashboard/nav-vertical';
+import { dashboardLayoutVars, dashboardNavColorVars } from '../dashboard/css-vars';
+import { MainSection, layoutClasses, HeaderSection, LayoutSection } from '../core';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
-const COCKPIT_NAV_ITEMS = [
-  { label: 'Observabilidade', path: paths.devos.root, icon: 'solar:graph-up-bold' },
-  { label: 'Database D1', path: paths.devos.database, icon: 'solar:database-bold' },
-  { label: 'Treasury Safe', path: paths.devos.dao, icon: 'solar:shield-star-bold' },
-  { label: 'Security & Devices', path: paths.devos.security, icon: 'solar:shield-keyhole-bold' },
-  { label: 'Audit Trail', path: paths.devos.audit, icon: 'solar:document-text-bold' },
-  { label: 'APIs Vault', path: paths.devos.apis, icon: 'solar:key-square-bold' },
-  { label: 'Infrastructure', path: paths.devos.infrastructure, icon: 'solar:server-square-bold' },
+const DEVOS_NAV_DATA: NavSectionProps['data'] = [
+  {
+    subheader: 'CONTROL PLANE',
+    items: [
+      {
+        title: 'Observability',
+        path: paths.devos.root,
+        icon: <Iconify icon={'solar:graph-up-bold' as any} />,
+      },
+      {
+        title: 'Database',
+        path: paths.devos.database,
+        icon: <Iconify icon={'solar:database-bold' as any} />,
+      },
+      {
+        title: 'Treasury',
+        path: paths.devos.dao,
+        icon: <Iconify icon={'solar:shield-star-bold' as any} />,
+      },
+    ],
+  },
+  {
+    subheader: 'SECURITY',
+    items: [
+      {
+        title: 'Security',
+        path: paths.devos.security,
+        icon: <Iconify icon={'solar:shield-keyhole-bold' as any} />,
+      },
+      {
+        title: 'Audit',
+        path: paths.devos.audit,
+        icon: <Iconify icon={'solar:document-text-bold' as any} />,
+      },
+    ],
+  },
+  {
+    subheader: 'INFRASTRUCTURE',
+    items: [
+      {
+        title: 'APIs',
+        path: paths.devos.apis,
+        icon: <Iconify icon={'solar:key-square-bold' as any} />,
+      },
+      {
+        title: 'Infrastructure',
+        path: paths.devos.infrastructure,
+        icon: <Iconify icon={'solar:server-square-bold' as any} />,
+      },
+    ],
+  },
 ];
 
-export function DevOSLayout({ children }: Props) {
-  const pathname = usePathname();
+function getSectionTitle(pathname: string): string {
+  if (pathname === paths.devos.root || pathname === `${paths.devos.root}/`) {
+    return 'Observability';
+  }
+  if (pathname.startsWith(paths.devos.database)) {
+    return 'Database';
+  }
+  if (pathname.startsWith(paths.devos.dao)) {
+    return 'Treasury';
+  }
+  if (pathname.startsWith(paths.devos.security)) {
+    return 'Security';
+  }
+  if (pathname.startsWith(paths.devos.audit)) {
+    return 'Audit';
+  }
+  if (pathname.startsWith(paths.devos.apis)) {
+    return 'APIs';
+  }
+  if (pathname.startsWith(paths.devos.infrastructure)) {
+    return 'Infrastructure';
+  }
+  return 'DevOS Cockpit';
+}
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        minHeight: '100vh',
-        flexDirection: 'column',
-        bgcolor: '#0B0F17',
-        color: '#F1F5F9',
-        fontFamily: (theme) => theme.typography.fontFamily,
-      }}
-    >
-      {/* 1. MOCK SAFETY RIBBON (PERMANENT BANNER) */}
-      <Box
-        sx={{
-          px: 3,
-          py: 0.8,
-          bgcolor: 'rgba(234, 88, 12, 0.15)',
-          borderBottom: '1px solid rgba(234, 88, 12, 0.4)',
-          backdropFilter: 'blur(8px)',
-        }}
-      >
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          spacing={2}
-          sx={{ alignItems: 'center', justifyContent: 'space-between' }}
-        >
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-            <Chip
-              label="DEVOS — LOCAL MOCK"
-              size="small"
-              sx={{
-                bgcolor: '#EA580C',
-                color: '#FFF',
-                fontWeight: 800,
-                fontSize: '0.72rem',
-                letterSpacing: 0.5,
-              }}
+// ----------------------------------------------------------------------
+
+export function DevOSLayout({ children }: Props) {
+  const theme = useTheme();
+  const pathname = usePathname();
+  const settings = useSettingsContext();
+
+  const isNavMini = useBoolean(false);
+  const mobileNav = useBoolean(false);
+
+  const layoutQuery: Breakpoint = 'md';
+
+  const navVars = dashboardNavColorVars(
+    theme,
+    settings.state.navColor,
+    isNavMini.value ? 'mini' : 'vertical'
+  );
+
+  useEffect(() => {
+    document.title = 'DevOS — v2.2.3';
+  }, []);
+
+  useEffect(() => {
+    if (mobileNav.value) {
+      mobileNav.onFalse();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  const currentSection = getSectionTitle(pathname);
+
+  // --------------------------------------------------------------------
+  // 1. CABEÇALHO SUPERIOR (GLASSMORPHIC FLOATING CARD)
+  // --------------------------------------------------------------------
+  const renderHeader = () => (
+    <HeaderSection
+      layoutQuery={layoutQuery}
+      disableOffset
+      disableElevation
+      slots={{
+        leftArea: (
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            <MenuButton
+              onClick={mobileNav.onTrue}
+              sx={{ mr: 1, ml: -1, [theme.breakpoints.up(layoutQuery)]: { display: 'none' } }}
             />
-            <Chip
-              label="READ ONLY"
-              size="small"
-              sx={{
-                bgcolor: 'rgba(16, 185, 129, 0.2)',
-                color: '#10B981',
-                border: '1px solid #10B981',
-                fontWeight: 700,
-                fontSize: '0.7rem',
-              }}
-            />
-            <Chip
-              label="NO PRODUCTION CONNECTION"
-              size="small"
-              sx={{
-                bgcolor: 'rgba(56, 189, 248, 0.15)',
-                color: '#38BDF8',
-                border: '1px solid #38BDF8',
-                fontWeight: 700,
-                fontSize: '0.7rem',
-              }}
-            />
+
             <Typography
-              variant="caption"
-              sx={{ color: '#94A3B8', display: { xs: 'none', lg: 'inline' } }}
+              variant="subtitle1"
+              sx={{
+                fontWeight: 800,
+                letterSpacing: -0.2,
+                color: 'text.primary',
+              }}
             >
-              Zero Production Side Effects • D1 Emulated • EVM Offline • Tauri Native Shell deferred to Etapa 1.2
+              {currentSection}
             </Typography>
           </Stack>
+        ),
+        rightArea: null,
+      }}
+      slotProps={{
+        container: {
+          maxWidth: false,
+          sx: {
+            px: { xs: 1.5, [layoutQuery]: 2.5 },
+          },
+        },
+      }}
+      sx={[
+        {
+          position: 'sticky',
+          top: { xs: 8, [layoutQuery]: 16 },
+          mt: 0,
+          mb: { xs: 1.5, [layoutQuery]: 2.5 },
+          left: 0,
+          right: 0,
+          mx: 'auto',
+          width: { xs: 'calc(100% - 24px)', [layoutQuery]: 'calc(100% - 32px)' },
+          borderRadius: { xs: 2, [layoutQuery]: '20px' },
+          overflow: 'hidden',
+          isolation: 'isolate',
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)',
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          willChange: 'transform',
 
-          <Button
-            component={RouterLink}
-            href="/"
-            size="small"
-            variant="outlined"
-            startIcon={<Iconify icon={'solar:arrow-left-outline' as any} width={14} />}
+          // 💎 VIDROMORFISMO 3D (PADRÃO DASHBOARD WEB)
+          background:
+            'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 252, 0.68) 50%, rgba(241, 245, 249, 0.78) 100%)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255, 255, 255, 0.75)',
+          boxShadow: [
+            '0 20px 48px -10px rgba(15, 23, 42, 0.12)',
+            '0 8px 20px -4px rgba(15, 23, 42, 0.06)',
+            'inset 0 1.5px 0 rgba(255, 255, 255, 0.95)',
+            'inset 1.5px 0 0 rgba(255, 255, 255, 0.75)',
+            'inset 0 -1.5px 0 rgba(0, 0, 0, 0.04)',
+            'inset -1.5px 0 0 rgba(0, 0, 0, 0.03)',
+          ].join(', '),
+          zIndex: 'var(--layout-header-zIndex)',
+
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '100%',
+            borderRadius: 'inherit',
+            background:
+              'linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 25%, transparent 55%)',
+            pointerEvents: 'none',
+            zIndex: 1,
+          },
+
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            width: '100%',
+            height: '2px',
+            background:
+              'linear-gradient(90deg, rgba(0, 167, 111, 0.6) 0%, rgba(145, 158, 171, 0.25) 35%, rgba(0, 210, 255, 0.5) 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          },
+
+          ...theme.applyStyles('dark', {
+            background:
+              'linear-gradient(135deg, rgba(15, 23, 42, 0.78) 0%, rgba(2, 8, 23, 0.70) 50%, rgba(15, 23, 42, 0.82) 100%)',
+            backdropFilter: 'blur(24px) saturate(190%)',
+            WebkitBackdropFilter: 'blur(24px) saturate(190%)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: [
+              '0 24px 60px -12px rgba(0, 0, 0, 0.75)',
+              '0 10px 24px -4px rgba(0, 0, 0, 0.55)',
+              'inset 0 1.5px 0 rgba(255, 255, 255, 0.22)',
+              'inset 1px 0 0 rgba(255, 255, 255, 0.08)',
+              'inset 0 -1.5px 0 rgba(0, 0, 0, 0.5)',
+            ].join(', '),
+            '&::before': {
+              background:
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 30%, transparent 60%)',
+            },
+            '&::after': {
+              background:
+                'linear-gradient(90deg, rgba(0, 255, 127, 0.6) 0%, rgba(255, 255, 255, 0.12) 35%, rgba(0, 210, 255, 0.5) 100%)',
+            },
+          }),
+        },
+      ]}
+    />
+  );
+
+  // --------------------------------------------------------------------
+  // 2. BARRA LATERAL VERTICAL (DESKTOP)
+  // --------------------------------------------------------------------
+  const renderSidebar = () => (
+    <NavVertical
+      data={DEVOS_NAV_DATA}
+      isNavMini={isNavMini.value}
+      layoutQuery={layoutQuery}
+      cssVars={navVars.section}
+      onToggleNav={isNavMini.onToggle}
+      slots={{
+        topArea: (
+          <Box
             sx={{
-              borderColor: 'rgba(148, 163, 184, 0.3)',
-              color: '#94A3B8',
-              fontSize: '0.75rem',
-              py: 0.2,
-              px: 1.5,
-              textTransform: 'none',
-              '&:hover': {
-                borderColor: '#F8FAFC',
-                color: '#F8FAFC',
-                bgcolor: 'rgba(255, 255, 255, 0.05)',
-              },
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              pl: isNavMini.value ? 0 : 3.5,
+              justifyContent: isNavMini.value ? 'center' : 'flex-start',
+              pt: 2.5,
+              pb: 1.5,
+              flexShrink: 0,
             }}
           >
-            Dashboard de Membros
-          </Button>
-        </Stack>
-      </Box>
-
-      {/* 2. COCKPIT MISSION CONTROL HEADER */}
-      <Box
-        sx={{
-          px: { xs: 2, md: 4 },
-          py: 2,
-          bgcolor: '#0F172A',
-          borderBottom: '1px solid #1E293B',
-        }}
-      >
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          spacing={2}
-          sx={{ alignItems: { xs: 'flex-start', md: 'center' }, justifyContent: 'space-between' }}
-        >
-          {/* Brand + Node info */}
-          <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+            <Logo href={paths.devos.root} />
+            {!isNavMini.value && (
+              <Box sx={{ minWidth: 0 }}>
+                <Typography variant="subtitle2" noWrap sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                  ASPPIBRA - DAO
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        ),
+        bottomArea: !isNavMini.value ? (
+          <Box sx={{ px: 2, pb: 2, pt: 1 }}>
             <Box
               sx={{
-                width: 40,
-                height: 40,
+                p: 1.5,
                 borderRadius: 1.5,
-                bgcolor: 'rgba(56, 189, 248, 0.12)',
-                border: '1px solid rgba(56, 189, 248, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#38BDF8',
+                bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
+                border: '1px solid',
+                borderColor: 'divider',
               }}
             >
-              <Iconify icon={'solar:command-bold' as any} width={24} />
-            </Box>
-            <Box>
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: '#F8FAFC', letterSpacing: -0.5 }}>
-                  ASPPIBRA DevOS
-                </Typography>
-                <Chip
-                  label="v2.2.2 COCKPIT"
-                  size="small"
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+                <Box
                   sx={{
-                    bgcolor: 'rgba(148, 163, 184, 0.15)',
-                    color: '#94A3B8',
-                    fontSize: '0.68rem',
-                    fontWeight: 700,
-                    height: 20,
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    bgcolor: 'success.main',
+                    boxShadow: `0 0 6px ${theme.vars.palette.success.main}`,
                   }}
                 />
+                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                  mock-node-alpha
+                </Typography>
               </Stack>
-              <Typography variant="caption" sx={{ color: '#64748B', fontFamily: 'monospace' }}>
-                Node: mock-node-alpha (Linux x86_64) • AAL: 2 (Simulated)
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', display: 'block', fontSize: '0.68rem' }}
+              >
+                Control Plane Sandbox • Mocks Ativos
               </Typography>
             </Box>
-          </Stack>
+          </Box>
+        ) : null,
+      }}
+    />
+  );
 
-          {/* Quick Telemetry Indicators */}
-          <Stack direction="row" spacing={3} sx={{ alignItems: 'center' }}>
-            <Tooltip title="Deterministic in-memory latency emulator">
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
-                  LATENCY
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: '#10B981', fontWeight: 700, fontFamily: 'monospace' }}
-                >
-                  16ms (p50)
-                </Typography>
-              </Box>
-            </Tooltip>
+  // --------------------------------------------------------------------
+  // 3. BARRA LATERAL MOBILE (DRAWER RESPONSIVO)
+  // --------------------------------------------------------------------
+  const renderMobileNav = () => (
+    <Drawer
+      open={mobileNav.value}
+      onClose={mobileNav.onFalse}
+      slotProps={{
+        paper: {
+          className: mergeClasses([layoutClasses.nav.root, layoutClasses.nav.vertical]),
+          sx: {
+            overflow: 'unset',
+            bgcolor: 'var(--layout-nav-bg)',
+            width: 'var(--layout-nav-vertical-width)',
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+          },
+        },
+      }}
+    >
+      <Box sx={{ pl: 1.5, pt: 1, pb: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Logo href={paths.devos.root} />
+        <Box>
+          <Typography variant="subtitle2" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+            ASPPIBRA DevOS
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 700 }}>
+            Control Plane
+          </Typography>
+        </Box>
+      </Box>
 
-            <Tooltip title="Active edge worker nodes (Mock)">
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
-                  EDGE WORKERS
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: '#38BDF8', fontWeight: 700, fontFamily: 'monospace' }}
-                >
-                  12 Nodes Online
-                </Typography>
-              </Box>
-            </Tooltip>
+      <Scrollbar fillContent sx={{ flex: '1 1 auto', my: 1 }}>
+        <NavSectionVertical
+          data={DEVOS_NAV_DATA}
+          cssVars={navVars.section}
+          sx={{ px: 1, flex: '1 1 auto' }}
+        />
+      </Scrollbar>
 
-            <Tooltip title="Strict read-only safety guard">
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
-                  OPERATION POLICY
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ color: '#F59E0B', fontWeight: 700, fontFamily: 'monospace' }}
-                >
-                  READ_ONLY_MOCK
-                </Typography>
-              </Box>
-            </Tooltip>
-          </Stack>
-        </Stack>
-
-        {/* 3. COCKPIT NAVIGATION TABS */}
-        <Stack
-          direction="row"
-          spacing={1}
+      <Box sx={{ pt: 1 }}>
+        <Box
           sx={{
-            mt: 2.5,
-            pt: 1.5,
-            borderTop: '1px solid #1E293B',
-            overflowX: 'auto',
-            '&::-webkit-scrollbar': { height: 4 },
-            '&::-webkit-scrollbar-thumb': { bgcolor: '#334155', borderRadius: 2 },
+            p: 1.5,
+            borderRadius: 1.5,
+            bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
+            border: '1px solid',
+            borderColor: 'divider',
           }}
         >
-          {COCKPIT_NAV_ITEMS.map((item) => {
-            const isActive =
-              item.path === paths.devos.root
-                ? pathname === paths.devos.root || pathname === `${paths.devos.root}/`
-                : pathname.startsWith(item.path);
-
-            return (
-              <Button
-                key={item.path}
-                component={RouterLink}
-                href={item.path}
-                size="small"
-                startIcon={<Iconify icon={item.icon as any} width={16} />}
-                sx={{
-                  px: 2,
-                  py: 0.8,
-                  whiteSpace: 'nowrap',
-                  fontSize: '0.82rem',
-                  fontWeight: isActive ? 700 : 500,
-                  color: isActive ? '#38BDF8' : '#94A3B8',
-                  bgcolor: isActive ? 'rgba(56, 189, 248, 0.12)' : 'transparent',
-                  border: '1px solid',
-                  borderColor: isActive ? 'rgba(56, 189, 248, 0.3)' : 'transparent',
-                  borderRadius: 1,
-                  textTransform: 'none',
-                  transition: 'all 0.15s ease',
-                  '&:hover': {
-                    color: '#F8FAFC',
-                    bgcolor: 'rgba(255, 255, 255, 0.05)',
-                  },
-                }}
-              >
-                {item.label}
-              </Button>
-            );
-          })}
-        </Stack>
+          <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                bgcolor: 'success.main',
+              }}
+            />
+            <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.primary' }}>
+              mock-node-alpha
+            </Typography>
+          </Stack>
+          <Typography
+            variant="caption"
+            sx={{ color: 'text.secondary', display: 'block', fontSize: '0.68rem' }}
+          >
+            Control Plane Sandbox • Mocks Ativos
+          </Typography>
+        </Box>
       </Box>
+    </Drawer>
+  );
 
-      {/* 4. MAIN COCKPIT VIEWPORT */}
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 3 } }}>
-        <Container maxWidth={false} sx={{ maxWidth: 1680, p: 0 }}>
-          {children}
-        </Container>
-      </Box>
-
-      {/* 5. COCKPIT FOOTER STATUS LINE */}
-      <Box
+  // --------------------------------------------------------------------
+  // 4. ÁREA PRINCIPAL
+  // --------------------------------------------------------------------
+  const renderMain = () => (
+    <MainSection
+      sx={{
+        minWidth: 0,
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'hidden',
+      }}
+    >
+      <Container
+        maxWidth={false}
         sx={{
-          px: 3,
-          py: 1.5,
-          bgcolor: '#0B0F17',
-          borderTop: '1px solid #1E293B',
-          color: '#64748B',
+          maxWidth: 1680,
+          px: { xs: 1.5, sm: 2, md: 3 },
+          py: { xs: 2, md: 3 },
+          flex: '1 1 auto',
+          display: 'flex',
+          flexDirection: 'column',
+          minWidth: 0,
+          width: '100%',
+          overflowX: 'hidden',
         }}
       >
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          spacing={2}
-          sx={{ alignItems: 'center', justifyContent: 'space-between' }}
-        >
-          <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
-            ASPPIBRA DAO • Architecture Baseline v2.2.2 • Control Plane Sandbox (Etapa 1.1)
-          </Typography>
-          <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
-            Safety Status: INV-001 through INV-017 Enforced • In-Memory Mocks Active
-          </Typography>
-        </Stack>
-      </Box>
+        {children}
+      </Container>
+    </MainSection>
+  );
+
+  // --------------------------------------------------------------------
+  // 5. RODAPÉ DE STATUS
+  // --------------------------------------------------------------------
+  const renderFooter = () => (
+    <Box
+      sx={{
+        px: 3,
+        py: 2,
+        mt: 'auto',
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        color: 'text.secondary',
+      }}
+    >
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+          ASPPIBRA DAO • Architecture Baseline v2.2.2 • Control Plane Sandbox (v2.2.3)
+        </Typography>
+        <Typography variant="caption" sx={{ fontFamily: 'monospace' }}>
+          Safety Status: INV-001 through INV-017 Enforced • In-Memory Mocks Active
+        </Typography>
+      </Stack>
     </Box>
+  );
+
+  return (
+    <LayoutSection
+      headerSection={renderHeader()}
+      sidebarSection={renderSidebar()}
+      footerSection={renderFooter()}
+      cssVars={{
+        ...dashboardLayoutVars(theme),
+        ...navVars.layout,
+        '--layout-nav-vertical-width': '260px',
+      }}
+      sx={[
+        {
+          minHeight: '100vh',
+          background: [
+            'radial-gradient(at 0% 0%, rgba(0, 167, 111, 0.05) 0px, transparent 45%)',
+            'radial-gradient(at 100% 0%, rgba(0, 210, 255, 0.05) 0px, transparent 45%)',
+            'radial-gradient(at 50% 50%, rgba(145, 158, 171, 0.04) 0px, transparent 60%)',
+            theme.vars.palette.background.neutral,
+          ].join(', '),
+          backgroundAttachment: 'fixed',
+          ...theme.applyStyles('dark', {
+            background: [
+              'radial-gradient(at 0% 0%, rgba(0, 255, 127, 0.06) 0px, transparent 50%)',
+              'radial-gradient(at 100% 0%, rgba(0, 210, 255, 0.05) 0px, transparent 50%)',
+              '#020817',
+            ].join(', '),
+            backgroundAttachment: 'fixed',
+          }),
+          [`& .${layoutClasses.sidebarContainer}`]: {
+            minHeight: '100vh',
+            minWidth: 0,
+            width: '100%',
+            maxWidth: '100%',
+            [theme.breakpoints.up(layoutQuery)]: {
+              pl: isNavMini.value
+                ? 'calc(var(--layout-nav-mini-width) + 24px)'
+                : 'calc(var(--layout-nav-vertical-width) + 24px)',
+              transition: theme.transitions.create(['padding-left'], {
+                easing: 'var(--layout-transition-easing)',
+                duration: 'var(--layout-transition-duration)',
+              }),
+            },
+          },
+        },
+      ]}
+    >
+      {renderMobileNav()}
+      {renderMain()}
+    </LayoutSection>
   );
 }

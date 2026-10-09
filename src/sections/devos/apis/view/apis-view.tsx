@@ -111,17 +111,17 @@ export function ApisView() {
       }}
     >
       <Stack
-        direction={{ xs: 'column', md: 'row' }}
-        spacing={3}
-        sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+        direction={{ xs: 'column', lg: 'row' }}
+        spacing={{ xs: 2.5, lg: 3 }}
+        sx={{ alignItems: { xs: 'stretch', lg: 'center' }, justifyContent: 'space-between' }}
       >
         {/* Security Score */}
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexShrink: 0 }}>
           <Box sx={{ position: 'relative', display: 'inline-flex' }}>
             <IdentityAvatar
               sx={{
-                width: 80,
-                height: 80,
+                width: { xs: 64, md: 76 },
+                height: { xs: 64, md: 76 },
                 bgcolor: 'success.main',
                 color: 'common.white',
                 fontSize: '1.5rem',
@@ -142,17 +142,25 @@ export function ApisView() {
         <Divider
           orientation="vertical"
           flexItem
-          sx={{ borderStyle: 'dashed', display: { xs: 'none', md: 'block' } }}
+          sx={{ borderStyle: 'dashed', display: { xs: 'none', lg: 'block' } }}
         />
 
         {/* Secrets Lifecycle Center */}
-        <Stack spacing={1} sx={{ flexGrow: 1 }}>
+        <Stack spacing={1} sx={{ flexGrow: 1, minWidth: 0 }}>
           <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
             SECRETS LIFECYCLE CENTER
           </Typography>
           <Stack direction="row" spacing={2} sx={{ width: '100%' }}>
-            <Box sx={{ flexGrow: 1 }}>
-              <Stack direction="row" sx={{ justifyContent: 'space-between', mb: 0.5 }}>
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: 'space-between',
+                  mb: 0.5,
+                  flexWrap: 'wrap',
+                  gap: 1,
+                }}
+              >
                 <Typography variant="body2" color="success.main" sx={{ fontWeight: 'bold' }}>
                   17 Saudáveis
                 </Typography>
@@ -176,21 +184,33 @@ export function ApisView() {
         <Divider
           orientation="vertical"
           flexItem
-          sx={{ borderStyle: 'dashed', display: { xs: 'none', md: 'block' } }}
+          sx={{ borderStyle: 'dashed', display: { xs: 'none', lg: 'block' } }}
         />
 
         {/* Últimas Alterações */}
-        <Stack spacing={1} sx={{ minWidth: 200 }}>
+        <Stack spacing={1} sx={{ minWidth: { xs: 'auto', lg: 200 }, flexShrink: 0 }}>
           <Typography variant="subtitle2" sx={{ color: 'text.secondary' }}>
             ÚLTIMAS ALTERAÇÕES
           </Typography>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'info.main' }} />
-            <Typography variant="caption">Hoje: OpenAI rotacionada</Typography>
+            <Box
+              sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'info.main', flexShrink: 0 }}
+            />
+            <Typography variant="caption" noWrap>
+              Hoje: OpenAI rotacionada
+            </Typography>
           </Stack>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'text.disabled' }} />
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Box
+              sx={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                bgcolor: 'text.disabled',
+                flexShrink: 0,
+              }}
+            />
+            <Typography variant="caption" noWrap sx={{ color: 'text.secondary' }}>
               Ontem: Stripe Sandbox
             </Typography>
           </Stack>
@@ -202,17 +222,29 @@ export function ApisView() {
   const renderFilters = (
     <Stack
       spacing={2}
-      direction={{ xs: 'column', md: 'row' }}
-      sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 3 }}
+      direction={{ xs: 'column', lg: 'row' }}
+      sx={{
+        alignItems: { xs: 'stretch', lg: 'center' },
+        justifyContent: 'space-between',
+        mb: 3,
+        minWidth: 0,
+      }}
     >
       <Tabs
         value={currentTab}
         onChange={(e, val) => setCurrentTab(val)}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
         sx={{
           bgcolor: 'background.paper',
           px: 1,
           borderRadius: 1.5,
           boxShadow: (theme) => theme.customShadows.z1,
+          maxWidth: '100%',
+          '& .MuiTabs-flexContainer': {
+            gap: 0.5,
+          },
         }}
       >
         {['All', 'Finance', 'Web3', 'AI', 'Communications', 'OAuth', 'Infra'].map((tab) => (
@@ -224,7 +256,7 @@ export function ApisView() {
         placeholder="Search (e.g. risk:critical env:production)..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        sx={{ width: { xs: '100%', md: 320 } }}
+        sx={{ width: { xs: '100%', lg: 320 } }}
         slotProps={{
           input: {
             startAdornment: (
@@ -263,10 +295,12 @@ export function ApisView() {
       sx={{
         gap: 3,
         display: 'grid',
+        minWidth: 0,
         gridTemplateColumns: {
           xs: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(3, 1fr)',
+          sm: 'repeat(1, 1fr)',
+          md: 'repeat(2, 1fr)',
+          xl: 'repeat(3, 1fr)',
         },
       }}
     >
@@ -390,7 +424,7 @@ export function ApisView() {
   );
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1400, mx: 'auto' }}>
+    <Box sx={{ width: '100%', maxWidth: 1400, mx: 'auto', minWidth: 0, p: { xs: 0.5, sm: 1, md: 1.5 } }}>
       <CustomBreadcrumbs
         heading="API & Secrets Vault"
         links={[{ name: 'DevOS', href: paths.devos.root }, { name: 'APIs Vault' }]}

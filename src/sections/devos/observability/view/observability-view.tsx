@@ -54,7 +54,7 @@ export function ObservabilityView() {
       <Box>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 0.5 }}>
           <Typography variant="h5" sx={{ fontWeight: 800, color: '#F8FAFC' }}>
-            Observabilidade & Edge Telemetry
+            Observability & Edge Telemetry
           </Typography>
           <Chip
             label="MOCK ENGINE"
