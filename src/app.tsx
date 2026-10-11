@@ -24,6 +24,15 @@ type AppProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Composição de provedores do Dashboard Web (Data Plane).
+ *
+ * Preserva integralmente o pipeline completo de provedores:
+ * - I18nProvider, AuthProvider, SettingsProvider, LocalizationProvider, ThemeProvider, MotionLazy
+ * - CheckoutProvider (Gerenciamento de carrinho e checkout e-commerce)
+ * - ChatRealtimeProvider (Conexão WebSocket para chat em tempo real)
+ * - Snackbar, ProgressBar, SettingsDrawer
+ */
 export default function App({ children }: AppProps) {
   useScrollToTop();
 
