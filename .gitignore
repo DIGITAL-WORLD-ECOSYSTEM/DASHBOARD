@@ -117,6 +117,8 @@ dist
 # Production
 dist
 dist-ssr
+dist-web/
+dist-desktop/
 .vercel
 .output
 
