@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "identifier": "org.asppibra.devos",
   "build": {
-    "frontendDist": "../dist",
+    "frontendDist": "../dist-desktop",
     "devUrl": "http://localhost:8080/dev",
     "beforeDevCommand": "pnpm run dev --port 8080",
-    "beforeBuildCommand": "pnpm run build"
+    "beforeBuildCommand": "pnpm run build:desktop"
   },
   "app": {
     "windows": [
