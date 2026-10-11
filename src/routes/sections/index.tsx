@@ -1,34 +1,37 @@
 import type { RouteObject } from 'react-router';
 
-import { lazy } from 'react';
+import { Outlet } from 'react-router';
 
-import { authRoutes } from './auth';
-import { shareRoutes } from './share';
+import { DevOSApp } from 'src/app-devos';
+
+import { webRoutes } from './web';
 import { devosRoutes } from './devos';
-import { dashboardRoutes } from './dashboard';
 
 // ----------------------------------------------------------------------
 
-const Page404 = lazy(() => import('src/pages/error/404'));
+function DevOSDevLayout() {
+  return (
+    <DevOSApp>
+      <Outlet />
+    </DevOSApp>
+  );
+}
 
+/**
+ * Registro de rotas unificado para ambiente de desenvolvimento local (Vite dev server).
+ *
+ * Permite que desenvolvedores acessem:
+ * - A rota raiz `/` e todas as rotas do Dashboard Web através do pipeline completo (webRoutes).
+ * - A rota `/dev` e módulos administrativos do DevOS isolados sob sua própria composição (DevOSApp).
+ *
+ * O redirecionamento `{ path: '/', element: <Navigate to="/dev" /> }` permanece exclusivo
+ * do build e ponto de entrada Desktop (src/routes/sections/desktop.tsx), não interferindo
+ * na raiz da aplicação Web em desenvolvimento.
+ */
 export const routesSection: RouteObject[] = [
-  // Share
-  ...shareRoutes,
-
-  // Auth
-  ...authRoutes,
-
-  // Dashboard
-  ...dashboardRoutes,
-
-  // DevOS
-  ...devosRoutes,
-
-  /**
-   * Main routes (Disabled for single-page-public login)
-   * ...mainRoutes,
-   */
-
-  // No match
-  { path: '*', element: <Page404 /> },
+  {
+    element: <DevOSDevLayout />,
+    children: devosRoutes,
+  },
+  ...webRoutes,
 ];
