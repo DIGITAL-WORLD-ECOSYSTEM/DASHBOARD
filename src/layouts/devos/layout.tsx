@@ -1,4 +1,4 @@
-import type { Breakpoint } from '@mui/material/styles';
+import type { Theme, Breakpoint } from '@mui/material/styles';
 import type { NavSectionProps } from 'src/components/nav-section';
 
 import { useEffect } from 'react';
@@ -7,25 +7,21 @@ import { varAlpha, mergeClasses } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
 import Container from '@mui/material/Container';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
+import { styled, useTheme } from '@mui/material/styles';
 
 import { paths } from 'src/routes/paths';
 import { usePathname } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 
 import { Logo } from 'src/components/logo';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
-import { useSettingsContext } from 'src/components/settings';
-import { NavSectionVertical } from 'src/components/nav-section';
+import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
 
 import { MenuButton } from '../components/menu-button';
-import { NavVertical } from '../dashboard/nav-vertical';
-import { dashboardLayoutVars, dashboardNavColorVars } from '../dashboard/css-vars';
+import { NavToggleButton } from '../components/nav-toggle-button';
 import { MainSection, layoutClasses, HeaderSection, LayoutSection } from '../core';
 
 // ----------------------------------------------------------------------
@@ -112,23 +108,126 @@ function getSectionTitle(pathname: string): string {
   return 'DevOS Cockpit';
 }
 
+function devosLayoutVars(theme: Theme) {
+  const {
+    vars: { palette },
+  } = theme;
+
+  return {
+    '--layout-transition-easing': 'linear',
+    '--layout-transition-duration': '120ms',
+    '--layout-nav-zIndex': theme.zIndex.drawer + 1,
+    '--layout-header-zIndex': theme.zIndex.appBar + 1,
+    '--layout-nav-mini-width': '72px',
+    '--layout-nav-vertical-width': '260px',
+    '--layout-nav-horizontal-height': '64px',
+    '--layout-dashboard-content-pt': theme.spacing(1),
+    '--layout-dashboard-content-pb': theme.spacing(8),
+    '--layout-dashboard-content-px': theme.spacing(5),
+    '--layout-nav-bg': palette.background.default,
+    '--layout-nav-horizontal-bg': varAlpha(palette.background.defaultChannel, 0.8),
+    '--layout-nav-border-color': varAlpha(palette.grey['500Channel'], 0.12),
+    '--layout-nav-text-primary-color': palette.text.primary,
+    '--layout-nav-text-secondary-color': palette.text.secondary,
+    '--layout-nav-text-disabled-color': palette.text.disabled,
+    ...theme.applyStyles('dark', {
+      '--layout-nav-border-color': varAlpha(palette.grey['500Channel'], 0.08),
+      '--layout-nav-horizontal-bg': varAlpha(palette.background.defaultChannel, 0.96),
+    }),
+  };
+}
+
+// ----------------------------------------------------------------------
+
+type NavRootProps = {
+  isNavMini: boolean;
+  layoutQuery?: Breakpoint;
+};
+
+const NavRoot = styled('div', {
+  shouldForwardProp: (prop: string) => !['isNavMini', 'layoutQuery', 'sx'].includes(prop),
+})<NavRootProps>(({ isNavMini, layoutQuery = 'md', theme }) => ({
+  top: 16,
+  left: 16,
+  height: 'calc(100vh - 32px)',
+  display: 'none',
+  position: 'fixed',
+  flexDirection: 'column',
+  zIndex: 'var(--layout-nav-zIndex)',
+  width: isNavMini ? 'var(--layout-nav-mini-width)' : 'var(--layout-nav-vertical-width)',
+  borderRadius: 20,
+  overflow: 'visible',
+
+  // 💎 VIDROMORFISMO 3D (TRANSLUCÊNCIA CRISTALINA + APPLE RETINA BLUR)
+  background:
+    'linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(248, 250, 252, 0.70) 50%, rgba(241, 245, 249, 0.80) 100%)',
+  backdropFilter: 'blur(20px) saturate(180%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+  border: '1px solid rgba(255, 255, 255, 0.75)',
+  boxShadow: [
+    '0 20px 48px -10px rgba(15, 23, 42, 0.12)',
+    '0 8px 20px -4px rgba(15, 23, 42, 0.06)',
+    'inset 0 1.5px 0 rgba(255, 255, 255, 0.95)',
+    'inset 1.5px 0 0 rgba(255, 255, 255, 0.75)',
+    'inset 0 -1.5px 0 rgba(0, 0, 0, 0.04)',
+    'inset -1.5px 0 0 rgba(0, 0, 0, 0.03)',
+  ].join(', '),
+
+  // ✨ REFLEXO GLOSSY DIAGONAL 3D (WET GLASS SHEEN)
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '100%',
+    borderRadius: 'inherit',
+    background:
+      'linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 25%, transparent 55%)',
+    pointerEvents: 'none',
+    zIndex: 1,
+  },
+
+  // 🌑 MODO DARK / CYBER (OBSIDIAN TRANSLÚCIDO FLUTUANTE COM CHANFRO DE LUZ)
+  ...theme.applyStyles('dark', {
+    background:
+      'linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(2, 8, 23, 0.70) 50%, rgba(15, 23, 42, 0.82) 100%)',
+    backdropFilter: 'blur(24px) saturate(190%)',
+    WebkitBackdropFilter: 'blur(24px) saturate(190%)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    boxShadow: [
+      '0 24px 60px -12px rgba(0, 0, 0, 0.75)',
+      '0 10px 24px -4px rgba(0, 0, 0, 0.55)',
+      'inset 0 1.5px 0 rgba(255, 255, 255, 0.22)',
+      'inset 1px 0 0 rgba(255, 255, 255, 0.08)',
+      'inset 0 -1.5px 0 rgba(0, 0, 0, 0.5)',
+    ].join(', '),
+    '&::before': {
+      background:
+        'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 30%, transparent 60%)',
+    },
+  }),
+
+  transition: theme.transitions.create(
+    ['width', 'box-shadow', 'background-color', 'top', 'left', 'height'],
+    {
+      easing: 'var(--layout-transition-easing)',
+      duration: 'var(--layout-transition-duration)',
+    }
+  ),
+  [theme.breakpoints.up(layoutQuery)]: { display: 'flex' },
+}));
+
 // ----------------------------------------------------------------------
 
 export function DevOSLayout({ children }: Props) {
   const theme = useTheme();
   const pathname = usePathname();
-  const settings = useSettingsContext();
 
   const isNavMini = useBoolean(false);
   const mobileNav = useBoolean(false);
 
   const layoutQuery: Breakpoint = 'md';
-
-  const navVars = dashboardNavColorVars(
-    theme,
-    settings.state.navColor,
-    isNavMini.value ? 'mini' : 'vertical'
-  );
 
   useEffect(() => {
     document.title = 'DevOS — v2.2.3';
@@ -271,75 +370,117 @@ export function DevOSLayout({ children }: Props) {
   );
 
   // --------------------------------------------------------------------
-  // 2. BARRA LATERAL VERTICAL (DESKTOP)
+  // 2. BARRA LATERAL VERTICAL (DESKTOP) — AUTOCONTIDA
   // --------------------------------------------------------------------
   const renderSidebar = () => (
-    <NavVertical
-      data={DEVOS_NAV_DATA}
+    <NavRoot
       isNavMini={isNavMini.value}
       layoutQuery={layoutQuery}
-      cssVars={navVars.section}
-      onToggleNav={isNavMini.onToggle}
-      slots={{
-        topArea: (
+      className={mergeClasses([layoutClasses.nav.root, layoutClasses.nav.vertical])}
+    >
+      <NavToggleButton
+        isNavMini={isNavMini.value}
+        onClick={isNavMini.onToggle}
+        sx={[
+          {
+            display: 'none',
+            [theme.breakpoints.up(layoutQuery)]: { display: 'inline-flex' },
+          },
+        ]}
+      />
+
+      {isNavMini.value ? (
+        <>
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 2.5, flexShrink: 0 }}>
+            <Logo href={paths.devos.root} />
+          </Box>
+
+          <NavSectionMini
+            data={DEVOS_NAV_DATA}
+            sx={[
+              {
+                ...theme.mixins.hideScrollY,
+                pb: 2,
+                px: 0.5,
+                flex: '1 1 auto',
+                overflowY: 'auto',
+                borderRadius: 'inherit',
+              },
+            ]}
+          />
+        </>
+      ) : (
+        <>
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: 1.5,
-              pl: isNavMini.value ? 0 : 3.5,
-              justifyContent: isNavMini.value ? 'center' : 'flex-start',
+              pl: 3.5,
               pt: 2.5,
               pb: 1.5,
               flexShrink: 0,
             }}
           >
             <Logo href={paths.devos.root} />
-            {!isNavMini.value && (
-              <Box sx={{ minWidth: 0 }}>
-                <Typography variant="subtitle2" noWrap sx={{ fontWeight: 800, lineHeight: 1.2 }}>
-                  ASPPIBRA - DAO
-                </Typography>
-              </Box>
-            )}
-          </Box>
-        ),
-        bottomArea: !isNavMini.value ? (
-          <Box sx={{ px: 2, pb: 2, pt: 1 }}>
-            <Box
-              sx={{
-                p: 1.5,
-                borderRadius: 1.5,
-                bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
-            >
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    bgcolor: 'success.main',
-                    boxShadow: `0 0 6px ${theme.vars.palette.success.main}`,
-                  }}
-                />
-                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                  mock-node-alpha
-                </Typography>
-              </Stack>
-              <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', display: 'block', fontSize: '0.68rem' }}
-              >
-                Control Plane Sandbox • Mocks Ativos
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="subtitle2" noWrap sx={{ fontWeight: 800, lineHeight: 1.2 }}>
+                ASPPIBRA - DAO
               </Typography>
             </Box>
           </Box>
-        ) : null,
-      }}
-    />
+
+          <Scrollbar
+            fillContent
+            sx={{
+              height: 1,
+              minHeight: 0,
+              flex: '1 1 auto',
+              overflow: 'hidden',
+              borderRadius: 'inherit',
+            }}
+          >
+            <NavSectionVertical
+              data={DEVOS_NAV_DATA}
+              sx={{ px: 2, flex: '1 1 auto' }}
+            />
+
+            <Box sx={{ px: 2, pb: 2, pt: 1 }}>
+              <Box
+                sx={{
+                  p: 1.5,
+                  borderRadius: 1.5,
+                  bgcolor: varAlpha(theme.vars.palette.grey['500Channel'], 0.08),
+                  border: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: '50%',
+                      bgcolor: 'success.main',
+                      boxShadow: `0 0 6px ${theme.vars.palette.success.main}`,
+                    }}
+                  />
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                    mock-node-alpha
+                  </Typography>
+                </Stack>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'text.secondary', display: 'block', fontSize: '0.68rem' }}
+                >
+                  Control Plane Sandbox • Mocks Ativos
+                </Typography>
+              </Box>
+            </Box>
+          </Scrollbar>
+        </>
+      )}
+    </NavRoot>
   );
 
   // --------------------------------------------------------------------
@@ -378,7 +519,6 @@ export function DevOSLayout({ children }: Props) {
       <Scrollbar fillContent sx={{ flex: '1 1 auto', my: 1 }}>
         <NavSectionVertical
           data={DEVOS_NAV_DATA}
-          cssVars={navVars.section}
           sx={{ px: 1, flex: '1 1 auto' }}
         />
       </Scrollbar>
@@ -482,11 +622,7 @@ export function DevOSLayout({ children }: Props) {
       headerSection={renderHeader()}
       sidebarSection={renderSidebar()}
       footerSection={renderFooter()}
-      cssVars={{
-        ...dashboardLayoutVars(theme),
-        ...navVars.layout,
-        '--layout-nav-vertical-width': '260px',
-      }}
+      cssVars={devosLayoutVars(theme)}
       sx={[
         {
           minHeight: '100vh',
