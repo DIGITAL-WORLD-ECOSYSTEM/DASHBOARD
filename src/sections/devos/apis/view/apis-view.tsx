@@ -21,6 +21,7 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { IdentityAvatar } from 'src/auth/components';
 
 import { ApiConfigDrawer } from './api-config-drawer';
+import { CreateIntegrationModal, NewIntegrationData } from './create-integration-modal';
 
 // ----------------------------------------------------------------------
 
@@ -75,10 +76,30 @@ const MOCK_INTEGRATIONS = [
 export function ApisView() {
   const [currentTab, setCurrentTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  // Deterministic in-memory mock store (Zero production side effects)
-  const [integrations] = useState<any[]>(MOCK_INTEGRATIONS);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [integrations, setIntegrations] = useState<any[]>(() => {
+    try {
+      const saved = localStorage.getItem('devos_vault_integrations_v1');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch {}
+    return MOCK_INTEGRATIONS;
+  });
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIntegration, setSelectedIntegration] = useState<any>(null);
+
+  const handleAddIntegration = (newIntegration: NewIntegrationData) => {
+    setIntegrations((prev) => {
+      const updated = [newIntegration, ...prev];
+      try {
+        localStorage.setItem('devos_vault_integrations_v1', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    // Automaticamente seleciona a aba da nova integracao (ex: Web3) para exibir no grid
+    setCurrentTab(newIntegration.category);
+  };
 
   const filteredIntegrations = integrations.filter((integration) => {
     const matchesTab = currentTab === 'All' || integration.category === currentTab;
@@ -430,7 +451,11 @@ export function ApisView() {
         links={[{ name: 'DevOS', href: paths.devos.root }, { name: 'APIs Vault' }]}
         sx={{ mb: { xs: 3, md: 5 } }}
         action={
-          <Button variant="contained" startIcon={<Iconify icon={'mingcute:add-line' as any} />}>
+          <Button
+            variant="contained"
+            startIcon={<Iconify icon={'mingcute:add-line' as any} />}
+            onClick={() => setCreateModalOpen(true)}
+          >
             Nova Integração
           </Button>
         }
@@ -439,6 +464,12 @@ export function ApisView() {
       {renderHero}
       {renderFilters}
       {renderGrid}
+
+      <CreateIntegrationModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onCreated={handleAddIntegration}
+      />
 
       <ApiConfigDrawer
         open={drawerOpen}
