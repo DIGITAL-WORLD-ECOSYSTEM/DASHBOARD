@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "DevOS — v2.2.3",
         "width": 1440,
         "height": 900,
