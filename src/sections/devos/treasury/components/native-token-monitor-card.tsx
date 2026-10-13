@@ -83,10 +83,9 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
   const [period, setPeriod] = useState<TimeframePeriod>('24H');
   const [metricMode, setMetricMode] = useState<ChartMetricMode>('price');
   const [chartEngine, setChartEngine] = useState<ChartEngineMode>('tradingview');
-  const [livePrice, setLivePrice] = useState<number>(0.6355);
 
   const currentData = TOKEN_TIMEFRAME_DATA[period];
-  const activePrice = chartEngine === 'tradingview' ? livePrice : currentData.prices[currentData.prices.length - 1];
+  const activePrice = currentData.prices[currentData.prices.length - 1];
   const activePriceBrl = activePrice * USD_TO_BRL_RATE;
 
   const marketCapUsd = TOTAL_TOKEN_SUPPLY * activePrice;
@@ -326,7 +325,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
       {/* 2. ÁREA CENTRAL DO GRÁFICO (TRADINGVIEW STATION OU ÁREA) */}
       <Box sx={{ mb: 1.5 }}>
         {chartEngine === 'tradingview' ? (
-          <TradingViewTokenChart onPriceChange={(p) => setLivePrice(p)} />
+          <TradingViewTokenChart chartHeight={360} />
         ) : (
           <Box>
             <Stack direction="row" spacing={1} sx={{ mb: 1, justifyContent: 'space-between', alignItems: 'center' }}>
