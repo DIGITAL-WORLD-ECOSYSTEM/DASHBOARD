@@ -12,12 +12,11 @@ import {
 } from 'lightweight-charts';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { alpha, useTheme } from '@mui/material/styles';
+import IconButton from '@mui/material/IconButton';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -36,87 +35,87 @@ export interface CandleDataPoint {
 
 export const MOCK_TRADINGVIEW_DATA: Record<TradingViewTimeframe, CandleDataPoint[]> = {
   '1W': [
-    { time: '2025-01-06', open: 1.020, high: 1.045, low: 0.940, close: 0.950, volume: 840000 },
-    { time: '2025-01-13', open: 0.950, high: 0.965, low: 0.820, close: 0.835, volume: 1250000 },
-    { time: '2025-01-20', open: 0.835, high: 0.890, low: 0.800, close: 0.865, volume: 920000 },
-    { time: '2025-01-27', open: 0.865, high: 0.880, low: 0.740, close: 0.755, volume: 1100000 },
-    { time: '2025-02-03', open: 0.755, high: 0.780, low: 0.520, close: 0.540, volume: 2450000 },
-    { time: '2025-02-10', open: 0.540, high: 0.590, low: 0.510, close: 0.575, volume: 1680000 },
-    { time: '2025-02-17', open: 0.575, high: 0.585, low: 0.460, close: 0.480, volume: 980000 },
-    { time: '2025-02-24', open: 0.480, high: 0.520, low: 0.440, close: 0.495, volume: 810000 },
-    { time: '2025-03-03', open: 0.495, high: 0.540, low: 0.470, close: 0.510, volume: 720000 },
-    { time: '2025-03-10', open: 0.510, high: 0.535, low: 0.410, close: 0.430, volume: 1150000 },
-    { time: '2025-03-17', open: 0.430, high: 0.475, low: 0.360, close: 0.380, volume: 1540000 },
-    { time: '2025-03-24', open: 0.380, high: 0.440, low: 0.370, close: 0.420, volume: 890000 },
-    { time: '2025-03-31', open: 0.420, high: 0.540, low: 0.410, close: 0.525, volume: 1980000 },
-    { time: '2025-04-07', open: 0.525, high: 0.560, low: 0.480, close: 0.505, volume: 1320000 },
-    { time: '2025-04-14', open: 0.505, high: 0.525, low: 0.465, close: 0.490, volume: 870000 },
-    { time: '2025-04-21', open: 0.490, high: 0.530, low: 0.480, close: 0.520, volume: 740000 },
-    { time: '2025-04-28', open: 0.520, high: 0.545, low: 0.490, close: 0.535, volume: 690000 },
-    { time: '2025-05-05', open: 0.535, high: 0.550, low: 0.460, close: 0.475, volume: 920000 },
-    { time: '2025-05-12', open: 0.475, high: 0.510, low: 0.450, close: 0.485, volume: 650000 },
-    { time: '2025-05-19', open: 0.485, high: 0.500, low: 0.430, close: 0.445, volume: 880000 },
-    { time: '2025-05-26', open: 0.445, high: 0.470, low: 0.420, close: 0.460, volume: 710000 },
-    { time: '2025-06-02', open: 0.460, high: 0.490, low: 0.435, close: 0.450, volume: 830000 },
-    { time: '2025-06-09', open: 0.450, high: 0.465, low: 0.395, close: 0.410, volume: 1040000 },
-    { time: '2025-06-16', open: 0.410, high: 0.425, low: 0.370, close: 0.385, volume: 960000 },
-    { time: '2025-06-23', open: 0.385, high: 0.415, low: 0.360, close: 0.375, volume: 850000 },
-    { time: '2025-06-30', open: 0.375, high: 0.390, low: 0.340, close: 0.355, volume: 1120000 },
-    { time: '2025-07-07', open: 0.355, high: 0.380, low: 0.345, close: 0.370, volume: 760000 },
-    { time: '2025-07-14', open: 0.370, high: 0.410, low: 0.365, close: 0.395, volume: 910000 },
-    { time: '2025-07-21', open: 0.395, high: 0.405, low: 0.330, close: 0.340, volume: 1420000 },
-    { time: '2025-07-28', open: 0.340, high: 0.355, low: 0.310, close: 0.320, volume: 1200000 },
-    { time: '2025-08-04', open: 0.320, high: 0.345, low: 0.305, close: 0.335, volume: 890000 },
-    { time: '2025-08-11', open: 0.335, high: 0.360, low: 0.315, close: 0.350, volume: 740000 },
-    { time: '2025-08-18', open: 0.350, high: 0.355, low: 0.285, close: 0.295, volume: 1560000 },
-    { time: '2025-08-25', open: 0.295, high: 0.320, low: 0.145, close: 0.160, volume: 3200000 },
-    { time: '2025-09-01', open: 0.160, high: 1.050, low: 0.155, close: 0.6355, volume: 4850000 },
+    { time: '2025-01-06', open: 1.02, high: 1.045, low: 0.94, close: 0.95, volume: 840000 },
+    { time: '2025-01-13', open: 0.95, high: 0.965, low: 0.82, close: 0.835, volume: 1250000 },
+    { time: '2025-01-20', open: 0.835, high: 0.89, low: 0.8, close: 0.865, volume: 920000 },
+    { time: '2025-01-27', open: 0.865, high: 0.88, low: 0.74, close: 0.755, volume: 1100000 },
+    { time: '2025-02-03', open: 0.755, high: 0.78, low: 0.52, close: 0.54, volume: 2450000 },
+    { time: '2025-02-10', open: 0.54, high: 0.59, low: 0.51, close: 0.575, volume: 1680000 },
+    { time: '2025-02-17', open: 0.575, high: 0.585, low: 0.46, close: 0.48, volume: 980000 },
+    { time: '2025-02-24', open: 0.48, high: 0.52, low: 0.44, close: 0.495, volume: 810000 },
+    { time: '2025-03-03', open: 0.495, high: 0.54, low: 0.47, close: 0.51, volume: 720000 },
+    { time: '2025-03-10', open: 0.51, high: 0.535, low: 0.41, close: 0.43, volume: 1150000 },
+    { time: '2025-03-17', open: 0.43, high: 0.475, low: 0.36, close: 0.38, volume: 1540000 },
+    { time: '2025-03-24', open: 0.38, high: 0.44, low: 0.37, close: 0.42, volume: 890000 },
+    { time: '2025-03-31', open: 0.42, high: 0.54, low: 0.41, close: 0.525, volume: 1980000 },
+    { time: '2025-04-07', open: 0.525, high: 0.56, low: 0.48, close: 0.505, volume: 1320000 },
+    { time: '2025-04-14', open: 0.505, high: 0.525, low: 0.465, close: 0.49, volume: 870000 },
+    { time: '2025-04-21', open: 0.49, high: 0.53, low: 0.48, close: 0.52, volume: 740000 },
+    { time: '2025-04-28', open: 0.52, high: 0.545, low: 0.49, close: 0.535, volume: 690000 },
+    { time: '2025-05-05', open: 0.535, high: 0.55, low: 0.46, close: 0.475, volume: 920000 },
+    { time: '2025-05-12', open: 0.475, high: 0.51, low: 0.45, close: 0.485, volume: 650000 },
+    { time: '2025-05-19', open: 0.485, high: 0.5, low: 0.43, close: 0.445, volume: 880000 },
+    { time: '2025-05-26', open: 0.445, high: 0.47, low: 0.42, close: 0.46, volume: 710000 },
+    { time: '2025-06-02', open: 0.46, high: 0.49, low: 0.435, close: 0.45, volume: 830000 },
+    { time: '2025-06-09', open: 0.45, high: 0.465, low: 0.395, close: 0.41, volume: 1040000 },
+    { time: '2025-06-16', open: 0.41, high: 0.425, low: 0.37, close: 0.385, volume: 960000 },
+    { time: '2025-06-23', open: 0.385, high: 0.415, low: 0.36, close: 0.375, volume: 850000 },
+    { time: '2025-06-30', open: 0.375, high: 0.39, low: 0.34, close: 0.355, volume: 1120000 },
+    { time: '2025-07-07', open: 0.355, high: 0.38, low: 0.345, close: 0.37, volume: 760000 },
+    { time: '2025-07-14', open: 0.37, high: 0.41, low: 0.365, close: 0.395, volume: 910000 },
+    { time: '2025-07-21', open: 0.395, high: 0.405, low: 0.33, close: 0.34, volume: 1420000 },
+    { time: '2025-07-28', open: 0.34, high: 0.355, low: 0.31, close: 0.32, volume: 1200000 },
+    { time: '2025-08-04', open: 0.32, high: 0.345, low: 0.305, close: 0.335, volume: 890000 },
+    { time: '2025-08-11', open: 0.335, high: 0.36, low: 0.315, close: 0.35, volume: 740000 },
+    { time: '2025-08-18', open: 0.35, high: 0.355, low: 0.285, close: 0.295, volume: 1560000 },
+    { time: '2025-08-25', open: 0.295, high: 0.32, low: 0.145, close: 0.16, volume: 3200000 },
+    { time: '2025-09-01', open: 0.16, high: 1.05, low: 0.155, close: 0.6355, volume: 4850000 },
   ],
   '1D': [
-    { time: '2025-08-20', open: 0.340, high: 0.355, low: 0.330, close: 0.345, volume: 210000 },
-    { time: '2025-08-21', open: 0.345, high: 0.350, low: 0.320, close: 0.330, volume: 195000 },
-    { time: '2025-08-22', open: 0.330, high: 0.340, low: 0.310, close: 0.315, volume: 240000 },
-    { time: '2025-08-23', open: 0.315, high: 0.325, low: 0.295, close: 0.300, volume: 280000 },
-    { time: '2025-08-24', open: 0.300, high: 0.310, low: 0.280, close: 0.290, volume: 310000 },
-    { time: '2025-08-25', open: 0.290, high: 0.295, low: 0.240, close: 0.250, volume: 480000 },
-    { time: '2025-08-26', open: 0.250, high: 0.260, low: 0.190, close: 0.200, volume: 620000 },
-    { time: '2025-08-27', open: 0.200, high: 0.215, low: 0.160, close: 0.170, volume: 850000 },
-    { time: '2025-08-28', open: 0.170, high: 0.185, low: 0.145, close: 0.155, volume: 1100000 },
-    { time: '2025-08-29', open: 0.155, high: 0.380, low: 0.150, close: 0.340, volume: 1950000 },
-    { time: '2025-08-30', open: 0.340, high: 0.520, low: 0.320, close: 0.480, volume: 1650000 },
-    { time: '2025-08-31', open: 0.480, high: 0.610, low: 0.460, close: 0.590, volume: 1420000 },
-    { time: '2025-09-01', open: 0.590, high: 1.050, low: 0.580, close: 0.6355, volume: 2200000 },
+    { time: '2025-08-20', open: 0.34, high: 0.355, low: 0.33, close: 0.345, volume: 210000 },
+    { time: '2025-08-21', open: 0.345, high: 0.35, low: 0.32, close: 0.33, volume: 195000 },
+    { time: '2025-08-22', open: 0.33, high: 0.34, low: 0.31, close: 0.315, volume: 240000 },
+    { time: '2025-08-23', open: 0.315, high: 0.325, low: 0.295, close: 0.3, volume: 280000 },
+    { time: '2025-08-24', open: 0.3, high: 0.31, low: 0.28, close: 0.29, volume: 310000 },
+    { time: '2025-08-25', open: 0.29, high: 0.295, low: 0.24, close: 0.25, volume: 480000 },
+    { time: '2025-08-26', open: 0.25, high: 0.26, low: 0.19, close: 0.2, volume: 620000 },
+    { time: '2025-08-27', open: 0.2, high: 0.215, low: 0.16, close: 0.17, volume: 850000 },
+    { time: '2025-08-28', open: 0.17, high: 0.185, low: 0.145, close: 0.155, volume: 1100000 },
+    { time: '2025-08-29', open: 0.155, high: 0.38, low: 0.15, close: 0.34, volume: 1950000 },
+    { time: '2025-08-30', open: 0.34, high: 0.52, low: 0.32, close: 0.48, volume: 1650000 },
+    { time: '2025-08-31', open: 0.48, high: 0.61, low: 0.46, close: 0.59, volume: 1420000 },
+    { time: '2025-09-01', open: 0.59, high: 1.05, low: 0.58, close: 0.6355, volume: 2200000 },
   ],
   '4h': [
-    { time: '2025-08-31 00:00:00', open: 0.480, high: 0.510, low: 0.470, close: 0.495, volume: 180000 },
-    { time: '2025-08-31 04:00:00', open: 0.495, high: 0.530, low: 0.485, close: 0.520, volume: 210000 },
-    { time: '2025-08-31 08:00:00', open: 0.520, high: 0.560, low: 0.510, close: 0.550, volume: 290000 },
-    { time: '2025-08-31 12:00:00', open: 0.550, high: 0.580, low: 0.540, close: 0.570, volume: 310000 },
-    { time: '2025-08-31 16:00:00', open: 0.570, high: 0.610, low: 0.560, close: 0.590, volume: 430000 },
-    { time: '2025-08-31 20:00:00', open: 0.590, high: 0.605, low: 0.575, close: 0.585, volume: 220000 },
-    { time: '2025-09-01 00:00:00', open: 0.585, high: 0.720, low: 0.580, close: 0.690, volume: 680000 },
-    { time: '2025-09-01 04:00:00', open: 0.690, high: 0.880, low: 0.670, close: 0.820, volume: 920000 },
-    { time: '2025-09-01 08:00:00', open: 0.820, high: 1.050, low: 0.720, close: 0.740, volume: 1450000 },
-    { time: '2025-09-01 12:00:00', open: 0.740, high: 0.760, low: 0.620, close: 0.6355, volume: 890000 },
+    { time: '2025-08-31 00:00:00', open: 0.48, high: 0.51, low: 0.47, close: 0.495, volume: 180000 },
+    { time: '2025-08-31 04:00:00', open: 0.495, high: 0.53, low: 0.485, close: 0.52, volume: 210000 },
+    { time: '2025-08-31 08:00:00', open: 0.52, high: 0.56, low: 0.51, close: 0.55, volume: 290000 },
+    { time: '2025-08-31 12:00:00', open: 0.55, high: 0.58, low: 0.54, close: 0.57, volume: 310000 },
+    { time: '2025-08-31 16:00:00', open: 0.57, high: 0.61, low: 0.56, close: 0.59, volume: 430000 },
+    { time: '2025-08-31 20:00:00', open: 0.59, high: 0.605, low: 0.575, close: 0.585, volume: 220000 },
+    { time: '2025-09-01 00:00:00', open: 0.585, high: 0.72, low: 0.58, close: 0.69, volume: 680000 },
+    { time: '2025-09-01 04:00:00', open: 0.69, high: 0.88, low: 0.67, close: 0.82, volume: 920000 },
+    { time: '2025-09-01 08:00:00', open: 0.82, high: 1.05, low: 0.72, close: 0.74, volume: 1450000 },
+    { time: '2025-09-01 12:00:00', open: 0.74, high: 0.76, low: 0.62, close: 0.6355, volume: 890000 },
   ],
   '1h': [
-    { time: '2025-09-01 05:00:00', open: 0.680, high: 0.710, low: 0.670, close: 0.705, volume: 95000 },
-    { time: '2025-09-01 06:00:00', open: 0.705, high: 0.750, low: 0.695, close: 0.740, volume: 142000 },
-    { time: '2025-09-01 07:00:00', open: 0.740, high: 0.810, low: 0.730, close: 0.795, volume: 220000 },
-    { time: '2025-09-01 08:00:00', open: 0.795, high: 0.920, low: 0.780, close: 0.890, volume: 380000 },
-    { time: '2025-09-01 09:00:00', open: 0.890, high: 1.050, low: 0.870, close: 0.980, volume: 590000 },
-    { time: '2025-09-01 10:00:00', open: 0.980, high: 0.995, low: 0.820, close: 0.840, volume: 410000 },
-    { time: '2025-09-01 11:00:00', open: 0.840, high: 0.860, low: 0.720, close: 0.740, volume: 310000 },
-    { time: '2025-09-01 12:00:00', open: 0.740, high: 0.755, low: 0.650, close: 0.670, volume: 260000 },
-    { time: '2025-09-01 13:00:00', open: 0.670, high: 0.685, low: 0.630, close: 0.640, volume: 190000 },
-    { time: '2025-09-01 14:00:00', open: 0.640, high: 0.648, low: 0.625, close: 0.6355, volume: 145000 },
+    { time: '2025-09-01 05:00:00', open: 0.68, high: 0.71, low: 0.67, close: 0.705, volume: 95000 },
+    { time: '2025-09-01 06:00:00', open: 0.705, high: 0.75, low: 0.695, close: 0.74, volume: 142000 },
+    { time: '2025-09-01 07:00:00', open: 0.74, high: 0.81, low: 0.73, close: 0.795, volume: 220000 },
+    { time: '2025-09-01 08:00:00', open: 0.795, high: 0.92, low: 0.78, close: 0.89, volume: 380000 },
+    { time: '2025-09-01 09:00:00', open: 0.89, high: 1.05, low: 0.87, close: 0.98, volume: 590000 },
+    { time: '2025-09-01 10:00:00', open: 0.98, high: 0.995, low: 0.82, close: 0.84, volume: 410000 },
+    { time: '2025-09-01 11:00:00', open: 0.84, high: 0.86, low: 0.72, close: 0.74, volume: 310000 },
+    { time: '2025-09-01 12:00:00', open: 0.74, high: 0.755, low: 0.65, close: 0.67, volume: 260000 },
+    { time: '2025-09-01 13:00:00', open: 0.67, high: 0.685, low: 0.63, close: 0.64, volume: 190000 },
+    { time: '2025-09-01 14:00:00', open: 0.64, high: 0.648, low: 0.625, close: 0.6355, volume: 145000 },
   ],
   '15m': [
-    { time: '2025-09-01 13:00:00', open: 0.670, high: 0.675, low: 0.660, close: 0.662, volume: 42000 },
-    { time: '2025-09-01 13:15:00', open: 0.662, high: 0.668, low: 0.650, close: 0.655, volume: 38000 },
-    { time: '2025-09-01 13:30:00', open: 0.655, high: 0.660, low: 0.640, close: 0.645, volume: 49000 },
-    { time: '2025-09-01 13:45:00', open: 0.645, high: 0.652, low: 0.635, close: 0.640, volume: 55000 },
-    { time: '2025-09-01 14:00:00', open: 0.640, high: 0.644, low: 0.630, close: 0.632, volume: 31000 },
+    { time: '2025-09-01 13:00:00', open: 0.67, high: 0.675, low: 0.66, close: 0.662, volume: 42000 },
+    { time: '2025-09-01 13:15:00', open: 0.662, high: 0.668, low: 0.65, close: 0.655, volume: 38000 },
+    { time: '2025-09-01 13:30:00', open: 0.655, high: 0.66, low: 0.64, close: 0.645, volume: 49000 },
+    { time: '2025-09-01 13:45:00', open: 0.645, high: 0.652, low: 0.635, close: 0.64, volume: 55000 },
+    { time: '2025-09-01 14:00:00', open: 0.64, high: 0.644, low: 0.63, close: 0.632, volume: 31000 },
     { time: '2025-09-01 14:15:00', open: 0.632, high: 0.639, low: 0.628, close: 0.637, volume: 28000 },
     { time: '2025-09-01 14:30:00', open: 0.637, high: 0.642, low: 0.633, close: 0.6355, volume: 35000 },
   ],
@@ -127,7 +126,6 @@ interface Props extends BoxProps {
 }
 
 export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
-  const theme = useTheme();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
@@ -135,8 +133,7 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
 
   const [timeframe, setTimeframe] = useState<TradingViewTimeframe>('1W');
   const [activeCandle, setActiveCandle] = useState<CandleDataPoint | null>(null);
-
-  const isDarkMode = theme.palette.mode === 'dark';
+  const [activeTool, setActiveTool] = useState<string>('crosshair');
 
   const currentDataset = MOCK_TRADINGVIEW_DATA[timeframe];
   const latestCandle = currentDataset[currentDataset.length - 1];
@@ -146,13 +143,12 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
   const candlePercent = displayCandle.open > 0 ? (candleChange / displayCandle.open) * 100 : 0;
   const isUp = candleChange >= 0;
 
-  // Inicializa e gerencia a instância do TradingView Lightweight Charts
+  // Inicializa o motor TradingView Lightweight Charts
   useEffect(() => {
     if (!chartContainerRef.current) {
       return undefined;
     }
 
-    // Remove qualquer instância existente antes de criar
     if (chartRef.current) {
       chartRef.current.remove();
       chartRef.current = null;
@@ -160,52 +156,51 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
 
     const container = chartContainerRef.current;
 
+    // Padrão TradingView: Fundo Dark Terminal (#131722)
     const chart = createChart(container, {
       width: container.clientWidth || 800,
-      height: 420,
+      height: 330,
       layout: {
         background: {
           type: ColorType.Solid,
-          color: isDarkMode ? '#131722' : '#FFFFFF',
+          color: '#131722',
         },
-        textColor: isDarkMode ? '#9DB2CE' : '#4B5563',
+        textColor: '#9DB2CE',
       },
       grid: {
-        vertLines: {
-          color: isDarkMode ? 'rgba(42, 46, 57, 0.45)' : 'rgba(229, 231, 235, 0.7)',
-        },
-        horzLines: {
-          color: isDarkMode ? 'rgba(42, 46, 57, 0.45)' : 'rgba(229, 231, 235, 0.7)',
-        },
+        vertLines: { color: 'rgba(42, 46, 57, 0.4)' },
+        horzLines: { color: 'rgba(42, 46, 57, 0.4)' },
       },
       crosshair: {
         mode: CrosshairMode.Normal,
         vertLine: {
           width: 1,
-          color: isDarkMode ? 'rgba(224, 227, 235, 0.4)' : 'rgba(107, 114, 128, 0.4)',
+          color: 'rgba(224, 227, 235, 0.35)',
           style: 3,
         },
         horzLine: {
           width: 1,
-          color: isDarkMode ? 'rgba(224, 227, 235, 0.4)' : 'rgba(107, 114, 128, 0.4)',
+          color: 'rgba(224, 227, 235, 0.35)',
           style: 3,
         },
       },
       rightPriceScale: {
-        borderColor: isDarkMode ? 'rgba(42, 46, 57, 0.8)' : 'rgba(229, 231, 235, 0.8)',
+        borderColor: '#2A2E39',
         scaleMargins: {
-          top: 0.1,
+          top: 0.12,
           bottom: 0.22,
         },
       },
       timeScale: {
-        borderColor: isDarkMode ? 'rgba(42, 46, 57, 0.8)' : 'rgba(229, 231, 235, 0.8)',
+        borderColor: '#2A2E39',
         timeVisible: true,
         secondsVisible: false,
+        barSpacing: 16,
+        rightOffset: 8,
       },
     });
 
-    // 1. Série de Velas Japonesas (Candlesticks) - Padrão TradingView/Crypto
+    // 1. Série de Velas Japonesas (Candlesticks) - Padrão TradingView Global
     const candleSeries = chart.addSeries(CandlestickSeries, {
       upColor: '#26a69a',
       downColor: '#ef5350',
@@ -219,26 +214,26 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
       },
     });
 
-    // 2. Série de Volume em Histograma sobreposta na base
+    // 2. Série de Volume desacoplada na base com transparência
     const volumeSeries = chart.addSeries(HistogramSeries, {
       priceFormat: {
         type: 'volume',
       },
-      priceScaleId: '', // Escala separada para overlay inferior
+      priceScaleId: 'volume',
     });
 
-    volumeSeries.priceScale().applyOptions({
+    chart.priceScale('volume').applyOptions({
       scaleMargins: {
-        top: 0.75, // Mantém o volume ocupando no máximo os 25% inferiores do gráfico
+        top: 0.78, // Ocupa no máximo 22% inferiores
         bottom: 0,
       },
+      visible: false,
     });
 
     chartRef.current = chart;
     candleSeriesRef.current = candleSeries;
     volumeSeriesRef.current = volumeSeries;
 
-    // Alimenta os dados do timeframe atual
     const candleData = currentDataset.map((c) => ({
       time: c.time as any,
       open: c.open,
@@ -255,9 +250,8 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
 
     candleSeries.setData(candleData);
     volumeSeries.setData(volumeData);
-    chart.timeScale().fitContent();
 
-    // Inscrição para Crosshair Tooltip dinâmico
+    // Inscrição para Crosshair Tooltip
     chart.subscribeCrosshairMove((param) => {
       if (!param || !param.time || !param.seriesData) {
         setActiveCandle(null);
@@ -277,7 +271,6 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
       }
     });
 
-    // Observador responsivo de redimensionamento de janela
     const handleResize = () => {
       if (chartContainerRef.current && chartRef.current) {
         chartRef.current.applyOptions({
@@ -293,16 +286,15 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
       chart.remove();
       chartRef.current = null;
     };
-  }, [timeframe, isDarkMode, currentDataset]);
+  }, [timeframe, currentDataset]);
 
-  // Atualiza preço pai caso solicitado
   useEffect(() => {
     if (onPriceChange) {
       onPriceChange(latestCandle.close);
     }
   }, [latestCandle.close, onPriceChange]);
 
-  const handleResetView = useCallback(() => {
+  const handleFitContent = useCallback(() => {
     if (chartRef.current) {
       chartRef.current.timeScale().fitContent();
     }
@@ -313,35 +305,35 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
       sx={{
         borderRadius: 1.5,
         overflow: 'hidden',
-        bgcolor: isDarkMode ? '#131722' : 'background.paper',
-        border: (t) => `1px solid ${t.palette.divider}`,
+        bgcolor: '#131722',
+        border: '1px solid #2A2E39',
         display: 'flex',
         flexDirection: 'column',
         ...sx,
       }}
       {...other}
     >
-      {/* BARRA SUPERIOR PROFISSIONAL TRADINGVIEW */}
+      {/* 1. BARRA SUPERIOR INTEGRADA DO TRADINGVIEW */}
       <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1.5}
+        direction="row"
         sx={{
-          p: 1.25,
-          borderBottom: (t) => `1px solid ${t.palette.divider}`,
-          bgcolor: isDarkMode ? '#1b1e2e' : alpha(theme.palette.grey[500], 0.04),
+          px: 1.5,
+          py: 0.75,
+          borderBottom: '1px solid #2A2E39',
+          bgcolor: '#1E222D',
           justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
+          alignItems: 'center',
           flexWrap: 'wrap',
           gap: 1,
         }}
       >
-        {/* Par e DEX */}
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+        {/* Par e Cotação em Destaque */}
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
             <Box
               sx={{
-                width: 22,
-                height: 22,
+                width: 20,
+                height: 20,
                 borderRadius: '50%',
                 bgcolor: '#00A76F',
                 display: 'flex',
@@ -354,45 +346,51 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
             >
               A
             </Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary', letterSpacing: '-0.2px' }}>
-              ASPPBR / USDT
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: '#D1D4DC', fontSize: '0.85rem' }}>
+              ASPPIBRA / USD
             </Typography>
           </Stack>
 
-          <Chip
-            label="Uniswap v3"
-            size="small"
-            variant="soft"
-            color="info"
-            sx={{ height: 20, fontSize: '0.65rem', fontWeight: 700 }}
-          />
-
-          <Typography variant="caption" sx={{ color: 'text.disabled', fontFamily: 'monospace' }}>
-            dexscreener.com
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.75 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 900, color: '#26a69a', fontFamily: 'monospace' }}>
+              ${displayCandle.close.toFixed(4)}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                color: isUp ? '#26a69a' : '#ef5350',
+                fontWeight: 700,
+                fontFamily: 'monospace',
+                fontSize: '0.72rem',
+              }}
+            >
+              {isUp ? '+' : ''}
+              {candleChange.toFixed(4)} ({isUp ? '+' : ''}
+              {candlePercent.toFixed(2)}%)
+            </Typography>
+          </Box>
         </Stack>
 
-        {/* Barra de Timeframes Tradicionais TradingView */}
-        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
+        {/* Timeframes Oficiais TradingView e Ferramentas */}
+        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
           {(['15m', '1h', '4h', '1D', '1W'] as TradingViewTimeframe[]).map((tf) => (
             <Button
               key={tf}
               size="small"
               onClick={() => setTimeframe(tf)}
-              variant={timeframe === tf ? 'contained' : 'text'}
-              color={timeframe === tf ? 'primary' : 'inherit'}
               sx={{
-                minWidth: 34,
-                px: 1,
-                py: 0.25,
-                height: 24,
+                minWidth: 32,
+                px: 0.75,
+                py: 0.2,
+                height: 22,
                 fontSize: '0.72rem',
-                fontWeight: 800,
+                fontWeight: 700,
                 textTransform: 'none',
-                bgcolor: timeframe === tf ? (isDarkMode ? '#2962FF' : 'primary.main') : 'transparent',
-                color: timeframe === tf ? '#FFFFFF' : 'text.secondary',
+                bgcolor: timeframe === tf ? '#2962FF' : 'transparent',
+                color: timeframe === tf ? '#FFFFFF' : '#848E9C',
                 '&:hover': {
-                  bgcolor: timeframe === tf ? '#1E4BD8' : (t) => alpha(t.palette.grey[500], 0.12),
+                  bgcolor: timeframe === tf ? '#1E4BD8' : 'rgba(255,255,255,0.06)',
+                  color: '#FFFFFF',
                 },
               }}
             >
@@ -400,136 +398,192 @@ export function TradingViewTokenChart({ onPriceChange, sx, ...other }: Props) {
             </Button>
           ))}
 
-          {/* Botão de Encaixar Conteúdo (Fit Content) */}
-          <Tooltip title="Resetar Escala e Ajustar ao Gráfico">
-            <Button
+          <Box sx={{ width: '1px', height: 16, bgcolor: '#2A2E39', mx: 0.5 }} />
+
+          {/* Indicadores (fx) */}
+          <Button
+            size="small"
+            sx={{
+              height: 22,
+              px: 0.75,
+              fontSize: '0.72rem',
+              color: '#848E9C',
+              textTransform: 'none',
+              fontWeight: 700,
+              '&:hover': { color: '#FFFFFF', bgcolor: 'rgba(255,255,255,0.06)' },
+            }}
+            startIcon={<Typography sx={{ fontFamily: 'serif', fontStyle: 'italic', fontWeight: 900, fontSize: 13, color: '#2962FF' }}>fx</Typography>}
+          >
+            Indicadores
+          </Button>
+
+          {/* Fit Content */}
+          <Tooltip title="Ajustar Escala">
+            <IconButton
               size="small"
-              onClick={handleResetView}
-              sx={{
-                minWidth: 26,
-                height: 24,
-                px: 0.5,
-                color: 'text.secondary',
-              }}
+              onClick={handleFitContent}
+              sx={{ width: 22, height: 22, color: '#848E9C', '&:hover': { color: '#FFFFFF' } }}
             >
-              <Iconify icon={'solar:maximize-square-bold' as any} width={14} />
-            </Button>
+              <Iconify icon={'solar:maximize-square-bold' as any} width={13} />
+            </IconButton>
           </Tooltip>
         </Stack>
       </Stack>
 
-      {/* OVERLAY DE MÉTRICAS EM TEMPO REAL OHLCV (IDÊNTICO AO DEXSCREENER / TRADINGVIEW) */}
+      {/* 2. OVERLAY OHLCV INLINE (COMPACTO) */}
       <Box
         sx={{
           px: 1.5,
-          py: 0.75,
-          bgcolor: isDarkMode ? '#131722' : '#FAFAFA',
-          borderBottom: (t) => `1px solid ${alpha(t.palette.divider, 0.4)}`,
+          py: 0.4,
+          bgcolor: '#131722',
+          borderBottom: '1px solid rgba(42, 46, 57, 0.4)',
         }}
       >
         <Stack
           direction="row"
-          spacing={2}
+          spacing={1.5}
           sx={{
-            alignItems: 'baseline',
-            flexWrap: 'wrap',
             fontFamily: 'monospace',
-            fontSize: '0.75rem',
-            gap: 1,
+            fontSize: '0.7rem',
+            color: '#787B86',
+            flexWrap: 'wrap',
           }}
         >
-          <Box sx={{ color: isUp ? '#26a69a' : '#ef5350', fontWeight: 800, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: isUp ? '#26a69a' : '#ef5350' }} />
-            <span>${displayCandle.close.toFixed(4)}</span>
-            <span>
-              {isUp ? '+' : ''}
-              {candleChange.toFixed(4)} ({isUp ? '+' : ''}
-              {candlePercent.toFixed(2)}%)
-            </span>
-          </Box>
-
-          <Box sx={{ color: 'text.secondary' }}>
-            <Typography component="span" variant="caption" sx={{ color: 'text.disabled', mr: 0.4 }}>
-              O
-            </Typography>
-            <span>{displayCandle.open.toFixed(4)}</span>
-          </Box>
-
-          <Box sx={{ color: 'text.secondary' }}>
-            <Typography component="span" variant="caption" sx={{ color: 'text.disabled', mr: 0.4 }}>
-              H
-            </Typography>
-            <span style={{ color: '#26a69a' }}>{displayCandle.high.toFixed(4)}</span>
-          </Box>
-
-          <Box sx={{ color: 'text.secondary' }}>
-            <Typography component="span" variant="caption" sx={{ color: 'text.disabled', mr: 0.4 }}>
-              L
-            </Typography>
-            <span style={{ color: '#ef5350' }}>{displayCandle.low.toFixed(4)}</span>
-          </Box>
-
-          <Box sx={{ color: 'text.secondary' }}>
-            <Typography component="span" variant="caption" sx={{ color: 'text.disabled', mr: 0.4 }}>
-              C
-            </Typography>
-            <span>{displayCandle.close.toFixed(4)}</span>
-          </Box>
-
-          <Box sx={{ color: 'text.secondary' }}>
-            <Typography component="span" variant="caption" sx={{ color: 'text.disabled', mr: 0.4 }}>
-              Vol
-            </Typography>
-            <span style={{ color: isUp ? '#26a69a' : '#ef5350' }}>
-              ${displayCandle.volume.toLocaleString('en-US')}
-            </span>
-          </Box>
+          <span>
+            O <strong style={{ color: '#D1D4DC' }}>{displayCandle.open.toFixed(4)}</strong>
+          </span>
+          <span>
+            H <strong style={{ color: '#26a69a' }}>{displayCandle.high.toFixed(4)}</strong>
+          </span>
+          <span>
+            L <strong style={{ color: '#ef5350' }}>{displayCandle.low.toFixed(4)}</strong>
+          </span>
+          <span>
+            C <strong style={{ color: '#D1D4DC' }}>{displayCandle.close.toFixed(4)}</strong>
+          </span>
+          <span>
+            Vol <strong style={{ color: isUp ? '#26a69a' : '#ef5350' }}>${displayCandle.volume.toLocaleString('en-US')}</strong>
+          </span>
         </Stack>
       </Box>
 
-      {/* CONTAINER DO CANVAS DO TRADINGVIEW */}
-      <Box
-        ref={chartContainerRef}
-        sx={{
-          width: '100%',
-          height: 420,
-          position: 'relative',
-        }}
-      />
+      {/* 3. ÁREA PRINCIPAL: BARRA LATERAL TRADINGVIEW + CANVAS */}
+      <Box sx={{ display: 'flex', width: '100%', height: 330, position: 'relative' }}>
+        {/* Barra de Ferramentas de Desenho Lateral Esquerda TradingView */}
+        <Box
+          sx={{
+            width: 38,
+            flexShrink: 0,
+            borderRight: '1px solid #2A2E39',
+            bgcolor: '#1E222D',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            py: 0.75,
+            gap: 0.5,
+          }}
+        >
+          {[
+            { id: 'crosshair', icon: 'solar:cursor-bold', title: 'Cursor de Mira' },
+            { id: 'line', icon: 'solar:pen-new-square-bold', title: 'Linha de Tendência' },
+            { id: 'fib', icon: 'solar:tuning-square-2-bold', title: 'Retração de Fibonacci' },
+            { id: 'brush', icon: 'solar:brush-bold', title: 'Pincel' },
+            { id: 'text', icon: 'solar:text-bold', title: 'Anotação / Texto' },
+            { id: 'ruler', icon: 'solar:ruler-bold', title: 'Medição de Intervalo' },
+          ].map((tool) => (
+            <Tooltip key={tool.id} title={tool.title} placement="right">
+              <IconButton
+                size="small"
+                onClick={() => setActiveTool(tool.id)}
+                sx={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 0.75,
+                  bgcolor: activeTool === tool.id ? 'rgba(41, 98, 255, 0.2)' : 'transparent',
+                  color: activeTool === tool.id ? '#2962FF' : '#787B86',
+                  '&:hover': {
+                    bgcolor: 'rgba(255, 255, 255, 0.08)',
+                    color: '#D1D4DC',
+                  },
+                }}
+              >
+                <Iconify icon={tool.icon as any} width={15} />
+              </IconButton>
+            </Tooltip>
+          ))}
+        </Box>
 
-      {/* RODAPÉ DO TRADINGVIEW COM MARCADOR E FUSO HORÁRIO */}
+        {/* Container do Canvas TradingView */}
+        <Box
+          ref={chartContainerRef}
+          sx={{
+            flexGrow: 1,
+            height: '100%',
+            position: 'relative',
+          }}
+        />
+      </Box>
+
+      {/* 4. RODAPÉ DE ALCANCE RÁPIDO DO TRADINGVIEW */}
       <Stack
         direction="row"
         sx={{
           px: 1.5,
-          py: 0.5,
-          borderTop: (t) => `1px solid ${t.palette.divider}`,
-          bgcolor: isDarkMode ? '#131722' : '#F9FAFB',
+          py: 0.4,
+          borderTop: '1px solid #2A2E39',
+          bgcolor: '#1E222D',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}
       >
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-          <Chip
-            label="TradingView Engine"
-            size="small"
-            variant="outlined"
-            sx={{
-              height: 18,
-              fontSize: '0.62rem',
-              fontWeight: 800,
-              color: isDarkMode ? '#9DB2CE' : 'text.secondary',
-              borderColor: (t) => alpha(t.palette.divider, 0.8),
-            }}
-          />
-          <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: '0.65rem' }}>
-            Candlestick OHLCV • Arbitrum Liquidity Pool
-          </Typography>
+        {/* Alcances Rápidos */}
+        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
+          {(['1D', '5D', '1M', '3M', '6M', '1A', 'ALL'] as const).map((r) => (
+            <Button
+              key={r}
+              size="small"
+              onClick={handleFitContent}
+              sx={{
+                minWidth: 26,
+                px: 0.5,
+                py: 0.1,
+                height: 20,
+                fontSize: '0.65rem',
+                fontWeight: 700,
+                color: '#787B86',
+                '&:hover': { color: '#D1D4DC', bgcolor: 'rgba(255,255,255,0.06)' },
+              }}
+            >
+              {r}
+            </Button>
+          ))}
         </Stack>
 
-        <Typography variant="caption" sx={{ color: 'text.disabled', fontFamily: 'monospace', fontSize: '0.68rem' }}>
-          UTC-3 • Tempo Real
-        </Typography>
+        {/* Escalas e Fuso Horário */}
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+          <Typography variant="caption" sx={{ color: '#787B86', fontFamily: 'monospace', fontSize: '0.65rem' }}>
+            17:00:00 (UTC-3)
+          </Typography>
+
+          <Stack direction="row" spacing={0.5}>
+            {['%', 'log', 'auto'].map((scale) => (
+              <Typography
+                key={scale}
+                variant="caption"
+                sx={{
+                  color: scale === 'auto' ? '#2962FF' : '#787B86',
+                  fontFamily: 'monospace',
+                  fontSize: '0.65rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  '&:hover': { color: '#D1D4DC' },
+                }}
+              >
+                {scale}
+              </Typography>
+            ))}
+          </Stack>
+        </Stack>
       </Stack>
     </Box>
   );
