@@ -24,6 +24,9 @@ const InfrastructurePage = lazy(() => import('src/pages/devos/infrastructure-pag
 const EnvironmentPage = lazy(() => import('src/pages/devos/environment-page'));
 const TestingPage = lazy(() => import('src/pages/devos/testing-page'));
 const DAOPage = lazy(() => import('src/pages/devos/dao-page'));
+const WalletsPage = lazy(() => import('src/pages/devos/wallets-page'));
+const LedgerPage = lazy(() => import('src/pages/devos/ledger-page'));
+const InvoicesPage = lazy(() => import('src/pages/devos/invoices-page'));
 const ReleasesPage = lazy(() => import('src/pages/devos/releases-page'));
 const JobsPage = lazy(() => import('src/pages/devos/jobs-page'));
 const RegistryPage = lazy(() => import('src/pages/devos/registry-page'));
@@ -82,6 +85,9 @@ export const devosRoutes: RouteObject[] = [
       { path: 'environment', element: <EnvironmentPage /> },
       { path: 'testing', element: <TestingPage /> },
       { path: 'dao', element: <DAOPage /> },
+      { path: 'wallets', element: <WalletsPage /> },
+      { path: 'ledger', element: <LedgerPage /> },
+      { path: 'invoices', element: <InvoicesPage /> },
       { path: 'releases', element: <ReleasesPage /> },
       { path: 'jobs', element: <JobsPage /> },
       { path: 'registry', element: <RegistryPage /> },
