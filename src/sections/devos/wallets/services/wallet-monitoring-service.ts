@@ -1,4 +1,6 @@
-import { WalletBridge, WalletBalanceReport } from 'src/platform/desktop/wallets/wallet-bridge';
+import type { WalletBalanceReport } from 'src/platform/desktop/wallets/wallet-bridge';
+
+import { WalletBridge } from 'src/platform/desktop/wallets/wallet-bridge';
 
 export interface WalletBalanceUpdate {
   address: string;
