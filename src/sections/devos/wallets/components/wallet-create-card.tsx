@@ -1,5 +1,7 @@
-import Box from '@mui/material/Box';
+import type { WalletTarget } from '../types/wallet-types';
+
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -8,12 +10,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { alpha } from '@mui/material/styles';
 
 import { Iconify } from 'src/components/iconify';
 
-import { SUPPORTED_NETWORKS, QUANTITY_OPTIONS, SEED_LENGTH_OPTIONS } from '../domain/wallet-policy';
-import type { WalletTarget } from '../types/wallet-types';
+import { QUANTITY_OPTIONS, SUPPORTED_NETWORKS } from '../domain/wallet-policy';
+
+// ----------------------------------------------------------------------
 
 interface WalletCreateCardProps {
   walletTarget: WalletTarget;
@@ -55,163 +57,193 @@ export function WalletCreateCard({
   return (
     <Card
       sx={{
-        p: 3,
+        p: 2.25,
         bgcolor: 'background.paper',
-        borderRadius: 2,
         border: (theme) => `1px solid ${theme.palette.divider}`,
+        borderRadius: 2,
       }}
     >
-      <Stack spacing={2.5}>
-        <Box>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Iconify icon={'solar:wallet-money-bold' as any} width={22} sx={{ color: 'primary.main' }} />
-            <Typography variant="h6" sx={{ fontWeight: 800 }}>
-              Criação de Carteiras & Cofre Criptográfico
-            </Typography>
-          </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
-            Motor de geração e custódia isolado no núcleo nativo Rust (Tauri). Entropia criptográfica do sistema operacional, derivação BIP-44 e cofre AEAD com Argon2id + AES-256-GCM.
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={1.5}
+        sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, mb: 2 }}
+      >
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+          <Iconify icon={'solar:shield-keyhole-bold' as any} width={20} sx={{ color: 'primary.main' }} />
+          <Typography variant="subtitle1" sx={{ fontWeight: 800, color: 'text.primary' }}>
+            Gerar Novas Carteiras
           </Typography>
-        </Box>
+        </Stack>
+        <Chip
+          label="BIP-39 / BIP-44 • AES-256-GCM"
+          size="small"
+          variant="soft"
+          color="primary"
+          sx={{ fontWeight: 800, fontSize: '0.68rem', height: 22 }}
+        />
+      </Stack>
 
-        <Grid container spacing={2}>
-          {/* Destino da Carteira */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="caption" sx={{ fontWeight: 700, mb: 1, display: 'block', color: 'text.secondary' }}>
-              DESTINO DA CUSTÓDIA
-            </Typography>
-            <ToggleButtonGroup
-              exclusive
-              fullWidth
-              size="small"
-              value={walletTarget}
-              onChange={(_, val) => val && setWalletTarget(val)}
-            >
-              <ToggleButton value="dao" sx={{ fontWeight: 700, textTransform: 'none' }}>
-                Carteiras da DAO (Institucional)
-              </ToggleButton>
-              <ToggleButton value="clients" sx={{ fontWeight: 700, textTransform: 'none' }}>
-                Carteiras de Associados (Cofre Individual)
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Grid>
-
-          {/* Comprimento da Semente */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="caption" sx={{ fontWeight: 700, mb: 1, display: 'block', color: 'text.secondary' }}>
-              TAMANHO DA FRASE MNEMÔNICA (BIP-39)
-            </Typography>
-            <ToggleButtonGroup
-              exclusive
-              fullWidth
-              size="small"
-              value={seedWordsCount}
-              onChange={(_, val) => val && setSeedWordsCount(val)}
-            >
-              {SEED_LENGTH_OPTIONS.map((count) => (
-                <ToggleButton key={count} value={count} sx={{ fontWeight: 700, textTransform: 'none' }}>
-                  {count} palavras {count === 24 ? '(Recomendado)' : ''}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Grid>
-
-          {/* Rede Blockchain */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              select
-              fullWidth
-              size="small"
-              label="Rede Blockchain (Padrão ERC-20 / EVM)"
-              value={targetNetwork}
-              onChange={(e) => setTargetNetwork(e.target.value)}
-            >
-              {SUPPORTED_NETWORKS.map((net) => (
-                <MenuItem key={net.id} value={net.name}>
-                  {net.name} ({net.nativeSymbol} • Chain ID {net.chainId})
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-
-          {/* Seletor de Quantidade */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Typography variant="caption" sx={{ fontWeight: 700, mb: 0.75, display: 'block', color: 'text.secondary' }}>
-              QUANTIDADE DE CARTEIRAS NO LOTE
-            </Typography>
-            <ToggleButtonGroup
-              exclusive
-              fullWidth
-              size="small"
-              value={quantity}
-              onChange={(_, val) => val && setQuantity(val)}
-            >
-              {QUANTITY_OPTIONS.map((num) => (
-                <ToggleButton key={num} value={num} sx={{ fontWeight: 800 }}>
-                  {num}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Grid>
-
-          {/* Campos condicionais se associado */}
-          {walletTarget === 'clients' && (
-            <>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="Nome do Associado / Titular"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  placeholder="Ex: João da Silva"
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="Documento de Identificação (CPF/CNPJ)"
-                  value={clientDoc}
-                  onChange={(e) => setClientDoc(e.target.value)}
-                  placeholder="Ex: CPF 123.456.789-00"
-                />
-              </Grid>
-            </>
-          )}
-
-          {/* Rótulo / Finalidade */}
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              size="small"
-              label="Rótulo Base / Finalidade da Carteira"
-              value={baseLabel}
-              onChange={(e) => setBaseLabel(e.target.value)}
-              placeholder={walletTarget === 'dao' ? 'Ex: Caixa Operacional, Tesouraria Safe, Gas Station' : 'Ex: Custódia Pessoal'}
-            />
-          </Grid>
+      <Grid container spacing={2} sx={{ alignItems: 'flex-end' }}>
+        {/* DESTINO DA CARTEIRA: DAO OU CLIENTES */}
+        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+            Destino da Carteira
+          </Typography>
+          <ToggleButtonGroup
+            value={walletTarget}
+            exclusive
+            onChange={(_, val) => {
+              if (val) {
+                setWalletTarget(val);
+                setBaseLabel(val === 'dao' ? 'Caixa Operacional' : 'Custódia Membro');
+              }
+            }}
+            fullWidth
+            size="small"
+            sx={{ height: 38 }}
+          >
+            <ToggleButton value="dao" sx={{ py: 0.5, fontWeight: 800, fontSize: '0.78rem' }}>
+              🏛️ DAO
+            </ToggleButton>
+            <ToggleButton value="clients" sx={{ py: 0.5, fontWeight: 800, fontSize: '0.78rem' }}>
+              👥 Cliente
+            </ToggleButton>
+          </ToggleButtonGroup>
         </Grid>
 
-        <Stack direction="row" sx={{ justifyContent: 'flex-end', pt: 1 }}>
+        {/* SEED WORDS */}
+        <Grid size={{ xs: 12, sm: 6, md: 2.5 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+            Padrão da Seed
+          </Typography>
+          <ToggleButtonGroup
+            value={seedWordsCount}
+            exclusive
+            onChange={(_, val) => {
+              if (val) setSeedWordsCount(val);
+            }}
+            fullWidth
+            size="small"
+            sx={{ height: 38 }}
+          >
+            <ToggleButton value={12} sx={{ py: 0.5, fontWeight: 700, fontSize: '0.78rem' }}>
+              12 Palavras
+            </ToggleButton>
+            <ToggleButton value={24} sx={{ py: 0.5, fontWeight: 800, fontSize: '0.78rem' }}>
+              24 Palavras
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Grid>
+
+        {/* QUANTIDADE */}
+        <Grid size={{ xs: 6, sm: 3, md: 1.5 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+            Quantidade
+          </Typography>
+          <TextField
+            select
+            fullWidth
+            size="small"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            sx={{ '& .MuiInputBase-root': { height: 38 } }}
+          >
+            {QUANTITY_OPTIONS.map((num) => (
+              <MenuItem key={num} value={num}>
+                {num}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+
+        {/* REDE */}
+        <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+            Rede
+          </Typography>
+          <TextField
+            select
+            fullWidth
+            size="small"
+            value={targetNetwork}
+            onChange={(e) => setTargetNetwork(e.target.value)}
+            sx={{ '& .MuiInputBase-root': { height: 38 } }}
+          >
+            {SUPPORTED_NETWORKS.map((net) => (
+              <MenuItem key={net.id} value={net.name}>
+                {net.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+
+        {/* RÓTULO */}
+        <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+          <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+            Rótulo Base
+          </Typography>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder={walletTarget === 'dao' ? 'Ex: Caixa Operacional' : 'Ex: Nome Cliente'}
+            value={baseLabel}
+            onChange={(e) => setBaseLabel(e.target.value)}
+            sx={{ '& .MuiInputBase-root': { height: 38 } }}
+          />
+        </Grid>
+
+        {/* BOTÃO DE AÇÃO */}
+        <Grid size={{ xs: 12, sm: 6, md: 1.5 }}>
           <Button
             variant="contained"
-            color="primary"
-            onClick={onGenerate}
+            fullWidth
             disabled={isGenerating}
-            startIcon={<Iconify icon={'solar:shield-keyhole-bold' as any} />}
+            onClick={onGenerate}
+            startIcon={<Iconify icon={'solar:bolt-circle-bold' as any} width={18} />}
             sx={{
+              height: 38,
               fontWeight: 800,
-              px: 3,
-              py: 1,
+              fontSize: '0.8rem',
               textTransform: 'none',
-              boxShadow: (theme) => `0 4px 14px 0 ${alpha(theme.palette.primary.main, 0.4)}`,
+              whiteSpace: 'nowrap',
             }}
           >
-            {isGenerating ? 'Gerando no Rust Core...' : 'Gerar Carteiras no Rust Core'}
+            {isGenerating ? 'Gerando...' : 'Gerar'}
           </Button>
-        </Stack>
-      </Stack>
+        </Grid>
+
+        {/* CAMPOS CONDICIONAIS DE CLIENTE / ASSOCIADO */}
+        {walletTarget === 'clients' && (
+          <>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+                Nome do Associado / Titular
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="Ex: João da Silva"
+                sx={{ '& .MuiInputBase-root': { height: 38 } }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, display: 'block', mb: 0.75 }}>
+                Documento de Identificação (CPF/CNPJ)
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                value={clientDoc}
+                onChange={(e) => setClientDoc(e.target.value)}
+                placeholder="Ex: CPF 123.456.789-00"
+                sx={{ '& .MuiInputBase-root': { height: 38 } }}
+              />
+            </Grid>
+          </>
+        )}
+      </Grid>
     </Card>
   );
 }
