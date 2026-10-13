@@ -19,6 +19,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 
 import { Iconify } from 'src/components/iconify';
 
+import { NativeTokenMonitorCard } from '../components/native-token-monitor-card';
 import {
   MOCK_SAFE_ASSETS,
   MOCK_SAFE_SIGNERS,
@@ -69,6 +70,8 @@ export function TreasuryView() {
 
   return (
     <Stack spacing={2.5}>
+      {/* 1. MONITORAMENTO DO TOKEN NATIVO ASPPBR (PRICE & VOLUME CHART) */}
+      <NativeTokenMonitorCard />
 
       {/* 2. VALORAÇÃO TOTAL CONSOLIDADA E ALOCAÇÃO DE RESERVAS (SLIM & THEME-AWARE) */}
       <Card
