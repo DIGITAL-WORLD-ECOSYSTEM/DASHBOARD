@@ -14,11 +14,15 @@ import { alpha, useTheme } from '@mui/material/styles';
 import { Iconify } from 'src/components/iconify';
 import { Chart, useChart } from 'src/components/chart';
 
+import { TradingViewTokenChart } from './tradingview-token-chart';
+
 // ----------------------------------------------------------------------
 
 export type TimeframePeriod = '24H' | '7D' | '30D' | '1A';
 
 export type ChartMetricMode = 'price' | 'volume';
+
+export type ChartEngineMode = 'tradingview' | 'area';
 
 interface TimeframeData {
   categories: string[];
@@ -33,38 +37,38 @@ interface TimeframeData {
 export const TOKEN_TIMEFRAME_DATA: Record<TimeframePeriod, TimeframeData> = {
   '24H': {
     categories: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', 'Agora'],
-    prices: [0.965, 0.972, 0.968, 0.985, 0.991, 0.988, 1.005, 1.012, 1.000],
+    prices: [0.612, 0.620, 0.615, 0.628, 0.631, 0.629, 0.638, 0.642, 0.6355],
     volumes: [12400, 15800, 9200, 24100, 18900, 14200, 26800, 19500, 7350],
-    changePercent: 3.62,
-    highPrice: 1.012,
-    lowPrice: 0.965,
+    changePercent: 3.84,
+    highPrice: 0.642,
+    lowPrice: 0.612,
     periodVolumeUsd: 148250,
   },
   '7D': {
     categories: ['07 Out', '08 Out', '09 Out', '10 Out', '11 Out', '12 Out', '13 Out'],
-    prices: [0.92, 0.935, 0.948, 0.94, 0.975, 0.99, 1.0],
+    prices: [0.585, 0.595, 0.610, 0.605, 0.620, 0.630, 0.6355],
     volumes: [85000, 112000, 98000, 145000, 162000, 148000, 142100],
-    changePercent: 8.69,
-    highPrice: 1.0,
-    lowPrice: 0.92,
+    changePercent: 8.63,
+    highPrice: 0.6355,
+    lowPrice: 0.585,
     periodVolumeUsd: 892100,
   },
   '30D': {
     categories: ['14 Set', '19 Set', '24 Set', '29 Set', '04 Out', '09 Out', '13 Out'],
-    prices: [0.85, 0.88, 0.865, 0.91, 0.945, 0.98, 1.0],
+    prices: [0.540, 0.560, 0.550, 0.580, 0.605, 0.625, 0.6355],
     volumes: [380000, 420000, 510000, 490000, 580000, 520000, 520000],
-    changePercent: 17.65,
-    highPrice: 1.0,
-    lowPrice: 0.85,
+    changePercent: 17.69,
+    highPrice: 0.6355,
+    lowPrice: 0.540,
     periodVolumeUsd: 3420000,
   },
   '1A': {
     categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out'],
-    prices: [0.5, 0.54, 0.61, 0.68, 0.72, 0.79, 0.84, 0.89, 0.95, 1.0],
+    prices: [0.145, 0.28, 0.35, 0.42, 0.49, 0.52, 1.05, 0.59, 0.61, 0.6355],
     volumes: [1200000, 1450000, 2100000, 2800000, 3100000, 3600000, 4100000, 4300000, 4850000, 5000000],
-    changePercent: 100.0,
-    highPrice: 1.0,
-    lowPrice: 0.5,
+    changePercent: 338.28,
+    highPrice: 1.05,
+    lowPrice: 0.145,
     periodVolumeUsd: 32500000,
   },
 };
@@ -78,14 +82,16 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
   const theme = useTheme();
   const [period, setPeriod] = useState<TimeframePeriod>('24H');
   const [metricMode, setMetricMode] = useState<ChartMetricMode>('price');
+  const [chartEngine, setChartEngine] = useState<ChartEngineMode>('tradingview');
+  const [livePrice, setLivePrice] = useState<number>(0.6355);
 
   const currentData = TOKEN_TIMEFRAME_DATA[period];
-  const latestPrice = currentData.prices[currentData.prices.length - 1];
-  const latestPriceBrl = latestPrice * USD_TO_BRL_RATE;
+  const activePrice = chartEngine === 'tradingview' ? livePrice : currentData.prices[currentData.prices.length - 1];
+  const activePriceBrl = activePrice * USD_TO_BRL_RATE;
   const isPositive = currentData.changePercent >= 0;
 
-  const marketCapUsd = TOTAL_TOKEN_SUPPLY * latestPrice;
-  const vaultReserveUsd = VAULT_RESERVE_SUPPLY * latestPrice;
+  const marketCapUsd = TOTAL_TOKEN_SUPPLY * activePrice;
+  const vaultReserveUsd = VAULT_RESERVE_SUPPLY * activePrice;
 
   const chartSeries = useMemo(() => {
     if (metricMode === 'price') {
@@ -188,7 +194,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
       }}
       {...other}
     >
-      {/* 1. CABEÇALHO DO TOKEN COM IDENTIDADE E SELETORES */}
+      {/* 1. CABEÇALHO DO TOKEN COM IDENTIDADE E SELEÇÃO DE MOTOR DE GRÁFICO */}
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={2}
@@ -248,104 +254,59 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
               />
             </Stack>
             <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
-              Monitoramento em tempo real de cotação, liquidez e reservas do ecossistema ASPPIBRA
+              Monitoramento oficial via TradingView Canvas Engine & DEX Uniswap Pool
             </Typography>
           </Box>
         </Stack>
 
-        {/* Controles: Seletor de Métrica e Períodos */}
-        <Stack
-          direction="row"
-          spacing={1}
+        {/* Alternador de Motor: TradingView vs Área */}
+        <Box
           sx={{
-            alignItems: 'center',
+            display: 'inline-flex',
+            p: 0.5,
+            borderRadius: 1,
+            bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
             alignSelf: { xs: 'stretch', sm: 'auto' },
-            justifyContent: { xs: 'space-between', sm: 'flex-end' },
-            flexWrap: 'wrap',
-            gap: 1,
+            justifyContent: 'center',
           }}
         >
-          {/* Alternador de Métrica (Preço / Volume) */}
-          <Box
+          <Button
+            size="small"
+            onClick={() => setChartEngine('tradingview')}
+            variant={chartEngine === 'tradingview' ? 'contained' : 'text'}
+            color={chartEngine === 'tradingview' ? 'primary' : 'inherit'}
             sx={{
-              display: 'inline-flex',
-              p: 0.5,
-              borderRadius: 1,
-              bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
+              py: 0.4,
+              px: 1.5,
+              fontSize: '0.75rem',
+              fontWeight: 800,
+              textTransform: 'none',
+              boxShadow: chartEngine === 'tradingview' ? 1 : 0,
             }}
+            startIcon={<Iconify icon={'solar:chart-square-bold' as any} width={15} />}
           >
-            <Button
-              size="small"
-              onClick={() => setMetricMode('price')}
-              variant={metricMode === 'price' ? 'contained' : 'text'}
-              color={metricMode === 'price' ? 'primary' : 'inherit'}
-              sx={{
-                py: 0.4,
-                px: 1.25,
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                textTransform: 'none',
-                boxShadow: metricMode === 'price' ? 1 : 0,
-              }}
-              startIcon={<Iconify icon={'solar:chart-2-bold' as any} width={14} />}
-            >
-              Cotação
-            </Button>
-            <Button
-              size="small"
-              onClick={() => setMetricMode('volume')}
-              variant={metricMode === 'volume' ? 'contained' : 'text'}
-              color={metricMode === 'volume' ? 'info' : 'inherit'}
-              sx={{
-                py: 0.4,
-                px: 1.25,
-                fontSize: '0.72rem',
-                fontWeight: 700,
-                textTransform: 'none',
-                boxShadow: metricMode === 'volume' ? 1 : 0,
-              }}
-              startIcon={<Iconify icon={'solar:graph-up-bold' as any} width={14} />}
-            >
-              Volume
-            </Button>
-          </Box>
+            TradingView (Padrão Crypto)
+          </Button>
 
-          {/* Botões de Período */}
-          <Box
+          <Button
+            size="small"
+            onClick={() => setChartEngine('area')}
+            variant={chartEngine === 'area' ? 'contained' : 'text'}
+            color={chartEngine === 'area' ? 'inherit' : 'inherit'}
             sx={{
-              display: 'inline-flex',
-              p: 0.5,
-              borderRadius: 1,
-              bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
+              py: 0.4,
+              px: 1.5,
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              textTransform: 'none',
+              bgcolor: chartEngine === 'area' ? 'background.paper' : 'transparent',
+              boxShadow: chartEngine === 'area' ? 1 : 0,
             }}
+            startIcon={<Iconify icon={'solar:chart-2-bold' as any} width={15} />}
           >
-            {(['24H', '7D', '30D', '1A'] as TimeframePeriod[]).map((t) => (
-              <Button
-                key={t}
-                size="small"
-                onClick={() => setPeriod(t)}
-                variant={period === t ? 'contained' : 'text'}
-                color={period === t ? 'inherit' : 'inherit'}
-                sx={{
-                  minWidth: 38,
-                  py: 0.4,
-                  px: 1,
-                  fontSize: '0.72rem',
-                  fontWeight: 800,
-                  textTransform: 'none',
-                  bgcolor: period === t ? 'background.paper' : 'transparent',
-                  color: period === t ? 'text.primary' : 'text.secondary',
-                  boxShadow: period === t ? 1 : 0,
-                  '&:hover': {
-                    bgcolor: period === t ? 'background.paper' : (themeMode) => alpha(themeMode.palette.grey[500], 0.12),
-                  },
-                }}
-              >
-                {t}
-              </Button>
-            ))}
-          </Box>
-        </Stack>
+            Visão Resumida (Área)
+          </Button>
+        </Box>
       </Stack>
 
       {/* 2. LINHA DE COTAÇÃO ATUAL E VARIAÇÃO */}
@@ -367,7 +328,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
             variant="caption"
             sx={{ color: 'text.secondary', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}
           >
-            {metricMode === 'price' ? 'Preço de Referência do Token' : 'Volume Negociado no Período'}
+            Cotação de Mercado (ASPPBR / USDT)
           </Typography>
 
           <Stack direction="row" spacing={1.5} sx={{ alignItems: 'baseline', mt: 0.5, flexWrap: 'wrap' }}>
@@ -377,26 +338,24 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
                 fontWeight: 900,
                 fontFamily: 'monospace',
                 letterSpacing: '-0.8px',
-                color: metricMode === 'price' ? '#00A76F' : 'info.main',
+                color: '#00A76F',
               }}
             >
-              ${metricMode === 'price' ? latestPrice.toFixed(4) : currentData.periodVolumeUsd.toLocaleString('en-US')}{' '}
+              ${activePrice.toFixed(4)}{' '}
               <Typography component="span" variant="body1" sx={{ color: 'text.secondary', fontWeight: 700 }}>
                 USD
               </Typography>
             </Typography>
 
-            {metricMode === 'price' && (
-              <Typography variant="subtitle1" sx={{ color: 'text.secondary', fontWeight: 700, fontFamily: 'monospace' }}>
-                ≈ R$ {latestPriceBrl.toFixed(2)}{' '}
-                <Typography component="span" variant="caption" sx={{ color: 'text.disabled' }}>
-                  BRL
-                </Typography>
+            <Typography variant="subtitle1" sx={{ color: 'text.secondary', fontWeight: 700, fontFamily: 'monospace' }}>
+              ≈ R$ {activePriceBrl.toFixed(2)}{' '}
+              <Typography component="span" variant="caption" sx={{ color: 'text.disabled' }}>
+                BRL
               </Typography>
-            )}
+            </Typography>
 
             <Chip
-              label={`${isPositive ? '+' : ''}${currentData.changePercent.toFixed(2)}% (${period})`}
+              label={`${isPositive ? '+' : ''}${currentData.changePercent.toFixed(2)}% (24H)`}
               size="small"
               color={isPositive ? 'success' : 'error'}
               variant="soft"
@@ -415,7 +374,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
         <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
           <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
             <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontWeight: 700 }}>
-              Mínima ({period})
+              Mínima Recente
             </Typography>
             <Typography variant="subtitle2" sx={{ fontFamily: 'monospace', fontWeight: 800, color: 'text.secondary' }}>
               ${currentData.lowPrice.toFixed(3)}
@@ -424,7 +383,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
 
           <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
             <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontWeight: 700 }}>
-              Máxima ({period})
+              Máxima Recente
             </Typography>
             <Typography variant="subtitle2" sx={{ fontFamily: 'monospace', fontWeight: 800, color: 'text.primary' }}>
               ${currentData.highPrice.toFixed(3)}
@@ -433,15 +392,84 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
         </Stack>
       </Stack>
 
-      {/* 3. GRÁFICO DINÂMICO APEXCHARTS */}
+      {/* 3. MOTOR GRÁFICO (TRADINGVIEW CANDLESTICKS OU APEXCHARTS AREA) */}
       <Box sx={{ mt: 1, mb: 2 }}>
-        <Chart
-          type="area"
-          series={chartSeries}
-          options={chartOptions}
-          sx={{ height: 260 }}
-          slotProps={{ loading: { p: 2.5 } }}
-        />
+        {chartEngine === 'tradingview' ? (
+          <TradingViewTokenChart onPriceChange={(p) => setLivePrice(p)} />
+        ) : (
+          <Box>
+            <Stack direction="row" spacing={1} sx={{ mb: 1.5, justifyContent: 'space-between', alignItems: 'center' }}>
+              {/* Botões de Período da Visão Resumida */}
+              <Box
+                sx={{
+                  display: 'inline-flex',
+                  p: 0.5,
+                  borderRadius: 1,
+                  bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
+                }}
+              >
+                {(['24H', '7D', '30D', '1A'] as TimeframePeriod[]).map((t) => (
+                  <Button
+                    key={t}
+                    size="small"
+                    onClick={() => setPeriod(t)}
+                    variant={period === t ? 'contained' : 'text'}
+                    color={period === t ? 'inherit' : 'inherit'}
+                    sx={{
+                      minWidth: 38,
+                      py: 0.3,
+                      px: 1,
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      textTransform: 'none',
+                      bgcolor: period === t ? 'background.paper' : 'transparent',
+                      color: period === t ? 'text.primary' : 'text.secondary',
+                      boxShadow: period === t ? 1 : 0,
+                    }}
+                  >
+                    {t}
+                  </Button>
+                ))}
+              </Box>
+
+              <Box
+                sx={{
+                  display: 'inline-flex',
+                  p: 0.5,
+                  borderRadius: 1,
+                  bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
+                }}
+              >
+                <Button
+                  size="small"
+                  onClick={() => setMetricMode('price')}
+                  variant={metricMode === 'price' ? 'contained' : 'text'}
+                  color={metricMode === 'price' ? 'primary' : 'inherit'}
+                  sx={{ py: 0.3, px: 1, fontSize: '0.7rem', fontWeight: 700 }}
+                >
+                  Cotação
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => setMetricMode('volume')}
+                  variant={metricMode === 'volume' ? 'contained' : 'text'}
+                  color={metricMode === 'volume' ? 'info' : 'inherit'}
+                  sx={{ py: 0.3, px: 1, fontSize: '0.7rem', fontWeight: 700 }}
+                >
+                  Volume
+                </Button>
+              </Box>
+            </Stack>
+
+            <Chart
+              type="area"
+              series={chartSeries}
+              options={chartOptions}
+              sx={{ height: 260 }}
+              slotProps={{ loading: { p: 2.5 } }}
+            />
+          </Box>
+        )}
       </Box>
 
       {/* 4. KPIS DE ECOSSISTEMA E CUSTÓDIA DO TOKEN NATIVO */}
