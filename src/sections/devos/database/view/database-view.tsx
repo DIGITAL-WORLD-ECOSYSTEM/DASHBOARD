@@ -20,8 +20,8 @@ import { Iconify } from 'src/components/iconify';
 import {
   MOCK_D1_TABLES,
   MOCK_D1_METRICS,
-  MOCK_D1_MIGRATIONS,
   type D1TableMeta,
+  MOCK_D1_MIGRATIONS,
 } from '../../mock-data';
 
 // ----------------------------------------------------------------------
