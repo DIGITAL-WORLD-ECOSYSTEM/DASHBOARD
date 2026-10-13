@@ -49,19 +49,51 @@ pub fn get_vault_status(app: AppHandle) -> Result<VaultStatus, String> {
     db.get_status(false).map_err(|e| e.to_string())
 }
 
+fn is_marginal_whitespace_or_invisible(c: char) -> bool {
+    c.is_whitespace() || c == '\u{FEFF}' || c == '\u{200B}' || c == '\u{00A0}'
+}
+
 #[tauri::command]
 pub fn init_master_password(app: AppHandle, master_password: String) -> Result<bool, String> {
-    if master_password.trim().len() < 8 {
-        return Err("A senha mestre deve possuir pelo menos 8 caracteres para garantir a segurança criptográfica.".to_string());
+    // 1. Encapsulamento IMEDIATO na entrada: qualquer retorno de erro ou término de escopo zera a memória RAM do heap
+    let master_password = zeroize::Zeroizing::new(master_password);
+
+    // 2. Contagem rigorosa de caracteres Unicode (Code Points)
+    let char_count = master_password.chars().count();
+    if char_count < 12 {
+        return Err("VAULT_ERR_INVALID_LENGTH: A senha mestre deve possuir pelo menos 12 caracteres para garantir a segurança criptográfica institucional.".to_string());
+    }
+    if char_count > 128 {
+        return Err("VAULT_ERR_INVALID_LENGTH: A senha mestre não pode exceder 128 caracteres.".to_string());
     }
 
-    let db = get_db(&app)?;
-    if db.get_header().map_err(|e| e.to_string())?.is_some() {
-        return Err("O cofre do DevOS já foi inicializado anteriormente.".to_string());
+    // 3. Verificação estrita de qualquer caractere Unicode Whitespace ou invisível nas extremidades (inclui U+FEFF, U+200B, U+00A0)
+    let starts_with_whitespace = master_password.chars().next().map(is_marginal_whitespace_or_invisible).unwrap_or(false);
+    let ends_with_whitespace = master_password.chars().last().map(is_marginal_whitespace_or_invisible).unwrap_or(false);
+    if starts_with_whitespace || ends_with_whitespace {
+        return Err("VAULT_ERR_MARGINAL_WHITESPACE: A senha mestre não pode conter espaços, quebras de linha ou caracteres invisíveis no início ou no fim.".to_string());
     }
 
-    let header = VaultHeader::new(&master_password).map_err(|e| e.to_string())?;
-    db.save_header(&header).map_err(|e| e.to_string())?;
+    // 4. Obtenção do banco e VERIFICAÇÃO ANTECIPADA (Fail-Fast):
+    // Impede o custo computacional e de memória do Argon2id (64 MB) caso o cofre já esteja inicializado
+    let db = get_db(&app).map_err(|e| format!("VAULT_ERR_STORAGE: Falha ao acessar armazenamento local: {}", e))?;
+    if db.get_header().map_err(|e| format!("VAULT_ERR_STORAGE: {}", e))?.is_some() {
+        return Err("VAULT_ERR_ALREADY_INITIALIZED: O cofre já foi inicializado anteriormente.".to_string());
+    }
+
+    // 5. Criação do envelope canário com KDF pesado (Argon2id + AES-256-GCM) somente se o cofre estiver livre
+    let header = VaultHeader::new(&master_password).map_err(|e| format!("VAULT_ERR_CRYPTO: {}", e))?;
+
+    // 6. Persistência atômica definitiva com bloqueio imediato SQLite (garantia final contra condições de corrida)
+    db.initialize_vault_if_absent(&header).map_err(|e| {
+        match e {
+            crate::storage::local_database::StorageError::AlreadyInitialized => {
+                "VAULT_ERR_ALREADY_INITIALIZED: O cofre já foi inicializado anteriormente.".to_string()
+            }
+            _ => format!("VAULT_ERR_STORAGE: {}", e),
+        }
+    })?;
+
     Ok(true)
 }
 
