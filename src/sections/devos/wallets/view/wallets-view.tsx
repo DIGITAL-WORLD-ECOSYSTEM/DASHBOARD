@@ -3,7 +3,6 @@ import type { DaoWallet, ClientWallet, WalletTarget, DerivedPreview } from '../t
 
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
-import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
@@ -11,12 +10,9 @@ import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { alpha } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import LinearProgress from '@mui/material/LinearProgress';
 import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -25,9 +21,9 @@ import { WalletBridge } from 'src/platform/desktop/wallets/wallet-bridge';
 import { Iconify } from 'src/components/iconify';
 
 import { SUPPORTED_NETWORKS } from '../domain/wallet-policy';
+import { VaultInitCard } from '../components/vault-init-card';
 import { WalletSeedModal } from '../components/wallet-seed-modal';
 import { DaoWalletsTable } from '../components/dao-wallets-table';
-import { VaultInitCard } from '../components/vault-init-card';
 import { WalletCreateCard } from '../components/wallet-create-card';
 import { WalletDetailModal } from '../components/wallet-detail-modal';
 import { ClientWalletsTable } from '../components/client-wallets-table';
