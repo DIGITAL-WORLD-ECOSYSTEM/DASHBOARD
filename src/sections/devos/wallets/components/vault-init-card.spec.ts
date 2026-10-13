@@ -4,6 +4,7 @@ import {
   isWithinCodePointLimit,
   getUnicodeLength,
   hasSpecialSymbol,
+  normalizePassword,
   estimatePasswordStrength,
   SPECIAL_SYMBOL_REGEX,
   MARGINAL_WHITESPACE_REGEX,
@@ -41,7 +42,7 @@ describe('VaultInitCard — Tratamento de Erros, Validações e Conformidade Cri
       const result = sanitizeVaultError(error);
 
       expect(result).toBe(
-        `A senha mestre deve conter entre ${MIN_MASTER_PASSWORD_LENGTH} e ${MAX_MASTER_PASSWORD_LENGTH} caracteres.`
+        `A senha mestra deve conter entre ${MIN_MASTER_PASSWORD_LENGTH} e ${MAX_MASTER_PASSWORD_LENGTH} caracteres.`
       );
     });
 
@@ -50,7 +51,7 @@ describe('VaultInitCard — Tratamento de Erros, Validações e Conformidade Cri
       const result = sanitizeVaultError(error);
 
       expect(result).toBe(
-        'A senha mestre não pode conter espaços, quebras de linha ou caracteres invisíveis no início ou no fim.'
+        'A senha mestra não pode conter espaços, quebras de linha ou caracteres invisíveis no início ou no fim.'
       );
     });
 
@@ -161,19 +162,16 @@ describe('VaultInitCard — Tratamento de Erros, Validações e Conformidade Cri
     });
 
     it('deve diferenciar pontuação na estimativa de robustez sem inflar frases-senha puras', () => {
-      // Frase-senha com 28 caracteres, maiúsculas, minúsculas e espaços, mas SEM pontuação/símbolos
       const passphraseWithoutSymbols = 'Minha Senha Mestre Institucional';
       expect(hasSpecialSymbol(passphraseWithoutSymbols)).toBe(false);
 
       const strengthSemSimbolos = estimatePasswordStrength(passphraseWithoutSymbols);
 
-      // Frase-senha com símbolo especial real no final
       const passphraseWithSymbol = 'Minha Senha Mestre Institucional!';
       expect(hasSpecialSymbol(passphraseWithSymbol)).toBe(true);
 
       const strengthComSimbolos = estimatePasswordStrength(passphraseWithSymbol);
 
-      // A versão com símbolo especial deve ter pontuação maior ou igual
       expect(strengthComSimbolos.score).toBeGreaterThanOrEqual(strengthSemSimbolos.score);
     });
 
@@ -183,6 +181,31 @@ describe('VaultInitCard — Tratamento de Erros, Validações e Conformidade Cri
       expect(strength.score).toBe(20);
       expect(strength.label).toContain('Muito Curta');
       expect(strength.color).toBe('error');
+    });
+  });
+
+  describe('Normalização Canônica Unicode NFKC (normalizePassword)', () => {
+    it('deve normalizar caracteres decompostos (NFD) para forma composta canônica (NFC/NFKC)', () => {
+      // "café" em NFD: 'cafe' + U+0301 (combining acute accent)
+      const nfdWord = 'cafe\u0301';
+      expect(nfdWord.length).toBe(5);
+
+      const normalized = normalizePassword(nfdWord);
+      expect(normalized).toBe('café');
+      expect(normalized.length).toBe(4);
+    });
+
+    it('deve garantir que caracteres acentuados gerem exatamente a mesma sequência binária independentemente da origem', () => {
+      const nfcPass = 'Segura-Café#2026';
+      const nfdPass = 'Segura-Cafe\u0301#2026';
+
+      expect(nfcPass).not.toBe(nfdPass);
+      expect(normalizePassword(nfcPass)).toBe(normalizePassword(nfdPass));
+    });
+
+    it('deve preservar símbolos, pontuações e emojis intactos após a normalização', () => {
+      const complexPass = '🔐Senha_Forte!@#$€§©2026';
+      expect(normalizePassword(complexPass)).toBe(complexPass);
     });
   });
 });
