@@ -3,6 +3,9 @@ import {
   sanitizeVaultError,
   isWithinCodePointLimit,
   getUnicodeLength,
+  hasSpecialSymbol,
+  estimatePasswordStrength,
+  SPECIAL_SYMBOL_REGEX,
   MARGINAL_WHITESPACE_REGEX,
   MIN_MASTER_PASSWORD_LENGTH,
   MAX_MASTER_PASSWORD_LENGTH,
@@ -135,6 +138,51 @@ describe('VaultInitCard — Tratamento de Erros, Validações e Conformidade Cri
     it('deve aceitar senhas limpas com caracteres especiais ou espaços intermediários', () => {
       expect(MARGINAL_WHITESPACE_REGEX.test('Senha Segura Institucional #2026')).toBe(false);
       expect(MARGINAL_WHITESPACE_REGEX.test('Cofre-Forte_987@#$!')).toBe(false);
+    });
+  });
+
+  describe('Detecção Precisa de Símbolos Especiais e Estimativa de Robustez (hasSpecialSymbol & estimatePasswordStrength)', () => {
+    it('deve reconhecer pontuação e símbolos Unicode como símbolos especiais válidos', () => {
+      expect(hasSpecialSymbol('!@#$%^&*()_+')).toBe(true);
+      expect(hasSpecialSymbol('senha-com-hifen')).toBe(true);
+      expect(hasSpecialSymbol('senha_com_underline')).toBe(true);
+      expect(hasSpecialSymbol('€500EuroValor')).toBe(true);
+      expect(hasSpecialSymbol('parágrafo§simbolo')).toBe(true);
+      expect(SPECIAL_SYMBOL_REGEX.test('©2026')).toBe(true);
+    });
+
+    it('NÃO deve considerar espaços comuns, tabs ou quebras de linha como símbolos especiais', () => {
+      expect(hasSpecialSymbol(' ')).toBe(false);
+      expect(hasSpecialSymbol('\t')).toBe(false);
+      expect(hasSpecialSymbol('\n')).toBe(false);
+      expect(hasSpecialSymbol('minha senha mestre institucional')).toBe(false);
+      expect(hasSpecialSymbol('somenteletras')).toBe(false);
+      expect(hasSpecialSymbol('1234567890')).toBe(false);
+    });
+
+    it('deve diferenciar pontuação na estimativa de robustez sem inflar frases-senha puras', () => {
+      // Frase-senha com 28 caracteres, maiúsculas, minúsculas e espaços, mas SEM pontuação/símbolos
+      const passphraseWithoutSymbols = 'Minha Senha Mestre Institucional';
+      expect(hasSpecialSymbol(passphraseWithoutSymbols)).toBe(false);
+
+      const strengthSemSimbolos = estimatePasswordStrength(passphraseWithoutSymbols);
+
+      // Frase-senha com símbolo especial real no final
+      const passphraseWithSymbol = 'Minha Senha Mestre Institucional!';
+      expect(hasSpecialSymbol(passphraseWithSymbol)).toBe(true);
+
+      const strengthComSimbolos = estimatePasswordStrength(passphraseWithSymbol);
+
+      // A versão com símbolo especial deve ter pontuação maior ou igual
+      expect(strengthComSimbolos.score).toBeGreaterThanOrEqual(strengthSemSimbolos.score);
+    });
+
+    it('deve classificar senha curta (< 12) como Muito Curta independentemente de caracteres', () => {
+      const shortPass = 'Senha!123';
+      const strength = estimatePasswordStrength(shortPass);
+      expect(strength.score).toBe(20);
+      expect(strength.label).toContain('Muito Curta');
+      expect(strength.color).toBe('error');
     });
   });
 });
