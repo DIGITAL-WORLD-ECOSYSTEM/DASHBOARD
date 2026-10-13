@@ -1,3 +1,5 @@
+import type { ClientWallet } from '../types/wallet-types';
+
 import { useState } from 'react';
 
 import Box from '@mui/material/Box';
@@ -6,6 +8,7 @@ import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Stack from '@mui/material/Stack';
 import Tooltip from '@mui/material/Tooltip';
+import { alpha } from '@mui/material/styles';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,11 +18,10 @@ import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import CircularProgress from '@mui/material/CircularProgress';
-import { alpha } from '@mui/material/styles';
 
 import { Iconify } from 'src/components/iconify';
 
-import type { ClientWallet } from '../types/wallet-types';
+// ----------------------------------------------------------------------
 
 interface ClientWalletsTableProps {
   wallets: ClientWallet[];
@@ -48,26 +50,41 @@ export function ClientWalletsTable({
 
   return (
     <Card sx={{ border: (theme) => `1px solid ${theme.palette.divider}`, borderRadius: 2 }}>
-      <TableContainer sx={{ overflowX: 'auto' }}>
+      <TableContainer sx={{ overflowX: 'auto', maxHeight: 380 }}>
         <Table size="small">
           <TableHead sx={{ bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04) }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: 800 }}>ID</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>USUÁRIO</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>RÓTULO</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>CUSTÓDIA</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>REDE</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>ENDEREÇO</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>SALDO (RPC)</TableCell>
-              <TableCell sx={{ fontWeight: 800 }}>KYC</TableCell>
-              <TableCell sx={{ fontWeight: 800, textAlign: 'right' }}>AÇÕES</TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem', width: 60 }}>
+                ID
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem' }}>
+                USUARIO
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem' }}>
+                DATA DE CRIAÇÃO
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem' }}>
+                REDE
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem' }}>
+                ENDEREÇO
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem', textAlign: 'right' }}>
+                SALDO
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem', textAlign: 'center' }}>
+                KYC
+              </TableCell>
+              <TableCell sx={{ fontWeight: 800, color: 'text.secondary', fontSize: '0.75rem', textAlign: 'center', width: 100 }}>
+                AÇÕES
+              </TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
             {wallets.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} sx={{ textAlign: 'center', py: 4 }}>
+                <TableCell colSpan={8} sx={{ textAlign: 'center', py: 4 }}>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Nenhuma carteira de associado encontrada para os filtros atuais.
                   </Typography>
@@ -78,75 +95,67 @@ export function ClientWalletsTable({
                 const isLoadingBalance = loadingAddresses.has(wallet.address.toLowerCase());
 
                 return (
-                  <TableRow key={wallet.id} hover>
-                    <TableCell sx={{ fontWeight: 800, color: 'text.secondary' }}>
+                  <TableRow key={wallet.id} hover sx={{ '&:last-child td': { borderBottom: 0 } }}>
+                    {/* 1. ID */}
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 700, color: 'info.main', fontSize: '0.75rem' }}>
                       #{wallet.id}
                     </TableCell>
 
+                    {/* 2. USUARIO */}
                     <TableCell>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 800, fontSize: '0.8rem', color: 'text.primary' }}>
                         {wallet.clientName}
                       </Typography>
-                      <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                        {wallet.clientDoc}
-                      </Typography>
                     </TableCell>
 
+                    {/* 3. DATA DE CRIAÇÃO */}
                     <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {wallet.label}
-                      </Typography>
-                      <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'info.main', fontSize: '0.68rem' }}>
-                        {wallet.derivationPath}
+                      <Typography variant="body2" sx={{ fontSize: '0.78rem', fontWeight: 600, color: 'text.primary' }}>
+                        {wallet.createdAt || 'Registrado'}
                       </Typography>
                     </TableCell>
 
+                    {/* 4. REDE */}
                     <TableCell>
                       <Chip
-                        size="small"
-                        label={wallet.custodyType === 'CUSTODIAL_LOCAL' ? 'Cofre Local' : 'Watch-Only'}
-                        color={wallet.custodyType === 'CUSTODIAL_LOCAL' ? 'success' : 'info'}
-                        variant="outlined"
-                        sx={{ height: 22, fontWeight: 800, fontSize: '0.66rem' }}
-                      />
-                    </TableCell>
-
-                    <TableCell>
-                      <Chip
-                        size="small"
                         label={wallet.network}
+                        size="small"
+                        variant="soft"
                         color="primary"
-                        variant="outlined"
-                        sx={{ height: 22, fontWeight: 700, fontSize: '0.68rem' }}
+                        sx={{ fontSize: '0.68rem', fontWeight: 700 }}
                       />
                     </TableCell>
 
+                    {/* 5. ENDEREÇO */}
                     <TableCell>
                       <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                        <Typography variant="caption" sx={{ fontFamily: 'monospace', fontWeight: 700 }}>
-                          {wallet.address.slice(0, 6)}...{wallet.address.slice(-4)}
+                        <Typography variant="caption" sx={{ fontFamily: 'monospace', color: 'text.primary', fontSize: '0.75rem' }}>
+                          {wallet.address.length > 12
+                            ? `${wallet.address.slice(0, 6)}...${wallet.address.slice(-4)}`
+                            : wallet.address}
                         </Typography>
-                        <Tooltip title={copiedId === wallet.id ? 'Copiado!' : 'Copiar Endereço'}>
+                        <Tooltip title={copiedId === wallet.id ? 'Copiado!' : 'Copiar'}>
                           <IconButton
                             size="small"
                             onClick={() => handleCopy(wallet.id, wallet.address)}
                             sx={{ color: copiedId === wallet.id ? 'success.main' : 'text.secondary' }}
                           >
                             <Iconify
-                              icon={copiedId === wallet.id ? ('solar:check-circle-bold' as any) : ('solar:copy-bold' as any)}
-                              width={16}
+                              icon={(copiedId === wallet.id ? 'solar:check-circle-bold' : 'solar:copy-bold') as any}
+                              width={14}
                             />
                           </IconButton>
                         </Tooltip>
                       </Stack>
                     </TableCell>
 
-                    <TableCell>
+                    {/* 6. SALDO */}
+                    <TableCell sx={{ textAlign: 'right' }}>
                       {isLoadingBalance ? (
-                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                          <CircularProgress size={14} thickness={5} />
-                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                            Consultando RPC...
+                        <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end', alignItems: 'center' }}>
+                          <CircularProgress size={12} thickness={5} />
+                          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>
+                            RPC...
                           </Typography>
                         </Stack>
                       ) : (
@@ -156,6 +165,7 @@ export function ClientWalletsTable({
                             sx={{
                               fontFamily: 'monospace',
                               fontWeight: 800,
+                              fontSize: '0.8rem',
                               color: wallet.balanceStatus === 'Unavailable' ? 'warning.main' : 'success.main',
                             }}
                           >
@@ -170,29 +180,20 @@ export function ClientWalletsTable({
                       )}
                     </TableCell>
 
-                    <TableCell>
+                    {/* 7. KYC */}
+                    <TableCell sx={{ textAlign: 'center' }}>
                       <Chip
+                        label={wallet.kycStatus || 'VERIFIED'}
                         size="small"
-                        label={
-                          wallet.kycStatus === 'VERIFIED'
-                            ? 'Verificado'
-                            : wallet.kycStatus === 'SIMULATED_TEST'
-                            ? 'Simulado'
-                            : 'Não Verificado'
-                        }
-                        color={
-                          wallet.kycStatus === 'VERIFIED'
-                            ? 'success'
-                            : wallet.kycStatus === 'SIMULATED_TEST'
-                            ? 'warning'
-                            : 'default'
-                        }
-                        sx={{ height: 20, fontSize: '0.62rem', fontWeight: 800 }}
+                        color={wallet.kycStatus === 'SIMULATED_TEST' ? 'warning' : 'success'}
+                        variant="soft"
+                        sx={{ fontSize: '0.62rem', fontWeight: 800, height: 20 }}
                       />
                     </TableCell>
 
-                    <TableCell sx={{ textAlign: 'right' }}>
-                      <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end' }}>
+                    {/* 8. AÇÕES */}
+                    <TableCell sx={{ textAlign: 'center' }}>
+                      <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'center' }}>
                         <Tooltip title="Consultar Saldo Real via RPC">
                           <IconButton
                             size="small"
@@ -204,7 +205,7 @@ export function ClientWalletsTable({
                           </IconButton>
                         </Tooltip>
 
-                        <Tooltip title="Inspecionar Custódia & Metadados">
+                        <Tooltip title="Inspecionar Detalhes do Cofre">
                           <IconButton
                             size="small"
                             onClick={() => onSelectWallet(wallet)}
@@ -224,16 +225,16 @@ export function ClientWalletsTable({
       </TableContainer>
 
       <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={wallets.length}
-        rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={(_, newPage) => setPage(newPage)}
+        rowsPerPage={rowsPerPage}
         onRowsPerPageChange={(e) => {
           setRowsPerPage(parseInt(e.target.value, 10));
           setPage(0);
         }}
+        rowsPerPageOptions={[5, 10, 25]}
         labelRowsPerPage="Linhas por página:"
       />
     </Card>
