@@ -34,6 +34,15 @@ export function hasSpecialSymbol(str: string): boolean {
   return SPECIAL_SYMBOL_REGEX.test(str);
 }
 
+/**
+ * Normaliza a senha para a forma canônica de compatibilidade Unicode NFKC.
+ * Garante consistência exata de bytes UTF-8 entre diferentes teclados, sistemas operacionais (macOS NFD vs Linux/Windows NFC)
+ * e métodos de entrada, prevenindo lockouts irreversíveis no cofre criptográfico local.
+ */
+export function normalizePassword(value: string): string {
+  return value.normalize('NFKC');
+}
+
 interface VaultInitCardProps {
   isInitialized: boolean;
   isLoadingStorage?: boolean;
@@ -52,7 +61,7 @@ interface StrengthEvaluation {
  */
 export function isWithinCodePointLimit(value: string, maxLength: number): boolean {
   let count = 0;
-  for (const _char of value) {
+  for (const _ of value) {
     count += 1;
     if (count > maxLength) {
       return false;
@@ -86,10 +95,10 @@ export function sanitizeVaultError(error: unknown): string {
     return 'O cofre do DevOS já está inicializado. A operação foi bloqueada e nenhum cabeçalho existente foi substituído. Utilize o procedimento de acesso ao cofre já configurado.';
   }
   if (raw.includes('VAULT_ERR_INVALID_LENGTH') || /pelo menos 12 caracteres/i.test(raw)) {
-    return `A senha mestre deve conter entre ${MIN_MASTER_PASSWORD_LENGTH} e ${MAX_MASTER_PASSWORD_LENGTH} caracteres.`;
+    return `A senha mestra deve conter entre ${MIN_MASTER_PASSWORD_LENGTH} e ${MAX_MASTER_PASSWORD_LENGTH} caracteres.`;
   }
   if (raw.includes('VAULT_ERR_MARGINAL_WHITESPACE') || /espaços.*extremidades|espaços ou quebras de linha/i.test(raw)) {
-    return 'A senha mestre não pode conter espaços, quebras de linha ou caracteres invisíveis no início ou no fim.';
+    return 'A senha mestra não pode conter espaços, quebras de linha ou caracteres invisíveis no início ou no fim.';
   }
   if (raw.includes('VAULT_ERR_INIT_NOT_CONFIRMED')) {
     return 'Não foi possível confirmar o resultado da inicialização. Verifique o estado do cofre antes de tentar novamente.';
@@ -114,13 +123,20 @@ export function estimatePasswordStrength(pass: string): StrengthEvaluation {
     return { score: 0, label: 'Não informada', color: 'error' };
   }
 
+  if (length < MIN_MASTER_PASSWORD_LENGTH) {
+    return {
+      score: 20,
+      label: `Muito Curta (Mínimo ${MIN_MASTER_PASSWORD_LENGTH} caracteres)`,
+      color: 'error',
+    };
+  }
+
   // Detecção de repetições e sequências triviais conhecidas
   const hasRepeatingChars = /(.)\1{3,}/u.test(pass);
-  const isTrivialSequence = /12345|abcdef|qwerty|password|asppibra|admin/i.test(pass);
+  const isTrivialSequence = /12345|abcdef|qwerty|password|admin/i.test(pass);
 
-  let points = 0;
+  let points = 2;
 
-  if (length >= MIN_MASTER_PASSWORD_LENGTH) points += 2;
   if (length >= 16) points += 2;
 
   // Suporte a alfabetos Unicode (maiúsculas, minúsculas e números)
@@ -131,14 +147,6 @@ export function estimatePasswordStrength(pass: string): StrengthEvaluation {
 
   if (hasRepeatingChars || isTrivialSequence) {
     points = Math.max(1, points - 2);
-  }
-
-  if (length < MIN_MASTER_PASSWORD_LENGTH) {
-    return {
-      score: 20,
-      label: `Muito Curta (Mínimo ${MIN_MASTER_PASSWORD_LENGTH} caracteres)`,
-      color: 'error',
-    };
   }
 
   if (points <= 3) {
@@ -168,6 +176,8 @@ export function VaultInitCard({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isInitializingVault, setIsInitializingVault] = useState(false);
   const [isLocallyInitialized, setIsLocallyInitialized] = useState(false);
+  const [postInitRefreshError, setPostInitRefreshError] = useState(false);
+  const [isRetryingSync, setIsRetryingSync] = useState(false);
 
   const [localAlert, setLocalAlert] = useState<{
     severity: 'error' | 'warning' | 'info' | 'success';
@@ -176,17 +186,25 @@ export function VaultInitCard({
 
   // Trava síncrona contra chamadas concorrentes
   const isSubmittingRef = useRef(false);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Higiene de memória e limpeza reativa caso o cofre seja inicializado
   useEffect(() => {
-    if (isInitialized || isLocallyInitialized) {
+    if (isInitialized || (isLocallyInitialized && !postInitRefreshError)) {
       setInitialMasterPassword('');
       setConfirmMasterPassword('');
       setShowMasterPassword(false);
       setShowConfirmPassword(false);
       setLocalAlert(null);
     }
-  }, [isInitialized, isLocallyInitialized]);
+  }, [isInitialized, isLocallyInitialized, postInitRefreshError]);
 
   // ---------------------------------------------------------------------------
   // 2. Validação Centralizada e Compatível (Unicode Code Points + Whitespace)
@@ -198,7 +216,6 @@ export function VaultInitCard({
     [initialMasterPassword]
   );
 
-  // Desacoplamento estrito de validação de whitespace por campo (P1 - 2 e P1 - 4)
   const passwordHasMarginalWhitespace = useMemo(
     () => MARGINAL_WHITESPACE_REGEX.test(initialMasterPassword),
     [initialMasterPassword]
@@ -219,15 +236,19 @@ export function VaultInitCard({
     [initialMasterPassword]
   );
 
-  const validation = useMemo(() => {
-    const lengthOk =
+  const lengthOk = useMemo(
+    () =>
       passwordLength >= MIN_MASTER_PASSWORD_LENGTH &&
-      passwordLength <= MAX_MASTER_PASSWORD_LENGTH;
+      passwordLength <= MAX_MASTER_PASSWORD_LENGTH,
+    [passwordLength]
+  );
 
+  const validation = useMemo(() => {
     const passwordsMatch = initialMasterPassword === confirmMasterPassword;
     const hasConfirmation = confirmMasterPassword.length > 0;
 
     let errorMessage: string | null = null;
+    let confirmationHelperText: string | undefined;
 
     if (passwordHasMarginalWhitespace || confirmHasMarginalWhitespace) {
       errorMessage = 'A senha mestra não pode conter espaços, quebras de linha ou caracteres invisíveis nas extremidades.';
@@ -239,6 +260,14 @@ export function VaultInitCard({
       errorMessage = 'A confirmação de senha não coincide exatamente com a senha informada.';
     }
 
+    if (confirmHasMarginalWhitespace) {
+      confirmationHelperText = 'Remova espaços, quebras de linha ou caracteres invisíveis';
+    } else if (hasConfirmation && !passwordsMatch) {
+      confirmationHelperText = 'As senhas não coincidem';
+    } else if (!hasConfirmation && lengthOk && !passwordHasMarginalWhitespace) {
+      confirmationHelperText = 'Digite a confirmação da senha mestra para habilitar a inicialização';
+    }
+
     const canSubmit =
       lengthOk &&
       passwordsMatch &&
@@ -248,23 +277,28 @@ export function VaultInitCard({
 
     return {
       canSubmit,
+      lengthOk,
+      hasConfirmation,
       passwordsMatch: !hasConfirmation || passwordsMatch,
       passwordHasMarginalWhitespace,
       confirmHasMarginalWhitespace,
       errorMessage,
+      confirmationHelperText,
     };
   }, [
     initialMasterPassword,
     confirmMasterPassword,
     passwordLength,
+    lengthOk,
     passwordHasMarginalWhitespace,
     confirmHasMarginalWhitespace,
     isInitializingVault,
   ]);
 
-  // Limite estrito na digitação/colagem com interrupção rápida (Anti-DoS sem alocação proporcional)
+  // Limite estrito na digitação/colagem com normalização NFKC e interrupção rápida (Anti-DoS)
   const handlePasswordChange = useCallback((value: string) => {
-    if (!isWithinCodePointLimit(value, MAX_MASTER_PASSWORD_LENGTH)) {
+    const normalized = normalizePassword(value);
+    if (!isWithinCodePointLimit(normalized, MAX_MASTER_PASSWORD_LENGTH)) {
       setLocalAlert({
         severity: 'warning',
         message: `A senha mestra não pode exceder ${MAX_MASTER_PASSWORD_LENGTH} caracteres.`,
@@ -273,11 +307,12 @@ export function VaultInitCard({
     }
     // Remove alerta transitório de limite ao retornar para entrada válida
     setLocalAlert((prev) => (prev?.severity === 'warning' ? null : prev));
-    setInitialMasterPassword(value);
+    setInitialMasterPassword(normalized);
   }, []);
 
   const handleConfirmChange = useCallback((value: string) => {
-    if (!isWithinCodePointLimit(value, MAX_MASTER_PASSWORD_LENGTH)) {
+    const normalized = normalizePassword(value);
+    if (!isWithinCodePointLimit(normalized, MAX_MASTER_PASSWORD_LENGTH)) {
       setLocalAlert({
         severity: 'warning',
         message: `A confirmação de senha não pode exceder ${MAX_MASTER_PASSWORD_LENGTH} caracteres.`,
@@ -286,11 +321,11 @@ export function VaultInitCard({
     }
     // Remove alerta transitório de limite ao retornar para entrada válida
     setLocalAlert((prev) => (prev?.severity === 'warning' ? null : prev));
-    setConfirmMasterPassword(value);
+    setConfirmMasterPassword(normalized);
   }, []);
 
   // ---------------------------------------------------------------------------
-  // 3. Submissão Segura com Verificação Explícita de Confirmação (P1 - 1)
+  // 3. Submissão Segura com Verificação Explícita de Confirmação e Normalização
   // ---------------------------------------------------------------------------
   const handleInitVault = useCallback(
     async (e?: FormEvent) => {
@@ -316,51 +351,154 @@ export function VaultInitCard({
       // FASE 1: Execução Criptográfica no Rust Core (Tauri IPC)
       try {
         const initialized = await WalletBridge.initMasterPassword(initialMasterPassword);
-        // Confirmação explícita de retorno estritamente verdadeiro
         if (initialized !== true) {
           throw new Error('VAULT_ERR_INIT_NOT_CONFIRMED: O motor nativo do cofre não confirmou a inicialização.');
         }
       } catch (err: unknown) {
-        // Reporta o erro real sanitizado sem expor detalhes internos
+        if (!isMountedRef.current) return;
         setLocalAlert({
           severity: 'error',
           message: sanitizeVaultError(err),
         });
+        setShowMasterPassword(false);
+        setShowConfirmPassword(false);
         isSubmittingRef.current = false;
         setIsInitializingVault(false);
         return;
       }
 
       // FASE 2: Pós-inicialização (Proteção de estado local e limpeza de memória)
+      if (!isMountedRef.current) return;
       setIsLocallyInitialized(true);
       setInitialMasterPassword('');
       setConfirmMasterPassword('');
+      setShowMasterPassword(false);
+      setShowConfirmPassword(false);
 
       try {
         await onSuccess();
+        if (isMountedRef.current) {
+          setPostInitRefreshError(false);
+        }
       } catch {
-        setLocalAlert({
-          severity: 'warning',
-          message:
-            'O cofre foi inicializado e selado com sucesso no disco, porém ocorreu uma falha ao atualizar a listagem de carteiras. Por favor, atualize a página.',
-        });
+        if (isMountedRef.current) {
+          setPostInitRefreshError(true);
+        }
       } finally {
-        isSubmittingRef.current = false;
-        setIsInitializingVault(false);
+        if (isMountedRef.current) {
+          isSubmittingRef.current = false;
+          setIsInitializingVault(false);
+        }
       }
     },
     [initialMasterPassword, isInitializingVault, onSuccess, validation]
   );
 
+  const handleRetrySync = useCallback(async () => {
+    if (isRetryingSync) return;
+    setIsRetryingSync(true);
+    try {
+      await onSuccess();
+      if (isMountedRef.current) {
+        setPostInitRefreshError(false);
+      }
+    } catch {
+      // Mantém o estado para nova tentativa
+    } finally {
+      if (isMountedRef.current) {
+        setIsRetryingSync(false);
+      }
+    }
+  }, [isRetryingSync, onSuccess]);
+
   // ---------------------------------------------------------------------------
   // 4. Retorno Condicional APÓS todos os Hooks registrados
   // ---------------------------------------------------------------------------
-  if (isInitialized || isLocallyInitialized || isLoadingStorage) {
+  if ((isInitialized || isLocallyInitialized) && !postInitRefreshError) {
+    return null;
+  }
+
+  if (isLoadingStorage && !postInitRefreshError) {
     return null;
   }
 
   // ---------------------------------------------------------------------------
-  // 5. Interface com Formulário Semântico, Acessibilidade e Controles Estritos
+  // 5. Interface Especial de Alerta caso a Inicialização tenha ocorrido mas a Sincronização falhou (Bug A Fix)
+  // ---------------------------------------------------------------------------
+  if (postInitRefreshError) {
+    return (
+      <Card
+        sx={{
+          p: 3,
+          bgcolor: (theme) => alpha(theme.palette.success.main, 0.05),
+          border: (theme) => `1px solid ${alpha(theme.palette.success.main, 0.4)}`,
+          borderRadius: 2,
+          boxShadow: (theme) => `0 4px 20px 0 ${alpha(theme.palette.success.main, 0.1)}`,
+        }}
+      >
+        <Stack spacing={2}>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'flex-start' }}>
+            <Box
+              sx={{
+                width: 44,
+                height: 44,
+                borderRadius: 1.5,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bgcolor: (theme) => alpha(theme.palette.success.main, 0.15),
+                color: 'success.main',
+                flexShrink: 0,
+                mt: 0.25,
+              }}
+            >
+              <Iconify icon="solar:check-circle-bold" width={28} />
+            </Box>
+            <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
+                  Cofre DevOS Inicializado com Sucesso
+                </Typography>
+                <Chip
+                  label="Cofre Selado no Disco"
+                  size="small"
+                  color="success"
+                  variant="outlined"
+                  sx={{ height: 22, fontSize: '0.72rem', fontWeight: 700 }}
+                />
+              </Stack>
+              <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                A senha mestra foi definida e o cabeçalho canário local foi selado com <strong>Argon2id + AES-256-GCM</strong>.
+                No entanto, ocorreu uma falha ao atualizar a listagem de carteiras na interface. Clique abaixo para sincronizar.
+              </Typography>
+            </Stack>
+          </Stack>
+
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 1 }}>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleRetrySync}
+              disabled={isRetryingSync}
+              startIcon={
+                isRetryingSync ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : (
+                  <Iconify icon="solar:restart-bold" />
+                )
+              }
+              sx={{ textTransform: 'none', fontWeight: 800 }}
+            >
+              {isRetryingSync ? 'Sincronizando...' : 'Tentar Sincronizar Listagem'}
+            </Button>
+          </Box>
+        </Stack>
+      </Card>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // 6. Interface com Formulário Semântico, Acessibilidade e Controles Estritos
   // ---------------------------------------------------------------------------
   return (
     <Card
@@ -405,7 +543,7 @@ export function VaultInitCard({
               />
             </Stack>
             <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
-              Defina a Senha Mestre do Cofre Local para derivar a chave de 256 bits via{' '}
+              Defina a Senha Mestra do Cofre Local para derivar a chave de 256 bits via{' '}
               <strong>Argon2id</strong> e selar o cabeçalho canário local com{' '}
               <strong>AES-256-GCM</strong>. Como a aplicação opera sob custódia local protegida,{' '}
               <em>não existe mecanismo de recuperação caso esta senha seja perdida</em>.
@@ -428,12 +566,15 @@ export function VaultInitCard({
                 required
                 size="small"
                 type={showMasterPassword ? 'text' : 'password'}
-                label="Nova Senha Mestre"
+                label="Nova Senha Mestra"
                 placeholder={`Mínimo ${MIN_MASTER_PASSWORD_LENGTH} caracteres...`}
                 value={initialMasterPassword}
                 onChange={(e) => handlePasswordChange(e.target.value)}
                 disabled={isInitializingVault}
                 autoComplete="new-password"
+                spellCheck={false}
+                autoCapitalize="off"
+                autoCorrect="off"
                 error={validation.passwordHasMarginalWhitespace}
                 helperText={
                   validation.passwordHasMarginalWhitespace
@@ -472,20 +613,17 @@ export function VaultInitCard({
                 required
                 size="small"
                 type={showConfirmPassword ? 'text' : 'password'}
-                label="Confirmar Senha Mestre"
+                label="Confirmar Senha Mestra"
                 placeholder="Repita a senha exatamente..."
                 value={confirmMasterPassword}
                 onChange={(e) => handleConfirmChange(e.target.value)}
                 disabled={isInitializingVault}
                 autoComplete="new-password"
-                error={validation.confirmHasMarginalWhitespace || !validation.passwordsMatch}
-                helperText={
-                  validation.confirmHasMarginalWhitespace
-                    ? 'Remova espaços, quebras de linha ou caracteres invisíveis'
-                    : !validation.passwordsMatch
-                      ? 'As senhas não coincidem'
-                      : undefined
-                }
+                spellCheck={false}
+                autoCapitalize="off"
+                autoCorrect="off"
+                error={validation.confirmHasMarginalWhitespace || (validation.hasConfirmation && !validation.passwordsMatch)}
+                helperText={validation.confirmationHelperText}
                 slotProps={{
                   input: {
                     endAdornment: (
@@ -574,14 +712,14 @@ export function VaultInitCard({
                   <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                     <Iconify
                       icon={
-                        passwordLength >= MIN_MASTER_PASSWORD_LENGTH && passwordLength <= MAX_MASTER_PASSWORD_LENGTH
+                        validation.lengthOk
                           ? 'solar:check-circle-bold'
                           : 'solar:close-circle-bold'
                       }
                       width={14}
                       sx={{
                         color:
-                          passwordLength >= MIN_MASTER_PASSWORD_LENGTH && passwordLength <= MAX_MASTER_PASSWORD_LENGTH
+                          validation.lengthOk
                             ? 'success.main'
                             : 'text.disabled',
                       }}
@@ -590,7 +728,7 @@ export function VaultInitCard({
                       variant="caption"
                       sx={{
                         color:
-                          passwordLength >= MIN_MASTER_PASSWORD_LENGTH && passwordLength <= MAX_MASTER_PASSWORD_LENGTH
+                          validation.lengthOk
                             ? 'text.primary'
                             : 'text.secondary',
                         fontSize: '0.73rem',
@@ -625,7 +763,7 @@ export function VaultInitCard({
                         fontSize: '0.73rem',
                       }}
                     >
-                      Letras e números
+                      Letras e números (Recomendado)
                     </Typography>
                   </Stack>
 
