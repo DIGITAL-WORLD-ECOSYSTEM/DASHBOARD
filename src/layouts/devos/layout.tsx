@@ -32,6 +32,31 @@ type Props = {
 
 const DEVOS_NAV_DATA: NavSectionProps['data'] = [
   {
+    subheader: 'FINANCEIRO',
+    items: [
+      {
+        title: 'Tesouraria',
+        path: paths.devos.dao,
+        icon: <Iconify icon={'solar:shield-star-bold' as any} />,
+      },
+      {
+        title: 'Carteiras',
+        path: paths.devos.wallets,
+        icon: <Iconify icon={'solar:wallet-bold' as any} />,
+      },
+      {
+        title: 'Livro-Razão',
+        path: paths.devos.ledger,
+        icon: <Iconify icon={'solar:book-bookmark-bold' as any} />,
+      },
+      {
+        title: 'Faturas',
+        path: paths.devos.invoices,
+        icon: <Iconify icon={'solar:bill-list-bold' as any} />,
+      },
+    ],
+  },
+  {
     subheader: 'CONTROL PLANE',
     items: [
       {
@@ -43,11 +68,6 @@ const DEVOS_NAV_DATA: NavSectionProps['data'] = [
         title: 'Database',
         path: paths.devos.database,
         icon: <Iconify icon={'solar:database-bold' as any} />,
-      },
-      {
-        title: 'Treasury',
-        path: paths.devos.dao,
-        icon: <Iconify icon={'solar:shield-star-bold' as any} />,
       },
     ],
   },
@@ -87,11 +107,20 @@ function getSectionTitle(pathname: string): string {
   if (pathname === paths.devos.root || pathname === `${paths.devos.root}/`) {
     return 'Observability';
   }
+  if (pathname.startsWith(paths.devos.dao)) {
+    return 'Tesouraria';
+  }
+  if (pathname.startsWith(paths.devos.wallets)) {
+    return 'Carteiras';
+  }
+  if (pathname.startsWith(paths.devos.ledger)) {
+    return 'Livro-Razão';
+  }
+  if (pathname.startsWith(paths.devos.invoices)) {
+    return 'Faturas';
+  }
   if (pathname.startsWith(paths.devos.database)) {
     return 'Database';
-  }
-  if (pathname.startsWith(paths.devos.dao)) {
-    return 'Treasury';
   }
   if (pathname.startsWith(paths.devos.security)) {
     return 'Security';
