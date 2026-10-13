@@ -1,12 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { it, expect, describe } from 'vitest';
+
 import {
-  sanitizeVaultError,
-  isWithinCodePointLimit,
   getUnicodeLength,
   hasSpecialSymbol,
   normalizePassword,
-  estimatePasswordStrength,
+  sanitizeVaultError,
   SPECIAL_SYMBOL_REGEX,
+  isWithinCodePointLimit,
+  estimatePasswordStrength,
   MARGINAL_WHITESPACE_REGEX,
   MIN_MASTER_PASSWORD_LENGTH,
   MAX_MASTER_PASSWORD_LENGTH,
