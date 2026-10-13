@@ -1,30 +1,37 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import type { StoredWallet } from 'src/platform/desktop/wallets/wallet-bridge';
+import type { DaoWallet, ClientWallet, WalletTarget, DerivedPreview } from '../types/wallet-types';
+
+import { useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
+import Chip from '@mui/material/Chip';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { alpha } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import LinearProgress from '@mui/material/LinearProgress';
 import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
-import { alpha } from '@mui/material/styles';
+
+import { WalletBridge } from 'src/platform/desktop/wallets/wallet-bridge';
 
 import { Iconify } from 'src/components/iconify';
-import { WalletBridge, StoredWallet } from 'src/platform/desktop/wallets/wallet-bridge';
 
-import { WalletCreateCard } from '../components/wallet-create-card';
+import { SUPPORTED_NETWORKS } from '../domain/wallet-policy';
 import { WalletSeedModal } from '../components/wallet-seed-modal';
-import { WalletDetailModal } from '../components/wallet-detail-modal';
 import { DaoWalletsTable } from '../components/dao-wallets-table';
+import { VaultInitCard } from '../components/vault-init-card';
+import { WalletCreateCard } from '../components/wallet-create-card';
+import { WalletDetailModal } from '../components/wallet-detail-modal';
 import { ClientWalletsTable } from '../components/client-wallets-table';
 import { WalletMonitoringService } from '../services/wallet-monitoring-service';
-import { SUPPORTED_NETWORKS } from '../domain/wallet-policy';
-import type { DaoWallet, ClientWallet, DerivedPreview, WalletTarget } from '../types/wallet-types';
 
 export function WalletsView() {
   // Tabs: 'dao' ou 'clients'
@@ -50,8 +57,6 @@ export function WalletsView() {
 
   // Estado do Cofre
   const [vaultInitialized, setVaultInitialized] = useState<boolean>(true);
-  const [initialMasterPassword, setInitialMasterPassword] = useState('');
-  const [isInitializingVault, setIsInitializingVault] = useState(false);
 
   // Geração e Pré-visualização
   const [isGenerating, setIsGenerating] = useState(false);
@@ -144,35 +149,15 @@ export function WalletsView() {
     loadStoredWallets();
   }, [loadStoredWallets]);
 
-  // Inicializa o cofre caso ainda não tenha sido definido
-  const handleInitVault = async () => {
-    if (initialMasterPassword.length < 8) {
-      setFeedbackAlert({
-        severity: 'error',
-        message: 'A senha mestre deve conter no mínimo 8 caracteres.',
-      });
-      return;
-    }
-
-    setIsInitializingVault(true);
-    try {
-      await WalletBridge.initMasterPassword(initialMasterPassword);
-      setVaultInitialized(true);
-      setInitialMasterPassword('');
-      setFeedbackAlert({
-        severity: 'success',
-        message: 'Cofre do DevOS inicializado com sucesso no disco local (Argon2id + AES-256-GCM)!',
-      });
-      await loadStoredWallets();
-    } catch (err: any) {
-      setFeedbackAlert({
-        severity: 'error',
-        message: err?.message || 'Falha ao inicializar cofre.',
-      });
-    } finally {
-      setIsInitializingVault(false);
-    }
-  };
+  // Callback acionado após inicialização atômica do cofre (P1 - 6: feedback global persistente)
+  const handleVaultInitSuccess = useCallback(async () => {
+    setFeedbackAlert({
+      severity: 'success',
+      message:
+        'Cofre do DevOS inicializado com sucesso (Argon2id + AES-256-GCM). O cofre local está selado e pronto para custódia segura.',
+    });
+    await loadStoredWallets();
+  }, [loadStoredWallets]);
 
   // Disparo de Geração de Carteiras no Rust Core
   const handleGenerate = async () => {
@@ -385,8 +370,7 @@ export function WalletsView() {
   };
 
   // Filtros aplicados
-  const filteredDaoWallets = useMemo(() => {
-    return daoWallets.filter((w) => {
+  const filteredDaoWallets = useMemo(() => daoWallets.filter((w) => {
       const matchSearch =
         !searchFilter ||
         w.user.toLowerCase().includes(searchFilter.toLowerCase()) ||
@@ -400,11 +384,9 @@ export function WalletsView() {
         w.network.toLowerCase().includes(networkFilter.toLowerCase());
 
       return matchSearch && matchNet;
-    });
-  }, [daoWallets, searchFilter, networkFilter]);
+    }), [daoWallets, searchFilter, networkFilter]);
 
-  const filteredClientWallets = useMemo(() => {
-    return clientWallets.filter((w) => {
+  const filteredClientWallets = useMemo(() => clientWallets.filter((w) => {
       const matchSearch =
         !searchFilter ||
         w.clientName.toLowerCase().includes(searchFilter.toLowerCase()) ||
@@ -419,8 +401,7 @@ export function WalletsView() {
         w.network.toLowerCase().includes(networkFilter.toLowerCase());
 
       return matchSearch && matchNet;
-    });
-  }, [clientWallets, searchFilter, networkFilter]);
+    }), [clientWallets, searchFilter, networkFilter]);
 
   return (
     <Stack spacing={2.5}>
@@ -432,47 +413,11 @@ export function WalletsView() {
       )}
 
       {/* BANNER DE INICIALIZAÇÃO DE COFRE (Caso o cofre ainda não tenha senha mestre) */}
-      {!vaultInitialized && !isLoadingStorage && (
-        <Card
-          sx={{
-            p: 2.5,
-            bgcolor: (theme) => alpha(theme.palette.warning.main, 0.08),
-            border: (theme) => `1px solid ${theme.palette.warning.main}`,
-            borderRadius: 2,
-          }}
-        >
-          <Stack spacing={1.5}>
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Iconify icon={'solar:shield-warning-bold' as any} width={24} sx={{ color: 'warning.main' }} />
-              <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>
-                Inicialização Necessária do Cofre DevOS
-              </Typography>
-            </Stack>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Defina a senha mestre para selar o cabeçalho criptográfico local (Argon2id + AES-256-GCM). Nenhuma carteira poderá ter material secreto persistido sem uma senha mestre autorizada.
-            </Typography>
-            <Stack direction="row" spacing={1.5} sx={{ maxWidth: 500 }}>
-              <TextField
-                fullWidth
-                size="small"
-                type="password"
-                label="Nova Senha Mestre (Mínimo 8 caracteres)"
-                value={initialMasterPassword}
-                onChange={(e) => setInitialMasterPassword(e.target.value)}
-              />
-              <Button
-                variant="contained"
-                color="warning"
-                onClick={handleInitVault}
-                disabled={isInitializingVault || initialMasterPassword.length < 8}
-                sx={{ textTransform: 'none', fontWeight: 800, minWidth: 140 }}
-              >
-                {isInitializingVault ? 'Inicializando...' : 'Definir Senha'}
-              </Button>
-            </Stack>
-          </Stack>
-        </Card>
-      )}
+      <VaultInitCard
+        isInitialized={vaultInitialized}
+        isLoadingStorage={isLoadingStorage}
+        onSuccess={handleVaultInitSuccess}
+      />
 
       {/* FORMULÁRIO DE GERAÇÃO E CUSTÓDIA */}
       <WalletCreateCard
@@ -494,41 +439,120 @@ export function WalletsView() {
         isGenerating={isGenerating}
       />
 
-      {/* CABEÇALHO DAS ABAS E FILTROS */}
+      {/* 2. PAINEL DE MONITORAMENTO COM ABAS: 🏛️ DAO vs 👥 CLIENTES */}
       <Card
         sx={{
-          p: 2,
+          p: 2.25,
           bgcolor: 'background.paper',
-          borderRadius: 2,
           border: (theme) => `1px solid ${theme.palette.divider}`,
+          borderRadius: 2,
         }}
       >
         <Stack spacing={2}>
+          {/* NAVEGAÇÃO ENTRE ABAS SEGREGADAS */}
           <Stack
             direction={{ xs: 'column', md: 'row' }}
-            sx={{ justifyContent: 'space-between', alignItems: { md: 'center' } }}
-            spacing={1.5}
+            spacing={2}
+            sx={{
+              justifyContent: 'space-between',
+              alignItems: { xs: 'flex-start', md: 'center' },
+              borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+              pb: 1,
+            }}
           >
             <Tabs
               value={activeTab}
-              onChange={(_, val) => setActiveTab(val)}
+              onChange={(_, val) => {
+                setActiveTab(val);
+                setSearchFilter('');
+              }}
               sx={{
-                '& .MuiTab-root': { fontWeight: 800, textTransform: 'none', minHeight: 44 },
+                minHeight: 42,
+                '& .MuiTab-root': {
+                  textTransform: 'none',
+                  fontWeight: 800,
+                  fontSize: '0.875rem',
+                  minHeight: 42,
+                  py: 0.5,
+                },
               }}
             >
               <Tab
                 value="dao"
-                label={`Carteiras da DAO (${daoWallets.length})`}
-                icon={<Iconify icon={'solar:shield-bold' as any} width={18} />}
-                iconPosition="start"
+                label={
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <span>🏛️ Carteiras da DAO</span>
+                    <Chip
+                      label={daoWallets.length}
+                      size="small"
+                      variant="soft"
+                      color="primary"
+                      sx={{ height: 20, fontSize: '0.7rem', fontWeight: 800 }}
+                    />
+                  </Stack>
+                }
               />
               <Tab
                 value="clients"
-                label={`Carteiras dos Associados (${clientWallets.length})`}
-                icon={<Iconify icon={'solar:users-group-two-rounded-bold' as any} width={18} />}
-                iconPosition="start"
+                label={
+                  <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                    <span>👥 Carteiras de Clientes</span>
+                    <Chip
+                      label={clientWallets.length}
+                      size="small"
+                      variant="soft"
+                      color="info"
+                      sx={{ height: 20, fontSize: '0.7rem', fontWeight: 800 }}
+                    />
+                  </Stack>
+                }
               />
             </Tabs>
+
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+              {activeTab === 'dao'
+                ? 'Ambiente Institucional • Patrimônio e Caixas Operacionais da DAO'
+                : 'Ambiente de Custódia de Membros • Contas e Recebíveis de Clientes'}
+            </Typography>
+          </Stack>
+
+          {/* BARRA DE PESQUISA, FILTRO DE REDE E ATUALIZAR SALDOS */}
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ alignItems: 'center' }}>
+            <TextField
+              size="small"
+              placeholder={
+                activeTab === 'dao'
+                  ? 'Buscar caixas operacionais da DAO por rótulo ou endereço...'
+                  : 'Buscar associado por nome, CPF ou endereço da carteira...'
+              }
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Iconify icon={'solar:magnifer-linear' as any} width={18} sx={{ color: 'text.secondary' }} />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+              sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}
+            />
+
+            <TextField
+              select
+              size="small"
+              value={networkFilter}
+              onChange={(e) => setNetworkFilter(e.target.value)}
+              sx={{ minWidth: 170, width: { xs: '100%', sm: 'auto' } }}
+            >
+              <MenuItem value="ALL">Todas as Redes</MenuItem>
+              {SUPPORTED_NETWORKS.map((net) => (
+                <MenuItem key={net.id} value={net.name}>
+                  {net.name}
+                </MenuItem>
+              ))}
+            </TextField>
 
             <Button
               variant="outlined"
@@ -542,45 +566,10 @@ export function WalletsView() {
                   <Iconify icon={'solar:refresh-circle-bold' as any} />
                 )
               }
-              sx={{ textTransform: 'none', fontWeight: 700 }}
+              sx={{ textTransform: 'none', fontWeight: 700, height: 38, whiteSpace: 'nowrap' }}
             >
-              {isBatchRefreshing ? 'Consultando RPC...' : 'Atualizar Todos os Saldos'}
+              {isBatchRefreshing ? 'Consultando...' : 'Atualizar Saldos'}
             </Button>
-          </Stack>
-
-          {/* BARRA DE PESQUISA E FILTRO DE REDE */}
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="Pesquisar por endereço, titular, rótulo ou caminho de derivação..."
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Iconify icon={'solar:magnifer-bold' as any} width={18} sx={{ color: 'text.secondary' }} />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={networkFilter}
-              onChange={(e) => setNetworkFilter(e.target.value)}
-              sx={{ minWidth: 200 }}
-            >
-              <MenuItem value="ALL">Todas as Redes</MenuItem>
-              {SUPPORTED_NETWORKS.map((net) => (
-                <MenuItem key={net.id} value={net.name}>
-                  {net.name}
-                </MenuItem>
-              ))}
-            </TextField>
           </Stack>
         </Stack>
       </Card>
