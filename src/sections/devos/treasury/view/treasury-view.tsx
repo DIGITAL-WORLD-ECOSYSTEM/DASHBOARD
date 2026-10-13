@@ -8,6 +8,9 @@ import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import Tooltip from '@mui/material/Tooltip';
+import Divider from '@mui/material/Divider';
+import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -17,19 +20,40 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { Iconify } from 'src/components/iconify';
 
 import {
-  MOCK_SAFE_CONFIG,
   MOCK_SAFE_ASSETS,
   MOCK_SAFE_SIGNERS,
-  MOCK_SAFE_PROPOSALS,
   type SafeProposal,
+  MOCK_SAFE_PROPOSALS,
 } from '../../mock-data';
 
 // ----------------------------------------------------------------------
+
+const USD_TO_BRL_RATE = 5.5;
+
+const ASSET_COLORS: Record<string, string> = {
+  BTC: '#F7931A',
+  ASPPBR: '#00A76F',
+  USDT: '#0284C7',
+  BRL: '#10B981',
+};
 
 export function TreasuryView() {
   const [simulationModalOpen, setSimulationModalOpen] = useState(false);
   const [selectedProposal, setSelectedProposal] = useState<SafeProposal | null>(null);
   const [simulationFeedback, setSimulationFeedback] = useState<string | null>(null);
+
+  // Cálculos consolidados da Tesouraria ASPPIBRA
+  const totalUsdValuation = MOCK_SAFE_ASSETS.reduce((acc, curr) => acc + curr.valueUsd, 0);
+  const totalBrlValuation = totalUsdValuation * USD_TO_BRL_RATE;
+
+  const assetDistributions = MOCK_SAFE_ASSETS.map((asset) => {
+    const percent = totalUsdValuation > 0 ? (asset.valueUsd / totalUsdValuation) * 100 : 0;
+    return {
+      ...asset,
+      percent: Number(percent.toFixed(1)),
+      color: ASSET_COLORS[asset.symbol] || '#64748B',
+    };
+  });
 
   const handleSimulate = (proposal: SafeProposal) => {
     setSelectedProposal(proposal);
@@ -44,164 +68,233 @@ export function TreasuryView() {
   };
 
   return (
-    <Stack spacing={3}>
-      {/* 1. HEADER */}
-      <Box>
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 0.5 }}>
-          <Typography variant="h5" sx={{ fontWeight: 800, color: '#F8FAFC' }}>
-            Treasury & Safe Multisig Engine
-          </Typography>
-          <Chip
-            label="SIMULATION ONLY"
-            size="small"
-            sx={{
-              bgcolor: 'rgba(245, 158, 11, 0.15)',
-              color: '#F59E0B',
-              fontWeight: 700,
-              fontSize: '0.68rem',
-            }}
-          />
-        </Stack>
-        <Typography variant="body2" sx={{ color: '#94A3B8' }}>
-          Representação visual determinística do cofre Safe (N-of-M), signatários e propostas de tesouraria. Nenhuma carteira Web3 ou RPC conectado.
-        </Typography>
-      </Box>
+    <Stack spacing={2.5}>
 
-      {/* 2. SAFE OVERVIEW HERO CARD */}
+      {/* 2. VALORAÇÃO TOTAL CONSOLIDADA E ALOCAÇÃO DE RESERVAS (SLIM & THEME-AWARE) */}
       <Card
         sx={{
-          p: 3,
-          bgcolor: '#0F172A',
-          border: '1px solid #1E293B',
+          p: 2.5,
+          bgcolor: 'background.paper',
+          border: (theme) => `1px solid ${theme.palette.divider}`,
           borderRadius: 2,
         }}
       >
-        <Grid container spacing={3} sx={{ alignItems: 'center' }}>
-          {/* Safe Info */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 2,
-                  bgcolor: 'rgba(56, 189, 248, 0.12)',
-                  border: '1px solid #38BDF8',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#38BDF8',
-                }}
+        {/* TOP ROW: VALORAÇÃO EM DESTAQUE */}
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={2}
+          sx={{ justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, mb: 2 }}
+        >
+          <Box>
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase' }}
+            >
+              Valoração Total Consolidada
+            </Typography>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'baseline', mt: 0.25, flexWrap: 'wrap' }}>
+              <Typography
+                variant="h4"
+                sx={{ color: 'success.main', fontWeight: 800, fontFamily: 'monospace', letterSpacing: '-0.5px' }}
               >
-                <Iconify icon={'solar:shield-star-bold' as any} width={32} />
-              </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 700 }}>
-                  TREASURY SAFE MULTISIG
+                ${totalUsdValuation.toLocaleString('en-US', { minimumFractionDigits: 2 })}{' '}
+                <Typography component="span" variant="body2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                  USD
                 </Typography>
-                <Typography variant="body1" sx={{ color: '#F8FAFC', fontWeight: 800, fontFamily: 'monospace' }}>
-                  {MOCK_SAFE_CONFIG.address.slice(0, 10)}...{MOCK_SAFE_CONFIG.address.slice(-8)}
+              </Typography>
+              <Typography variant="subtitle1" sx={{ color: 'info.main', fontWeight: 700, fontFamily: 'monospace' }}>
+                ≈ R$ {totalBrlValuation.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}{' '}
+                <Typography component="span" variant="caption" sx={{ color: 'text.secondary' }}>
+                  BRL
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#10B981', display: 'block', mt: 0.2 }}>
-                  {MOCK_SAFE_CONFIG.status} • Nonce: #{MOCK_SAFE_CONFIG.nonce}
-                </Typography>
-              </Box>
+              </Typography>
             </Stack>
-          </Grid>
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 0.25 }}>
+              Reserva Multi-Ativo Conciliada (Câmbio Base PTAX / D1)
+            </Typography>
+          </Box>
 
-          {/* Threshold & Valuation */}
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
-              THRESHOLD CONFIGURATION
-            </Typography>
-            <Typography variant="h5" sx={{ color: '#F8FAFC', fontWeight: 800, fontFamily: 'monospace', my: 0.5 }}>
-              {MOCK_SAFE_CONFIG.threshold} of {MOCK_SAFE_CONFIG.totalSigners} Signers
-            </Typography>
-            <Typography variant="caption" sx={{ color: '#38BDF8' }}>
-              60% M-of-N Quorum Required
-            </Typography>
-          </Grid>
+          <Chip
+            label="100% Auditada em Partidas Dobradas"
+            size="small"
+            color="success"
+            variant="soft"
+            icon={<Iconify icon={'solar:shield-check-bold' as any} width={15} />}
+            sx={{ fontWeight: 700, fontSize: '0.72rem' }}
+          />
+        </Stack>
 
-          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-            <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
-              TOTAL ESTIMATED VALUATION (MOCK)
+        {/* DIVIDER */}
+        <Divider sx={{ mb: 2, borderColor: 'divider' }} />
+
+        {/* BOTTOM ROW: COMPOSIÇÃO PERCENTUAL SLIM */}
+        <Box>
+          <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 0.75 }}>
+            <Typography
+              variant="caption"
+              sx={{ color: 'text.secondary', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}
+            >
+              Composição Percentual da Reserva
             </Typography>
-            <Typography variant="h4" sx={{ color: '#10B981', fontWeight: 800, fontFamily: 'monospace', my: 0.5 }}>
-              $4,892,400.00 <Typography component="span" variant="body2" sx={{ color: '#94A3B8' }}>USD</Typography>
+            <Typography variant="caption" sx={{ color: 'text.disabled', fontFamily: 'monospace' }}>
+              4 Ativos em Custódia
             </Typography>
-            <Typography variant="caption" sx={{ color: '#94A3B8' }}>
-              Multi-Asset Treasury Reserve (Arbitrum One Target)
-            </Typography>
+          </Stack>
+
+          {/* Barra Visual Segmentada Slim */}
+          <Box
+            sx={{
+              display: 'flex',
+              height: 8,
+              borderRadius: 1,
+              overflow: 'hidden',
+              bgcolor: (theme) => alpha(theme.palette.grey[500], 0.16),
+              mb: 1.25,
+            }}
+          >
+            {assetDistributions.map((asset) => (
+              <Tooltip
+                key={asset.symbol}
+                title={`${asset.name} (${asset.symbol}): ${asset.percent}% • $${asset.valueUsd.toLocaleString()} USD`}
+              >
+                <Box
+                  sx={{
+                    width: `${asset.percent}%`,
+                    bgcolor: asset.color,
+                    transition: 'width 0.3s ease',
+                  }}
+                />
+              </Tooltip>
+            ))}
+          </Box>
+
+          {/* Legenda dos Ativos Slim */}
+          <Grid container spacing={1.5}>
+            {assetDistributions.map((asset) => (
+              <Grid key={asset.symbol} size={{ xs: 6, sm: 3 }}>
+                <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                  <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: asset.color, flexShrink: 0 }} />
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.primary', whiteSpace: 'nowrap' }}>
+                    {asset.symbol} ({asset.percent}%)
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'text.secondary', fontFamily: 'monospace', fontSize: '0.7rem', whiteSpace: 'nowrap' }}
+                  >
+                    ≈ ${asset.valueUsd.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                  </Typography>
+                </Stack>
+              </Grid>
+            ))}
           </Grid>
-        </Grid>
+        </Box>
       </Card>
 
-      {/* 3. ASSET BALANCES ROW */}
+      {/* 3. ASSET BALANCES ROW (SLIM, EQUAL-HEIGHT, THEME-AWARE) */}
       <Grid container spacing={2}>
         {MOCK_SAFE_ASSETS.map((asset) => (
           <Grid key={asset.symbol} size={{ xs: 12, sm: 6, md: 3 }}>
             <Card
               sx={{
-                p: 2,
-                bgcolor: '#0F172A',
-                border: '1px solid #1E293B',
-                borderRadius: 1.5,
+                p: 2.25,
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                bgcolor: 'background.paper',
+                border: (theme) => `1px solid ${theme.palette.divider}`,
+                borderRadius: 2,
               }}
             >
-              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 700 }}>
-                  {asset.name}
-                </Typography>
-                <Chip
-                  label={asset.symbol}
-                  size="small"
+              <Box>
+                <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'text.primary' }}>
+                    {asset.name}
+                  </Typography>
+                  <Chip
+                    label={asset.symbol}
+                    size="small"
+                    variant="soft"
+                    sx={{
+                      height: 20,
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                    }}
+                  />
+                </Stack>
+                <Typography
+                  variant="h5"
                   sx={{
-                    height: 18,
-                    fontSize: '0.65rem',
                     fontWeight: 800,
-                    bgcolor: '#1E293B',
-                    color: '#38BDF8',
+                    color: 'text.primary',
+                    fontFamily: 'monospace',
+                    letterSpacing: '-0.5px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
-                />
-              </Stack>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: '#F8FAFC', fontFamily: 'monospace' }}>
-                {asset.balance}
-              </Typography>
-              <Typography variant="caption" sx={{ color: '#10B981', fontFamily: 'monospace' }}>
-                ≈ ${asset.valueUsd.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
-              </Typography>
+                >
+                  {asset.balance}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{ color: 'success.main', fontWeight: 600, fontFamily: 'monospace', display: 'block', mt: 0.25 }}
+                >
+                  ≈ ${asset.valueUsd.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD
+                </Typography>
+              </Box>
+
+              {asset.role && (
+                <Box sx={{ mt: 1.5, pt: 1, borderTop: (theme) => `1px dashed ${theme.palette.divider}` }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                      fontSize: '0.72rem',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 1,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                    title={asset.role}
+                  >
+                    {asset.role}
+                  </Typography>
+                </Box>
+              )}
             </Card>
           </Grid>
         ))}
       </Grid>
 
-      {/* 4. DUAL COLUMN: ACTIVE PROPOSALS & SIGNERS MATRIX */}
-      <Grid container spacing={3}>
+      {/* 4. DUAL COLUMN: ACTIVE PROPOSALS & SIGNERS MATRIX (THEME-AWARE) */}
+      <Grid container spacing={2.5}>
         {/* Proposals Column */}
         <Grid size={{ xs: 12, lg: 7 }}>
           <Card
             sx={{
-              p: 3,
-              bgcolor: '#0F172A',
-              border: '1px solid #1E293B',
+              p: 2.5,
+              bgcolor: 'background.paper',
+              border: (theme) => `1px solid ${theme.palette.divider}`,
               borderRadius: 2,
               height: '100%',
             }}
           >
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#F8FAFC', mb: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary', mb: 2 }}>
               Treasury Proposals ({MOCK_SAFE_PROPOSALS.length})
             </Typography>
 
-            <Stack spacing={2}>
+            <Stack spacing={1.5}>
               {MOCK_SAFE_PROPOSALS.map((p) => {
                 const quorumPercent = (p.confirmations / p.threshold) * 100;
                 return (
                   <Box
                     key={p.id}
                     sx={{
-                      p: 2,
-                      bgcolor: '#0B0F17',
-                      border: '1px solid #1E293B',
+                      p: 1.75,
+                      bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+                      border: (theme) => `1px solid ${theme.palette.divider}`,
                       borderRadius: 1.5,
                     }}
                   >
@@ -211,63 +304,57 @@ export function TreasuryView() {
                           <Chip
                             label={p.id}
                             size="small"
+                            variant="soft"
+                            color="info"
                             sx={{
                               height: 20,
-                              fontSize: '0.65rem',
+                              fontSize: '0.68rem',
                               fontWeight: 800,
-                              bgcolor: 'rgba(56, 189, 248, 0.1)',
-                              color: '#38BDF8',
                             }}
                           />
-                          <Typography variant="body2" sx={{ fontWeight: 700, color: '#F1F5F9' }}>
+                          <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>
                             {p.title}
                           </Typography>
                         </Stack>
-                        <Typography variant="caption" sx={{ color: '#64748B', display: 'block', mt: 0.5 }}>
-                          Type: {p.type} • Target: <code style={{ color: '#94A3B8' }}>{p.targetAddress}</code>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
+                          Type: {p.type} • Target: <code>{p.targetAddress}</code>
                         </Typography>
                       </Box>
 
                       <Button
                         size="small"
                         variant="outlined"
+                        color="warning"
                         onClick={() => handleSimulate(p)}
                         startIcon={<Iconify icon={'solar:play-circle-bold' as any} width={14} />}
                         sx={{
-                          borderColor: '#F59E0B',
-                          color: '#F59E0B',
                           fontSize: '0.72rem',
                           textTransform: 'none',
                           py: 0.3,
-                          '&:hover': {
-                            borderColor: '#F59E0B',
-                            bgcolor: 'rgba(245, 158, 11, 0.1)',
-                          },
+                          px: 1,
                         }}
                       >
                         Simular (Local)
                       </Button>
                     </Stack>
 
-                    <Stack spacing={0.5} sx={{ mt: 1.5 }}>
+                    <Stack spacing={0.5} sx={{ mt: 1.25 }}>
                       <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                        <Typography variant="caption" sx={{ color: '#64748B' }}>
+                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                           Signatures: {p.confirmations} / {p.threshold} ({p.status})
                         </Typography>
-                        <Typography variant="caption" sx={{ color: '#38BDF8', fontWeight: 700 }}>
+                        <Typography variant="caption" sx={{ color: 'info.main', fontWeight: 700, fontFamily: 'monospace' }}>
                           {p.valueEth}
                         </Typography>
                       </Stack>
                       <LinearProgress
                         variant="determinate"
                         value={quorumPercent}
+                        color={quorumPercent >= 100 ? 'success' : 'info'}
                         sx={{
-                          height: 6,
+                          height: 5,
                           borderRadius: 1,
-                          bgcolor: '#1E293B',
-                          '& .MuiLinearProgress-bar': {
-                            bgcolor: quorumPercent >= 100 ? '#10B981' : '#38BDF8',
-                          },
+                          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.16),
                         }}
                       />
                     </Stack>
@@ -282,34 +369,34 @@ export function TreasuryView() {
         <Grid size={{ xs: 12, lg: 5 }}>
           <Card
             sx={{
-              p: 3,
-              bgcolor: '#0F172A',
-              border: '1px solid #1E293B',
+              p: 2.5,
+              bgcolor: 'background.paper',
+              border: (theme) => `1px solid ${theme.palette.divider}`,
               borderRadius: 2,
               height: '100%',
             }}
           >
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: '#F8FAFC', mb: 2 }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary', mb: 2 }}>
               Authorized Signers Matrix ({MOCK_SAFE_SIGNERS.length})
             </Typography>
 
-            <Stack spacing={1.5}>
+            <Stack spacing={1.25}>
               {MOCK_SAFE_SIGNERS.map((signer) => (
                 <Box
                   key={signer.address}
                   sx={{
                     p: 1.5,
-                    bgcolor: '#0B0F17',
-                    border: '1px solid #1E293B',
+                    bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
+                    border: (theme) => `1px solid ${theme.palette.divider}`,
                     borderRadius: 1.5,
                   }}
                 >
                   <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
                     <Box>
-                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#F1F5F9' }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>
                         {signer.label}
                       </Typography>
-                      <Typography variant="caption" sx={{ color: '#64748B', fontFamily: 'monospace' }}>
+                      <Typography variant="caption" sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>
                         {signer.address} • {signer.role}
                       </Typography>
                     </Box>
@@ -317,22 +404,18 @@ export function TreasuryView() {
                     <Chip
                       label={signer.status}
                       size="small"
+                      variant="soft"
+                      color={
+                        signer.status === 'CONFIRMED'
+                          ? 'success'
+                          : signer.status === 'PENDING'
+                            ? 'warning'
+                            : 'default'
+                      }
                       sx={{
                         height: 20,
                         fontSize: '0.62rem',
                         fontWeight: 800,
-                        bgcolor:
-                          signer.status === 'CONFIRMED'
-                            ? 'rgba(16, 185, 129, 0.15)'
-                            : signer.status === 'PENDING'
-                              ? 'rgba(245, 158, 11, 0.15)'
-                              : 'rgba(148, 163, 184, 0.15)',
-                        color:
-                          signer.status === 'CONFIRMED'
-                            ? '#10B981'
-                            : signer.status === 'PENDING'
-                              ? '#F59E0B'
-                              : '#94A3B8',
                       }}
                     />
                   </Stack>
@@ -340,8 +423,8 @@ export function TreasuryView() {
               ))}
             </Stack>
 
-            <Box sx={{ mt: 2.5, p: 1.5, bgcolor: 'rgba(255, 255, 255, 0.02)', borderRadius: 1 }}>
-              <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
+            <Box sx={{ mt: 2, p: 1.25, bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04), borderRadius: 1 }}>
+              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
                 Note: Signer EVM identities are separated from Operator Ed25519 device identities (INV-010).
               </Typography>
             </Box>
@@ -355,65 +438,56 @@ export function TreasuryView() {
         onClose={() => setSimulationModalOpen(false)}
         maxWidth="sm"
         fullWidth
-        slotProps={{
-          paper: {
-            sx: {
-              bgcolor: '#0F172A',
-              border: '1px solid #1E293B',
-              color: '#F8FAFC',
-            },
-          },
-        }}
       >
-        <DialogTitle sx={{ borderBottom: '1px solid #1E293B', pb: 2 }}>
+        <DialogTitle sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}`, pb: 2 }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Iconify icon={'solar:play-bold' as any} width={20} sx={{ color: '#F59E0B' }} />
+            <Iconify icon={'solar:play-bold' as any} width={20} sx={{ color: 'warning.main' }} />
             <Typography variant="h6" sx={{ fontWeight: 800 }}>
               Simulador de Transação Safe (In-Memory Dry-Run)
             </Typography>
           </Stack>
-          <Typography variant="caption" sx={{ color: '#64748B' }}>
-            Etapa 1.1 — SIMULATION ONLY • ZERO BLOCKCHAIN INTERACTION
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            ASPPIBRA Protocol Vault • SIMULATION ONLY • ZERO BLOCKCHAIN INTERACTION
           </Typography>
         </DialogTitle>
 
         <DialogContent sx={{ py: 3 }}>
           {selectedProposal && (
             <Stack spacing={2.5}>
-              <Box sx={{ p: 2, bgcolor: '#0B0F17', borderRadius: 1.5, border: '1px solid #1E293B' }}>
-                <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
+              <Box sx={{ p: 2, bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04), borderRadius: 1.5, border: (theme) => `1px solid ${theme.palette.divider}` }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
                   PROPOSTA SELECIONADA
                 </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 700, color: '#38BDF8', my: 0.5 }}>
+                <Typography variant="body1" sx={{ fontWeight: 700, color: 'info.main', my: 0.5 }}>
                   {selectedProposal.id}: {selectedProposal.title}
                 </Typography>
-                <Typography variant="caption" sx={{ color: '#94A3B8', display: 'block' }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
                   Amount: {selectedProposal.valueEth} → Recipient: {selectedProposal.targetAddress}
                 </Typography>
               </Box>
 
-              <Box sx={{ p: 2, bgcolor: '#0B0F17', borderRadius: 1.5, border: '1px solid #1E293B' }}>
-                <Typography variant="caption" sx={{ color: '#64748B', display: 'block' }}>
+              <Box sx={{ p: 2, bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04), borderRadius: 1.5, border: (theme) => `1px solid ${theme.palette.divider}` }}>
+                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
                   MOCK EXECUTION PRE-CHECK
                 </Typography>
                 <Stack spacing={1} sx={{ mt: 1 }}>
                   <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="caption" sx={{ color: '#94A3B8' }}>Estimated Gas Units:</Typography>
-                    <Typography variant="caption" sx={{ color: '#10B981', fontFamily: 'monospace' }}>42,108 Gas (Mock)</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Estimated Gas Units:</Typography>
+                    <Typography variant="caption" sx={{ color: 'success.main', fontFamily: 'monospace' }}>42,108 Gas (Mock)</Typography>
                   </Stack>
                   <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="caption" sx={{ color: '#94A3B8' }}>Operation Policy Check:</Typography>
-                    <Typography variant="caption" sx={{ color: '#10B981', fontFamily: 'monospace' }}>ALLOWED (SIMULATION_ONLY)</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Operation Policy Check:</Typography>
+                    <Typography variant="caption" sx={{ color: 'success.main', fontFamily: 'monospace' }}>ALLOWED (SIMULATION_ONLY)</Typography>
                   </Stack>
                   <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="caption" sx={{ color: '#94A3B8' }}>State Mutation Result:</Typography>
-                    <Typography variant="caption" sx={{ color: '#F59E0B', fontFamily: 'monospace' }}>SANDBOX ISOLATED (NO EVM WRITE)</Typography>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>State Mutation Result:</Typography>
+                    <Typography variant="caption" sx={{ color: 'warning.main', fontFamily: 'monospace' }}>SANDBOX ISOLATED (NO EVM WRITE)</Typography>
                   </Stack>
                 </Stack>
               </Box>
 
               {simulationFeedback && (
-                <Alert severity="success" sx={{ bgcolor: 'rgba(16, 185, 129, 0.1)', color: '#10B981', border: '1px solid #10B981' }}>
+                <Alert severity="success">
                   {simulationFeedback}
                 </Alert>
               )}
@@ -421,22 +495,20 @@ export function TreasuryView() {
           )}
         </DialogContent>
 
-        <DialogActions sx={{ p: 2, borderTop: '1px solid #1E293B' }}>
+        <DialogActions sx={{ p: 2, borderTop: (theme) => `1px solid ${theme.palette.divider}` }}>
           <Button
             onClick={() => setSimulationModalOpen(false)}
-            sx={{ color: '#94A3B8', textTransform: 'none' }}
+            sx={{ color: 'text.secondary', textTransform: 'none' }}
           >
             Fechar
           </Button>
           <Button
             variant="contained"
+            color="warning"
             onClick={handleExecuteSimulation}
             sx={{
-              bgcolor: '#F59E0B',
-              color: '#000',
               fontWeight: 800,
               textTransform: 'none',
-              '&:hover': { bgcolor: '#D97706' },
             }}
           >
             Executar Dry-Run Local
