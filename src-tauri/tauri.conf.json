@@ -21,8 +21,8 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self';",
-      "devCsp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ws://localhost:8080 http://localhost:8080;"
+      "csp": "default-src 'self'; frame-src 'self' https://s.tradingview.com https://www.tradingview.com; script-src 'self' 'unsafe-inline' https://s.tradingview.com https://s3.tradingview.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.tradingview.com; font-src 'self' data:; connect-src 'self' https://*.tradingview.com wss://*.tradingview.com;",
+      "devCsp": "default-src 'self'; frame-src 'self' https://s.tradingview.com https://www.tradingview.com; script-src 'self' 'unsafe-inline' https://s.tradingview.com https://s3.tradingview.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.tradingview.com; font-src 'self' data:; connect-src 'self' ws://localhost:8080 http://localhost:8080 https://*.tradingview.com wss://*.tradingview.com;"
     }
   },
   "bundle": {
