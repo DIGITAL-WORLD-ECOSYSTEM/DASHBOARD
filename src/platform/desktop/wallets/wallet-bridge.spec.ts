@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { it, vi, expect, describe, afterEach, beforeEach } from 'vitest';
+
 import { WalletBridge, isTauriDesktop } from './wallet-bridge';
 
 describe('WalletBridge — IPC Native Contract & Return Correspondence', () => {
