@@ -20,6 +20,8 @@ pub enum StorageError {
     NotFound(String),
     #[error("Invalid data: {0}")]
     InvalidData(String),
+    #[error("O cofre do DevOS já foi inicializado anteriormente.")]
+    AlreadyInitialized,
 }
 
 
@@ -101,14 +103,30 @@ impl LocalDatabase {
         Ok(header)
     }
 
-    /// Salva o cabeçalho do cofre com suporte a transação atômica
+    /// Salva o cabeçalho do cofre de forma segura (delega obrigatoriamente para initialize_vault_if_absent)
     pub fn save_header(&self, header: &VaultHeader) -> Result<(), StorageError> {
-        let mut conn = self.get_connection()?;
-        let tx = conn.transaction()?;
-        let canary_json = serde_json::to_string(&header.canary_envelope)?;
+        self.initialize_vault_if_absent(header)
+    }
 
+    /// Inicializa o cabeçalho do cofre com atomicidade comprovada (TransactionBehavior::Immediate).
+    /// Rejeita concorrentemente qualquer tentativa duplicada e impede sobrescrita do cabeçalho existente.
+    pub fn initialize_vault_if_absent(&self, header: &VaultHeader) -> Result<(), StorageError> {
+        let mut conn = self.get_connection()?;
+        let tx = conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+
+        let existing: Option<u32> = tx.query_row(
+            "SELECT id FROM vault_header WHERE id = 1",
+            [],
+            |row| row.get(0)
+        ).optional()?;
+
+        if existing.is_some() {
+            return Err(StorageError::AlreadyInitialized);
+        }
+
+        let canary_json = serde_json::to_string(&header.canary_envelope)?;
         tx.execute(
-            "INSERT OR REPLACE INTO vault_header (id, version, canary_envelope, created_at) VALUES (1, ?1, ?2, ?3)",
+            "INSERT INTO vault_header (id, version, canary_envelope, created_at) VALUES (1, ?1, ?2, ?3)",
             params![header.version, canary_json, header.created_at],
         )?;
 
@@ -548,5 +566,93 @@ mod tests {
 
         let _ = fs::remove_dir_all(test_dir);
         let _ = fs::remove_dir_all(restore_dir);
+    }
+
+    #[test]
+    fn test_atomic_initialize_vault_if_absent_prevents_overwrite() {
+        let test_dir = std::env::temp_dir().join(format!("devos_atomic_vault_{}", rand::random::<u32>()));
+        let db = LocalDatabase::new(test_dir.clone());
+        let conn = db.get_connection().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS vault_header (id INTEGER PRIMARY KEY, version INTEGER NOT NULL, canary_envelope TEXT NOT NULL, created_at TEXT NOT NULL);"
+        ).unwrap();
+        drop(conn);
+
+        let header1 = VaultHeader::new("InitialMasterPassword123!").expect("Header 1 válido");
+        let header2 = VaultHeader::new("AttackerOrOverwritePassword456!").expect("Header 2 válido");
+
+        // Primeira chamada deve inicializar com sucesso
+        let first_res = db.initialize_vault_if_absent(&header1);
+        assert!(first_res.is_ok(), "Primeira inicialização deve ter sucesso");
+
+        // Segunda chamada concorrente/duplicada deve falhar categoricamente
+        let second_res = db.initialize_vault_if_absent(&header2);
+        assert!(second_res.is_err(), "Segunda inicialização deve ser rejeitada");
+        match second_res {
+            Err(StorageError::AlreadyInitialized) => {}
+            _ => panic!("Esperado StorageError::AlreadyInitialized"),
+        }
+
+        // Garante que o header persistido permanece sendo exatamente o primeiro (sem sobrescrita)
+        let loaded = db.get_header().unwrap().expect("Header deve existir");
+        assert!(loaded.verify_password("InitialMasterPassword123!"));
+        assert!(!loaded.verify_password("AttackerOrOverwritePassword456!"));
+
+        let _ = fs::remove_dir_all(test_dir);
+    }
+
+    #[test]
+    fn test_concurrent_multithread_initialization_race() {
+        use std::sync::{Arc, Barrier};
+        use std::thread;
+
+        let test_dir = std::env::temp_dir().join(format!("devos_concurrency_race_{}", rand::random::<u32>()));
+        let db = LocalDatabase::new(test_dir.clone());
+        let conn = db.get_connection().unwrap();
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS vault_header (id INTEGER PRIMARY KEY, version INTEGER NOT NULL, canary_envelope TEXT NOT NULL, created_at TEXT NOT NULL);"
+        ).unwrap();
+        drop(conn);
+
+        const THREAD_COUNT: usize = 10;
+        let barrier = Arc::new(Barrier::new(THREAD_COUNT));
+        let mut handles = Vec::new();
+
+        for i in 0..THREAD_COUNT {
+            let b = Arc::clone(&barrier);
+            let dir = test_dir.clone();
+            let thread_password = format!("PasswordForThread{}!Secure123", i);
+
+            let handle = thread::spawn(move || {
+                let thread_db = LocalDatabase::new(dir);
+                let header = VaultHeader::new(&thread_password).expect("Header gerado");
+                // Todas as 10 threads aguardam aqui e disparam juntas
+                b.wait();
+                let res = thread_db.initialize_vault_if_absent(&header);
+                (i, thread_password, res.is_ok())
+            });
+
+            handles.push(handle);
+        }
+
+        let mut success_count = 0;
+        let mut winning_password = String::new();
+
+        for h in handles {
+            let (_i, pwd, is_ok) = h.join().unwrap();
+            if is_ok {
+                success_count += 1;
+                winning_password = pwd;
+            }
+        }
+
+        // Exatamente UMA thread pode ter sucesso
+        assert_eq!(success_count, 1, "Exatamente UMA thread concorrente deve ter sucesso na inicialização atômica");
+
+        // O cabeçalho salvo no disco deve corresponder exatamente à thread vencedora
+        let final_header = db.get_header().unwrap().expect("Header persistido");
+        assert!(final_header.verify_password(&winning_password), "Header deve ser da thread vencedora");
+
+        let _ = fs::remove_dir_all(test_dir);
     }
 }
