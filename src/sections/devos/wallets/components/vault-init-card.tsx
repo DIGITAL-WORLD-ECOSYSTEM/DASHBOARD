@@ -1,4 +1,7 @@
-import { useRef, useMemo, useState, useCallback } from 'react';
+import type { FormEvent } from 'react';
+import type { IconifyName } from 'src/components/iconify';
+
+import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -23,6 +26,13 @@ export const MAX_MASTER_PASSWORD_LENGTH = 128;
 // Cobre rigorosamente espaços, tabs, quebras de linha e caracteres invisíveis:
 // \s (espaços comuns, tabs, LF, CR), \u0085 (Next Line), \uFEFF (BOM), \u200B (Zero-Width Space) e \u00A0 (NBSP)
 export const MARGINAL_WHITESPACE_REGEX = /^[\s\u0085\uFEFF\u200B\u00A0]|[\s\u0085\uFEFF\u200B\u00A0]$/;
+
+// Regex de pontuações e símbolos Unicode estritos (impede que espaços comuns ou quebras de linha contem como símbolos)
+export const SPECIAL_SYMBOL_REGEX = /[\p{P}\p{S}]/u;
+
+export function hasSpecialSymbol(str: string): boolean {
+  return SPECIAL_SYMBOL_REGEX.test(str);
+}
 
 interface VaultInitCardProps {
   isInitialized: boolean;
@@ -95,10 +105,10 @@ export function sanitizeVaultError(error: unknown): string {
 }
 
 /**
- * Avalia de forma transparente a robustez da senha informada com suporte nativo a Unicode (\p{L}, \p{N}).
+ * Avalia de forma transparente a robustez da senha informada com suporte nativo a Unicode (\p{L}, \p{N}, \p{P}, \p{S}).
  * Nota: Isto é um estimador visual para guiar o operador, não uma prova formal de entropia.
  */
-function estimatePasswordStrength(pass: string): StrengthEvaluation {
+export function estimatePasswordStrength(pass: string): StrengthEvaluation {
   const length = getUnicodeLength(pass);
   if (length === 0) {
     return { score: 0, label: 'Não informada', color: 'error' };
@@ -113,10 +123,11 @@ function estimatePasswordStrength(pass: string): StrengthEvaluation {
   if (length >= MIN_MASTER_PASSWORD_LENGTH) points += 2;
   if (length >= 16) points += 2;
 
-  // Suporte a alfabetos Unicode (maiúsculas, minúsculas, números e símbolos)
+  // Suporte a alfabetos Unicode (maiúsculas, minúsculas e números)
   if (/\p{Ll}/u.test(pass) && /\p{Lu}/u.test(pass)) points += 1;
   if (/\p{N}/u.test(pass)) points += 1;
-  if (/[^\p{L}\p{N}]/u.test(pass)) points += 2;
+  // Símbolos especiais reais (pontuação e símbolos Unicode - exclui espaços)
+  if (hasSpecialSymbol(pass)) points += 2;
 
   if (hasRepeatingChars || isTrivialSequence) {
     points = Math.max(1, points - 2);
@@ -156,6 +167,7 @@ export function VaultInitCard({
   const [showMasterPassword, setShowMasterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isInitializingVault, setIsInitializingVault] = useState(false);
+  const [isLocallyInitialized, setIsLocallyInitialized] = useState(false);
 
   const [localAlert, setLocalAlert] = useState<{
     severity: 'error' | 'warning' | 'info' | 'success';
@@ -164,6 +176,17 @@ export function VaultInitCard({
 
   // Trava síncrona contra chamadas concorrentes
   const isSubmittingRef = useRef(false);
+
+  // Higiene de memória e limpeza reativa caso o cofre seja inicializado
+  useEffect(() => {
+    if (isInitialized || isLocallyInitialized) {
+      setInitialMasterPassword('');
+      setConfirmMasterPassword('');
+      setShowMasterPassword(false);
+      setShowConfirmPassword(false);
+      setLocalAlert(null);
+    }
+  }, [isInitialized, isLocallyInitialized]);
 
   // ---------------------------------------------------------------------------
   // 2. Validação Centralizada e Compatível (Unicode Code Points + Whitespace)
@@ -184,6 +207,16 @@ export function VaultInitCard({
   const confirmHasMarginalWhitespace = useMemo(
     () => MARGINAL_WHITESPACE_REGEX.test(confirmMasterPassword),
     [confirmMasterPassword]
+  );
+
+  const hasLettersAndNumbers = useMemo(
+    () => /\p{N}/u.test(initialMasterPassword) && /\p{L}/u.test(initialMasterPassword),
+    [initialMasterPassword]
+  );
+
+  const hasSpecialChar = useMemo(
+    () => hasSpecialSymbol(initialMasterPassword),
+    [initialMasterPassword]
   );
 
   const validation = useMemo(() => {
@@ -229,7 +262,7 @@ export function VaultInitCard({
     isInitializingVault,
   ]);
 
-  // Limite estrito na digitação/colagem com interrupção rápida (P1 - 3: Anti-DoS sem alocação proporcional)
+  // Limite estrito na digitação/colagem com interrupção rápida (Anti-DoS sem alocação proporcional)
   const handlePasswordChange = useCallback((value: string) => {
     if (!isWithinCodePointLimit(value, MAX_MASTER_PASSWORD_LENGTH)) {
       setLocalAlert({
@@ -238,6 +271,8 @@ export function VaultInitCard({
       });
       return;
     }
+    // Remove alerta transitório de limite ao retornar para entrada válida
+    setLocalAlert((prev) => (prev?.severity === 'warning' ? null : prev));
     setInitialMasterPassword(value);
   }, []);
 
@@ -249,6 +284,8 @@ export function VaultInitCard({
       });
       return;
     }
+    // Remove alerta transitório de limite ao retornar para entrada válida
+    setLocalAlert((prev) => (prev?.severity === 'warning' ? null : prev));
     setConfirmMasterPassword(value);
   }, []);
 
@@ -256,7 +293,7 @@ export function VaultInitCard({
   // 3. Submissão Segura com Verificação Explícita de Confirmação (P1 - 1)
   // ---------------------------------------------------------------------------
   const handleInitVault = useCallback(
-    async (e?: React.FormEvent) => {
+    async (e?: FormEvent) => {
       if (e) {
         e.preventDefault();
       }
@@ -279,7 +316,7 @@ export function VaultInitCard({
       // FASE 1: Execução Criptográfica no Rust Core (Tauri IPC)
       try {
         const initialized = await WalletBridge.initMasterPassword(initialMasterPassword);
-        // P1 - 1: Confirmação explícita de retorno estritamente verdadeiro
+        // Confirmação explícita de retorno estritamente verdadeiro
         if (initialized !== true) {
           throw new Error('VAULT_ERR_INIT_NOT_CONFIRMED: O motor nativo do cofre não confirmou a inicialização.');
         }
@@ -294,13 +331,14 @@ export function VaultInitCard({
         return;
       }
 
-      // FASE 2: Pós-inicialização (Limpeza de memória na UI e atualização de tela)
+      // FASE 2: Pós-inicialização (Proteção de estado local e limpeza de memória)
+      setIsLocallyInitialized(true);
       setInitialMasterPassword('');
       setConfirmMasterPassword('');
 
       try {
         await onSuccess();
-      } catch (postErr: unknown) {
+      } catch {
         setLocalAlert({
           severity: 'warning',
           message:
@@ -317,7 +355,7 @@ export function VaultInitCard({
   // ---------------------------------------------------------------------------
   // 4. Retorno Condicional APÓS todos os Hooks registrados
   // ---------------------------------------------------------------------------
-  if (isInitialized || isLoadingStorage) {
+  if (isInitialized || isLocallyInitialized || isLoadingStorage) {
     return null;
   }
 
@@ -351,7 +389,7 @@ export function VaultInitCard({
               mt: 0.25,
             }}
           >
-            <Iconify icon={'solar:shield-warning-bold' as any} width={28} />
+            <Iconify icon={'solar:shield-warning-bold' as IconifyName} width={28} />
           </Box>
           <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
             <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
@@ -387,6 +425,7 @@ export function VaultInitCard({
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ alignItems: 'flex-start' }}>
               <TextField
                 fullWidth
+                required
                 size="small"
                 type={showMasterPassword ? 'text' : 'password'}
                 label="Nova Senha Mestre"
@@ -411,13 +450,14 @@ export function VaultInitCard({
                           edge="end"
                           size="small"
                           aria-label={showMasterPassword ? 'Ocultar senha mestra' : 'Mostrar senha mestra'}
+                          aria-pressed={showMasterPassword}
                           disabled={isInitializingVault}
                         >
                           <Iconify
                             icon={
                               showMasterPassword
-                                ? ('solar:eye-bold' as any)
-                                : ('solar:eye-closed-bold' as any)
+                                ? 'solar:eye-bold'
+                                : 'solar:eye-closed-bold'
                             }
                           />
                         </IconButton>
@@ -429,6 +469,7 @@ export function VaultInitCard({
 
               <TextField
                 fullWidth
+                required
                 size="small"
                 type={showConfirmPassword ? 'text' : 'password'}
                 label="Confirmar Senha Mestre"
@@ -459,13 +500,14 @@ export function VaultInitCard({
                               ? 'Ocultar confirmação de senha'
                               : 'Mostrar confirmação de senha'
                           }
+                          aria-pressed={showConfirmPassword}
                           disabled={isInitializingVault}
                         >
                           <Iconify
                             icon={
                               showConfirmPassword
-                                ? ('solar:eye-bold' as any)
-                                : ('solar:eye-closed-bold' as any)
+                                ? 'solar:eye-bold'
+                                : 'solar:eye-closed-bold'
                             }
                           />
                         </IconButton>
@@ -484,7 +526,7 @@ export function VaultInitCard({
                   isInitializingVault ? (
                     <CircularProgress size={16} color="inherit" />
                   ) : (
-                    <Iconify icon={'solar:lock-keyhole-minimalistic-bold' as any} />
+                    <Iconify icon={'solar:lock-keyhole-minimalistic-bold' as IconifyName} />
                   )
                 }
                 sx={{
@@ -561,14 +603,14 @@ export function VaultInitCard({
                   <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                     <Iconify
                       icon={
-                        /\p{N}/u.test(initialMasterPassword) && /\p{L}/u.test(initialMasterPassword)
+                        hasLettersAndNumbers
                           ? 'solar:check-circle-bold'
                           : 'solar:close-circle-bold'
                       }
                       width={14}
                       sx={{
                         color:
-                          /\p{N}/u.test(initialMasterPassword) && /\p{L}/u.test(initialMasterPassword)
+                          hasLettersAndNumbers
                             ? 'success.main'
                             : 'text.disabled',
                       }}
@@ -577,7 +619,7 @@ export function VaultInitCard({
                       variant="caption"
                       sx={{
                         color:
-                          /\p{N}/u.test(initialMasterPassword) && /\p{L}/u.test(initialMasterPassword)
+                          hasLettersAndNumbers
                             ? 'text.primary'
                             : 'text.secondary',
                         fontSize: '0.73rem',
@@ -590,13 +632,13 @@ export function VaultInitCard({
                   <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
                     <Iconify
                       icon={
-                        /[^\p{L}\p{N}]/u.test(initialMasterPassword)
+                        hasSpecialChar
                           ? 'solar:check-circle-bold'
                           : 'solar:info-circle-bold'
                       }
                       width={14}
                       sx={{
-                        color: /[^\p{L}\p{N}]/u.test(initialMasterPassword)
+                        color: hasSpecialChar
                           ? 'success.main'
                           : 'text.disabled',
                       }}
@@ -604,7 +646,7 @@ export function VaultInitCard({
                     <Typography
                       variant="caption"
                       sx={{
-                        color: /[^\p{L}\p{N}]/u.test(initialMasterPassword)
+                        color: hasSpecialChar
                           ? 'text.primary'
                           : 'text.secondary',
                         fontSize: '0.73rem',
