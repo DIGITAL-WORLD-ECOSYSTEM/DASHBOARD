@@ -37,7 +37,7 @@ interface TimeframeData {
 export const TOKEN_TIMEFRAME_DATA: Record<TimeframePeriod, TimeframeData> = {
   '24H': {
     categories: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', 'Agora'],
-    prices: [0.612, 0.620, 0.615, 0.628, 0.631, 0.629, 0.638, 0.642, 0.6355],
+    prices: [0.612, 0.62, 0.615, 0.628, 0.631, 0.629, 0.638, 0.642, 0.6355],
     volumes: [12400, 15800, 9200, 24100, 18900, 14200, 26800, 19500, 7350],
     changePercent: 3.84,
     highPrice: 0.642,
@@ -46,7 +46,7 @@ export const TOKEN_TIMEFRAME_DATA: Record<TimeframePeriod, TimeframeData> = {
   },
   '7D': {
     categories: ['07 Out', '08 Out', '09 Out', '10 Out', '11 Out', '12 Out', '13 Out'],
-    prices: [0.585, 0.595, 0.610, 0.605, 0.620, 0.630, 0.6355],
+    prices: [0.585, 0.595, 0.61, 0.605, 0.62, 0.63, 0.6355],
     volumes: [85000, 112000, 98000, 145000, 162000, 148000, 142100],
     changePercent: 8.63,
     highPrice: 0.6355,
@@ -55,11 +55,11 @@ export const TOKEN_TIMEFRAME_DATA: Record<TimeframePeriod, TimeframeData> = {
   },
   '30D': {
     categories: ['14 Set', '19 Set', '24 Set', '29 Set', '04 Out', '09 Out', '13 Out'],
-    prices: [0.540, 0.560, 0.550, 0.580, 0.605, 0.625, 0.6355],
+    prices: [0.54, 0.56, 0.55, 0.58, 0.605, 0.625, 0.6355],
     volumes: [380000, 420000, 510000, 490000, 580000, 520000, 520000],
     changePercent: 17.69,
     highPrice: 0.6355,
-    lowPrice: 0.540,
+    lowPrice: 0.54,
     periodVolumeUsd: 3420000,
   },
   '1A': {
@@ -88,7 +88,6 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
   const currentData = TOKEN_TIMEFRAME_DATA[period];
   const activePrice = chartEngine === 'tradingview' ? livePrice : currentData.prices[currentData.prices.length - 1];
   const activePriceBrl = activePrice * USD_TO_BRL_RATE;
-  const isPositive = currentData.changePercent >= 0;
 
   const marketCapUsd = TOTAL_TOKEN_SUPPLY * activePrice;
   const vaultReserveUsd = VAULT_RESERVE_SUPPLY * activePrice;
@@ -186,7 +185,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
   return (
     <Card
       sx={{
-        p: 2.5,
+        p: 2,
         bgcolor: 'background.paper',
         border: (t) => `1px solid ${t.palette.divider}`,
         borderRadius: 2,
@@ -194,22 +193,22 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
       }}
       {...other}
     >
-      {/* 1. CABEÇALHO DO TOKEN COM IDENTIDADE E SELEÇÃO DE MOTOR DE GRÁFICO */}
+      {/* 1. CABEÇALHO COMPACTO E ELEGANTE DO TOKEN */}
       <Stack
         direction={{ xs: 'column', md: 'row' }}
         spacing={2}
         sx={{
           justifyContent: 'space-between',
           alignItems: { xs: 'flex-start', md: 'center' },
-          mb: 2.5,
+          mb: 1.5,
         }}
       >
-        {/* Identidade do Token Nativo */}
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+        {/* Identidade e Cotação Instantânea */}
+        <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
           <Box
             sx={{
-              width: 44,
-              height: 44,
+              width: 36,
+              height: 36,
               borderRadius: '50%',
               bgcolor: (t) => alpha('#00A76F', 0.12),
               border: '1.5px solid #00A76F',
@@ -220,50 +219,65 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
               flexShrink: 0,
             }}
           >
-            <Iconify icon={'solar:shield-star-bold' as any} width={26} />
+            <Iconify icon={'solar:shield-star-bold' as any} width={20} />
           </Box>
 
           <Box>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
-              <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary', letterSpacing: '-0.2px' }}>
-                ASPPIBRA
+              <Typography variant="subtitle1" sx={{ fontWeight: 800, color: 'text.primary', letterSpacing: '-0.2px' }}>
+                ASPPIBRA (ASPPBR)
               </Typography>
               <Chip
-                label="ASPPBR"
+                label="Arbitrum One"
                 size="small"
-                sx={{
-                  bgcolor: (t) => alpha('#00A76F', 0.14),
-                  color: '#00A76F',
-                  fontWeight: 800,
-                  fontSize: '0.72rem',
-                  height: 22,
-                }}
+                variant="outlined"
+                sx={{ fontWeight: 600, fontSize: '0.68rem', height: 20 }}
               />
               <Chip
-                label="Token Nativo de Governança"
+                label="Governança"
                 size="small"
                 color="success"
                 variant="soft"
-                sx={{ fontWeight: 700, fontSize: '0.68rem', height: 22 }}
-              />
-              <Chip
-                label="Arbitrum One L2"
-                size="small"
-                variant="outlined"
-                sx={{ fontWeight: 600, fontSize: '0.68rem', height: 22 }}
+                sx={{ fontWeight: 700, fontSize: '0.68rem', height: 20 }}
               />
             </Stack>
-            <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.25 }}>
-              Monitoramento oficial via TradingView Canvas Engine & DEX Uniswap Pool
+          </Box>
+
+          {/* Badge de Preço Atual Rápido */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: 0.75,
+              ml: { xs: 0, sm: 1 },
+              px: 1.25,
+              py: 0.35,
+              borderRadius: 1,
+              bgcolor: (t) => alpha(t.palette.grey[500], 0.06),
+              border: (t) => `1px solid ${alpha(t.palette.divider, 0.6)}`,
+            }}
+          >
+            <Typography variant="subtitle1" sx={{ fontWeight: 900, color: '#00A76F', fontFamily: 'monospace' }}>
+              ${activePrice.toFixed(4)} USD
             </Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600, fontFamily: 'monospace' }}>
+              ≈ R$ {activePriceBrl.toFixed(2)}
+            </Typography>
+            <Chip
+              label="+3.84%"
+              size="small"
+              color="success"
+              variant="soft"
+              sx={{ fontWeight: 800, fontSize: '0.68rem', height: 18 }}
+            />
           </Box>
         </Stack>
 
-        {/* Alternador de Motor: TradingView vs Área */}
+        {/* Alternador de Motor Gráfico */}
         <Box
           sx={{
             display: 'inline-flex',
-            p: 0.5,
+            p: 0.35,
             borderRadius: 1,
             bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
             alignSelf: { xs: 'stretch', sm: 'auto' },
@@ -276,16 +290,16 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
             variant={chartEngine === 'tradingview' ? 'contained' : 'text'}
             color={chartEngine === 'tradingview' ? 'primary' : 'inherit'}
             sx={{
-              py: 0.4,
-              px: 1.5,
-              fontSize: '0.75rem',
+              py: 0.25,
+              px: 1.25,
+              fontSize: '0.72rem',
               fontWeight: 800,
               textTransform: 'none',
               boxShadow: chartEngine === 'tradingview' ? 1 : 0,
             }}
-            startIcon={<Iconify icon={'solar:chart-square-bold' as any} width={15} />}
+            startIcon={<Iconify icon={'solar:chart-square-bold' as any} width={14} />}
           >
-            TradingView (Padrão Crypto)
+            TradingView
           </Button>
 
           <Button
@@ -294,116 +308,32 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
             variant={chartEngine === 'area' ? 'contained' : 'text'}
             color={chartEngine === 'area' ? 'inherit' : 'inherit'}
             sx={{
-              py: 0.4,
-              px: 1.5,
-              fontSize: '0.75rem',
+              py: 0.25,
+              px: 1.25,
+              fontSize: '0.72rem',
               fontWeight: 700,
               textTransform: 'none',
               bgcolor: chartEngine === 'area' ? 'background.paper' : 'transparent',
               boxShadow: chartEngine === 'area' ? 1 : 0,
             }}
-            startIcon={<Iconify icon={'solar:chart-2-bold' as any} width={15} />}
+            startIcon={<Iconify icon={'solar:chart-2-bold' as any} width={14} />}
           >
-            Visão Resumida (Área)
+            Visão Área
           </Button>
         </Box>
       </Stack>
 
-      {/* 2. LINHA DE COTAÇÃO ATUAL E VARIAÇÃO */}
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={2}
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'flex-end' },
-          mb: 2.5,
-          p: 2,
-          borderRadius: 1.5,
-          bgcolor: (t) => alpha(t.palette.grey[500], 0.04),
-          border: (t) => `1px solid ${t.palette.divider}`,
-        }}
-      >
-        <Box>
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase' }}
-          >
-            Cotação de Mercado (ASPPBR / USDT)
-          </Typography>
-
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'baseline', mt: 0.5, flexWrap: 'wrap' }}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 900,
-                fontFamily: 'monospace',
-                letterSpacing: '-0.8px',
-                color: '#00A76F',
-              }}
-            >
-              ${activePrice.toFixed(4)}{' '}
-              <Typography component="span" variant="body1" sx={{ color: 'text.secondary', fontWeight: 700 }}>
-                USD
-              </Typography>
-            </Typography>
-
-            <Typography variant="subtitle1" sx={{ color: 'text.secondary', fontWeight: 700, fontFamily: 'monospace' }}>
-              ≈ R$ {activePriceBrl.toFixed(2)}{' '}
-              <Typography component="span" variant="caption" sx={{ color: 'text.disabled' }}>
-                BRL
-              </Typography>
-            </Typography>
-
-            <Chip
-              label={`${isPositive ? '+' : ''}${currentData.changePercent.toFixed(2)}% (24H)`}
-              size="small"
-              color={isPositive ? 'success' : 'error'}
-              variant="soft"
-              icon={
-                <Iconify
-                  icon={(isPositive ? 'solar:trending-up-bold' : 'solar:trending-down-bold') as any}
-                  width={14}
-                />
-              }
-              sx={{ fontWeight: 800, fontSize: '0.72rem', height: 24 }}
-            />
-          </Stack>
-        </Box>
-
-        {/* Indicadores de Faixa de Preço no Período */}
-        <Stack direction="row" spacing={2.5} sx={{ alignItems: 'center' }}>
-          <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
-            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontWeight: 700 }}>
-              Mínima Recente
-            </Typography>
-            <Typography variant="subtitle2" sx={{ fontFamily: 'monospace', fontWeight: 800, color: 'text.secondary' }}>
-              ${currentData.lowPrice.toFixed(3)}
-            </Typography>
-          </Box>
-
-          <Box sx={{ textAlign: { xs: 'left', sm: 'right' } }}>
-            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontWeight: 700 }}>
-              Máxima Recente
-            </Typography>
-            <Typography variant="subtitle2" sx={{ fontFamily: 'monospace', fontWeight: 800, color: 'text.primary' }}>
-              ${currentData.highPrice.toFixed(3)}
-            </Typography>
-          </Box>
-        </Stack>
-      </Stack>
-
-      {/* 3. MOTOR GRÁFICO (TRADINGVIEW CANDLESTICKS OU APEXCHARTS AREA) */}
-      <Box sx={{ mt: 1, mb: 2 }}>
+      {/* 2. ÁREA CENTRAL DO GRÁFICO (TRADINGVIEW STATION OU ÁREA) */}
+      <Box sx={{ mb: 1.5 }}>
         {chartEngine === 'tradingview' ? (
           <TradingViewTokenChart onPriceChange={(p) => setLivePrice(p)} />
         ) : (
           <Box>
-            <Stack direction="row" spacing={1} sx={{ mb: 1.5, justifyContent: 'space-between', alignItems: 'center' }}>
-              {/* Botões de Período da Visão Resumida */}
+            <Stack direction="row" spacing={1} sx={{ mb: 1, justifyContent: 'space-between', alignItems: 'center' }}>
               <Box
                 sx={{
                   display: 'inline-flex',
-                  p: 0.5,
+                  p: 0.35,
                   borderRadius: 1,
                   bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
                 }}
@@ -416,10 +346,10 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
                     variant={period === t ? 'contained' : 'text'}
                     color={period === t ? 'inherit' : 'inherit'}
                     sx={{
-                      minWidth: 38,
-                      py: 0.3,
-                      px: 1,
-                      fontSize: '0.72rem',
+                      minWidth: 34,
+                      py: 0.2,
+                      px: 0.75,
+                      fontSize: '0.7rem',
                       fontWeight: 800,
                       textTransform: 'none',
                       bgcolor: period === t ? 'background.paper' : 'transparent',
@@ -435,7 +365,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
               <Box
                 sx={{
                   display: 'inline-flex',
-                  p: 0.5,
+                  p: 0.35,
                   borderRadius: 1,
                   bgcolor: (t) => alpha(t.palette.grey[500], 0.08),
                 }}
@@ -445,7 +375,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
                   onClick={() => setMetricMode('price')}
                   variant={metricMode === 'price' ? 'contained' : 'text'}
                   color={metricMode === 'price' ? 'primary' : 'inherit'}
-                  sx={{ py: 0.3, px: 1, fontSize: '0.7rem', fontWeight: 700 }}
+                  sx={{ py: 0.2, px: 0.75, fontSize: '0.68rem', fontWeight: 700 }}
                 >
                   Cotação
                 </Button>
@@ -454,7 +384,7 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
                   onClick={() => setMetricMode('volume')}
                   variant={metricMode === 'volume' ? 'contained' : 'text'}
                   color={metricMode === 'volume' ? 'info' : 'inherit'}
-                  sx={{ py: 0.3, px: 1, fontSize: '0.7rem', fontWeight: 700 }}
+                  sx={{ py: 0.2, px: 0.75, fontSize: '0.68rem', fontWeight: 700 }}
                 >
                   Volume
                 </Button>
@@ -472,29 +402,29 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
         )}
       </Box>
 
-      {/* 4. KPIS DE ECOSSISTEMA E CUSTÓDIA DO TOKEN NATIVO */}
-      <Grid container spacing={1.5} sx={{ mt: 0.5 }}>
+      {/* 3. KPIS DE ECOSSISTEMA E CUSTÓDIA DO TOKEN (SLIM & EQUAL-HEIGHT) */}
+      <Grid container spacing={1.25}>
         {/* KPI 1: Market Cap (FDV) */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Box
             sx={{
-              p: 1.75,
-              borderRadius: 1.5,
+              p: 1.25,
+              borderRadius: 1.25,
               bgcolor: (t) => alpha(t.palette.grey[500], 0.04),
               border: (t) => `1px solid ${t.palette.divider}`,
               height: '100%',
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
-              <Iconify icon={'solar:dollar-minimalistic-bold' as any} width={16} sx={{ color: 'success.main' }} />
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 0.25 }}>
+              <Iconify icon={'solar:dollar-minimalistic-bold' as any} width={15} sx={{ color: 'success.main' }} />
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, fontSize: '0.72rem' }}>
                 Valor Total (FDV)
               </Typography>
             </Stack>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, fontFamily: 'monospace', color: 'text.primary' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: 'monospace', color: 'text.primary' }}>
               ${marketCapUsd.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} USD
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.68rem', mt: 0.25 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.65rem' }}>
               Supply Total: {TOTAL_TOKEN_SUPPLY.toLocaleString('en-US')} ASPPBR
             </Typography>
           </Box>
@@ -504,23 +434,23 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Box
             sx={{
-              p: 1.75,
-              borderRadius: 1.5,
+              p: 1.25,
+              borderRadius: 1.25,
               bgcolor: (t) => alpha(t.palette.grey[500], 0.04),
               border: (t) => `1px solid ${t.palette.divider}`,
               height: '100%',
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
-              <Iconify icon={'solar:shield-check-bold' as any} width={16} sx={{ color: '#00A76F' }} />
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 0.25 }}>
+              <Iconify icon={'solar:shield-check-bold' as any} width={15} sx={{ color: '#00A76F' }} />
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, fontSize: '0.72rem' }}>
                 Custódia no Cofre Safe
               </Typography>
             </Stack>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, fontFamily: 'monospace', color: '#00A76F' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: 'monospace', color: '#00A76F' }}>
               {VAULT_RESERVE_SUPPLY.toLocaleString('en-US')} ASPPBR
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.68rem', mt: 0.25 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.65rem' }}>
               ≈ ${vaultReserveUsd.toLocaleString('en-US')} USD (10.0% da Reserva)
             </Typography>
           </Box>
@@ -530,23 +460,23 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Box
             sx={{
-              p: 1.75,
-              borderRadius: 1.5,
+              p: 1.25,
+              borderRadius: 1.25,
               bgcolor: (t) => alpha(t.palette.grey[500], 0.04),
               border: (t) => `1px solid ${t.palette.divider}`,
               height: '100%',
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
-              <Iconify icon={'solar:refresh-circle-bold' as any} width={16} sx={{ color: 'info.main' }} />
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 0.25 }}>
+              <Iconify icon={'solar:refresh-circle-bold' as any} width={15} sx={{ color: 'info.main' }} />
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, fontSize: '0.72rem' }}>
                 Volume 24 Horas
               </Typography>
             </Stack>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, fontFamily: 'monospace', color: 'text.primary' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: 'monospace', color: 'text.primary' }}>
               ${TOKEN_TIMEFRAME_DATA['24H'].periodVolumeUsd.toLocaleString('en-US')} USD
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.68rem', mt: 0.25 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.65rem' }}>
               ≈ R$ {(TOKEN_TIMEFRAME_DATA['24H'].periodVolumeUsd * USD_TO_BRL_RATE).toLocaleString('pt-BR')} BRL
             </Typography>
           </Box>
@@ -556,23 +486,23 @@ export function NativeTokenMonitorCard({ sx, ...other }: CardProps) {
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Box
             sx={{
-              p: 1.75,
-              borderRadius: 1.5,
+              p: 1.25,
+              borderRadius: 1.25,
               bgcolor: (t) => alpha(t.palette.grey[500], 0.04),
               border: (t) => `1px solid ${t.palette.divider}`,
               height: '100%',
             }}
           >
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center', mb: 0.5 }}>
-              <Iconify icon={'solar:lock-keyhole-bold' as any} width={16} sx={{ color: 'warning.main' }} />
-              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700 }}>
+            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center', mb: 0.25 }}>
+              <Iconify icon={'solar:lock-keyhole-bold' as any} width={15} sx={{ color: 'warning.main' }} />
+              <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, fontSize: '0.72rem' }}>
                 Staking & Governança
               </Typography>
             </Stack>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, fontFamily: 'monospace', color: 'text.primary' }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 800, fontFamily: 'monospace', color: 'text.primary' }}>
               {STAKED_SUPPLY.toLocaleString('en-US')} ASPPBR
             </Typography>
-            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.68rem', mt: 0.25 }}>
+            <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', fontSize: '0.65rem' }}>
               34.5% da oferta circulante ativa
             </Typography>
           </Box>
