@@ -1,11 +1,14 @@
 import { it, expect, describe } from 'vitest';
 
 import { TOKEN_TIMEFRAME_DATA, type TimeframePeriod } from './native-token-monitor-card';
-import { MOCK_TRADINGVIEW_DATA, type TradingViewTimeframe } from './tradingview-token-chart';
+import {
+  TRADINGVIEW_INTERVALS,
+  buildTradingViewEmbedUrl,
+  TRADINGVIEW_DEFAULT_SYMBOLS,
+} from './tradingview-token-chart';
 
 describe('NativeTokenMonitorCard — Regras de Monitoramento e Consistência de Dados', () => {
   const periods: TimeframePeriod[] = ['24H', '7D', '30D', '1A'];
-  const tvTimeframes: TradingViewTimeframe[] = ['15m', '1h', '4h', '1D', '1W'];
 
   it('deve conter conjuntos de dados válidos para todos os períodos temporais suportados', () => {
     periods.forEach((period) => {
@@ -45,34 +48,45 @@ describe('NativeTokenMonitorCard — Regras de Monitoramento e Consistência de 
     });
   });
 
-  describe('TradingView Lightweight Charts — Validação de Velas Japonesas (OHLCV)', () => {
-    it('deve conter séries temporais completas para todos os timeframes profissionais (15m, 1h, 4h, 1D, 1W)', () => {
-      tvTimeframes.forEach((tf) => {
-        const dataset = MOCK_TRADINGVIEW_DATA[tf];
-        expect(dataset).toBeDefined();
-        expect(dataset.length).toBeGreaterThan(0);
-      });
+  describe('TradingView Widget Oficial — Validação de Configurações e Construtor de URLs', () => {
+    it('deve conter pares padrão incluindo ARBUSD para o ecossistema Arbitrum', () => {
+      expect(TRADINGVIEW_DEFAULT_SYMBOLS.length).toBeGreaterThan(0);
+      const arbSymbol = TRADINGVIEW_DEFAULT_SYMBOLS.find((s) => s.id === 'BINANCE:ARBUSDT');
+      expect(arbSymbol).toBeDefined();
+      expect(arbSymbol?.label).toBe('ARB/USDT');
     });
 
-    it('deve validar consistência geométrica de cada vela japonesa (High >= Low e High >= Open/Close)', () => {
-      tvTimeframes.forEach((tf) => {
-        const dataset = MOCK_TRADINGVIEW_DATA[tf];
-        dataset.forEach((candle) => {
-          expect(candle.high).toBeGreaterThanOrEqual(candle.low);
-          expect(candle.high).toBeGreaterThanOrEqual(candle.open);
-          expect(candle.high).toBeGreaterThanOrEqual(candle.close);
-          expect(candle.low).toBeLessThanOrEqual(candle.open);
-          expect(candle.low).toBeLessThanOrEqual(candle.close);
-          expect(candle.volume).toBeGreaterThan(0);
-        });
-      });
+    it('deve fornecer timeframes padrão profissionais (15, 60, 240, D, W)', () => {
+      expect(TRADINGVIEW_INTERVALS).toContain('15');
+      expect(TRADINGVIEW_INTERVALS).toContain('60');
+      expect(TRADINGVIEW_INTERVALS).toContain('240');
+      expect(TRADINGVIEW_INTERVALS).toContain('D');
+      expect(TRADINGVIEW_INTERVALS).toContain('W');
     });
 
-    it('deve conter a vela de fechamento em 0.6355 no timeframe semanal correspondente ao print de mercado', () => {
-      const dataset1w = MOCK_TRADINGVIEW_DATA['1W'];
-      const lastCandle = dataset1w[dataset1w.length - 1];
-      expect(lastCandle.close).toBe(0.6355);
-      expect(lastCandle.high).toBe(1.05);
+    it('deve construir URL segura do TradingView widgetembed com parâmetros essenciais', () => {
+      const url = buildTradingViewEmbedUrl({
+        symbol: 'BINANCE:ARBUSDT',
+        interval: 'D',
+        theme: 'dark',
+      });
+
+      expect(url).toContain('https://s.tradingview.com/widgetembed/?');
+      expect(url).toContain('symbol=BINANCE%3AARBUSDT');
+      expect(url).toContain('interval=D');
+      expect(url).toContain('theme=dark');
+      expect(url).toContain('hidesidetoolbar=0');
+      expect(url).toContain('symboledit=1');
+      expect(url).toContain('saveimage=1');
+      expect(url).toContain('style=1');
+    });
+
+    it('deve ajustar o toolbarbg de acordo com o tema claro e escuro', () => {
+      const darkUrl = buildTradingViewEmbedUrl({ theme: 'dark' });
+      const lightUrl = buildTradingViewEmbedUrl({ theme: 'light' });
+
+      expect(darkUrl).toContain('toolbarbg=131722');
+      expect(lightUrl).toContain('toolbarbg=f1f3f6');
     });
   });
 });
