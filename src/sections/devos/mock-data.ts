@@ -43,6 +43,7 @@ export interface SafeAsset {
   balance: string;
   valueUsd: number;
   icon: string;
+  role?: string;
 }
 
 export interface SafeSigner {
@@ -322,16 +323,44 @@ export const MOCK_SAFE_CONFIG = {
   network: 'Arbitrum One (Mock Target)',
   threshold: 3,
   totalSigners: 5,
-  totalUsdValuation: 4892400.0,
+  totalUsdValuation: 4381818.18,
   nonce: 42,
   status: 'Active (Simulation Engine)',
 };
 
 export const MOCK_SAFE_ASSETS: SafeAsset[] = [
-  { symbol: 'USDC', name: 'USD Coin', balance: '2,500,000.00', valueUsd: 2500000.0, icon: 'cryptocurrency:usdc' },
-  { symbol: 'WETH', name: 'Wrapped Ether', balance: '680.50', valueUsd: 1837350.0, icon: 'cryptocurrency:eth' },
-  { symbol: 'ASPP', name: 'ASPPIBRA Governance', balance: '500,000.00', valueUsd: 500000.0, icon: 'solar:shield-star-bold' },
-  { symbol: 'DAI', name: 'Dai Stablecoin', balance: '55,050.00', valueUsd: 55050.0, icon: 'cryptocurrency:dai' },
+  {
+    symbol: 'BTC',
+    name: 'Bitcoin',
+    balance: '25.00 BTC',
+    valueUsd: 1700000.0,
+    icon: 'cryptocurrency:btc',
+    role: 'Reserva de valor global e liquidez',
+  },
+  {
+    symbol: 'ASPPBR',
+    name: 'ASPPIBRA',
+    balance: '1,000,000.00',
+    valueUsd: 1000000.0,
+    icon: 'solar:shield-star-bold',
+    role: 'Token nativo de governança',
+  },
+  {
+    symbol: 'USDT',
+    name: 'Tether USD',
+    balance: '1,500,000.00',
+    valueUsd: 1500000.0,
+    icon: 'cryptocurrency:usdt',
+    role: 'Stablecoin lastreada em Dólar',
+  },
+  {
+    symbol: 'BRL',
+    name: 'Real Brasileiro',
+    balance: 'R$ 1.000.000,00',
+    valueUsd: 181818.18,
+    icon: 'solar:banknote-2-bold',
+    role: 'Moeda fiduciária para liquidação',
+  },
 ];
 
 export const MOCK_SAFE_SIGNERS: SafeSigner[] = [
@@ -346,9 +375,9 @@ export const MOCK_SAFE_PROPOSALS: SafeProposal[] = [
   {
     id: 'PROP-042',
     title: 'Q4 Edge Infrastructure Node Grants',
-    type: 'ERC20 Transfer (USDC)',
+    type: 'ERC20 Transfer (USDT)',
     targetAddress: '0x4f19C02...12a0',
-    valueEth: '25,000 USDC',
+    valueEth: '25,000 USDT',
     confirmations: 2,
     threshold: 3,
     status: 'AWAITING_CONFIRMATIONS',
@@ -357,9 +386,9 @@ export const MOCK_SAFE_PROPOSALS: SafeProposal[] = [
   {
     id: 'PROP-043',
     title: 'Cold Storage Vault Liquidity Rebalancing',
-    type: 'Contract Interaction',
+    type: 'BTC Reserve Allocation',
     targetAddress: '0x10b784...89cd',
-    valueEth: '150 WETH',
+    valueEth: '2.5 BTC',
     confirmations: 3,
     threshold: 3,
     status: 'READY_FOR_EXECUTION',
@@ -367,14 +396,14 @@ export const MOCK_SAFE_PROPOSALS: SafeProposal[] = [
   },
   {
     id: 'PROP-041',
-    title: 'Community Dev Security Audit Retainer',
-    type: 'Multi-Asset Batch',
+    title: 'Folha Operacional e Custos Fiduciários ASPPIBRA',
+    type: 'BRL Treasury Settlement',
     targetAddress: '0x33e891...fa22',
-    valueEth: '10,000 DAI',
+    valueEth: 'R$ 39.223 BRL',
     confirmations: 3,
     threshold: 3,
     status: 'SIMULATED',
-    createdAt: '2026-09-28 11:15:00',
+    createdAt: '2026-10-04 11:15:00',
   },
 ];
 
