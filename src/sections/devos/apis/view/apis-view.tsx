@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import type { NewIntegrationData } from './create-integration-modal';
+
+import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
@@ -21,7 +23,7 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { IdentityAvatar } from 'src/auth/components';
 
 import { ApiConfigDrawer } from './api-config-drawer';
-import { CreateIntegrationModal, NewIntegrationData } from './create-integration-modal';
+import { CreateIntegrationModal } from './create-integration-modal';
 
 // ----------------------------------------------------------------------
 
@@ -83,7 +85,9 @@ export function ApisView() {
       if (saved) {
         return JSON.parse(saved);
       }
-    } catch {}
+    } catch (err) {
+      console.warn('Falha ao carregar integrações do LocalStorage:', err);
+    }
     return MOCK_INTEGRATIONS;
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -94,7 +98,9 @@ export function ApisView() {
       const updated = [newIntegration, ...prev];
       try {
         localStorage.setItem('devos_vault_integrations_v1', JSON.stringify(updated));
-      } catch {}
+      } catch (err) {
+        console.warn('Falha ao salvar integração no LocalStorage:', err);
+      }
       return updated;
     });
     // Automaticamente seleciona a aba da nova integracao (ex: Web3) para exibir no grid
