@@ -18,6 +18,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { WalletBridge } from 'src/platform/desktop/wallets/wallet-bridge';
+
 import { Iconify } from 'src/components/iconify';
 
 export const MIN_MASTER_PASSWORD_LENGTH = 12;
@@ -61,8 +62,10 @@ interface StrengthEvaluation {
  */
 export function isWithinCodePointLimit(value: string, maxLength: number): boolean {
   let count = 0;
-  for (const _ of value) {
-    count += 1;
+  for (const char of value) {
+    if (char) {
+      count += 1;
+    }
     if (count > maxLength) {
       return false;
     }
