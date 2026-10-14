@@ -157,6 +157,7 @@ export const paths = {
   devos: {
     root: ROOTS.DEVOS,
     database: `${ROOTS.DEVOS}/database`,
+    notifications: `${ROOTS.DEVOS}/notifications`,
     apis: `${ROOTS.DEVOS}/apis`,
     audit: `${ROOTS.DEVOS}/audit`,
     security: `${ROOTS.DEVOS}/security`,
