@@ -30,7 +30,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const DEVOS_NAV_DATA: NavSectionProps['data'] = [
+export const DEVOS_NAV_DATA: NavSectionProps['data'] = [
   {
     subheader: 'FINANCEIRO',
     items: [
@@ -103,7 +103,7 @@ const DEVOS_NAV_DATA: NavSectionProps['data'] = [
   },
 ];
 
-function getSectionTitle(pathname: string): string {
+export function getSectionTitle(pathname: string): string {
   if (pathname === paths.devos.root || pathname === `${paths.devos.root}/`) {
     return 'Observability';
   }
@@ -461,20 +461,103 @@ export function DevOSLayout({ children }: Props) {
 
           <Scrollbar
             fillContent
+            autoHide={false}
+            clickOnTrack
             sx={{
               height: 1,
               minHeight: 0,
               flex: '1 1 auto',
-              overflow: 'hidden',
               borderRadius: 'inherit',
+              // 🎚️ BARRA DE ROLAGEM 3D VIDROMÓRFICA ULTRA-ELEGANTE E SEMPRE VISÍVEL
+              '& .simplebar-track.simplebar-vertical': {
+                width: 9,
+                right: 3,
+                top: 8,
+                bottom: 8,
+                borderRadius: 5,
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.06)',
+                zIndex: 10,
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  width: 11,
+                  backgroundColor: 'rgba(0, 0, 0, 0.08)',
+                },
+                ...theme.applyStyles('dark', {
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.4)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }),
+              },
+              '& .simplebar-scrollbar': {
+                minHeight: 38,
+                cursor: 'pointer',
+                '&:before': {
+                  opacity: '0.75 !important',
+                  borderRadius: 5,
+                  left: 1.5,
+                  right: 1.5,
+                  top: 2,
+                  bottom: 2,
+                  background:
+                    'linear-gradient(180deg, rgba(0, 167, 111, 0.9) 0%, rgba(145, 158, 171, 0.75) 100%) !important',
+                  boxShadow:
+                    '0 2px 6px rgba(0, 167, 111, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                  ...theme.applyStyles('dark', {
+                    background:
+                      'linear-gradient(180deg, rgba(0, 255, 127, 0.85) 0%, rgba(0, 167, 111, 0.7) 100%) !important',
+                    boxShadow:
+                      '0 2px 8px rgba(0, 255, 127, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
+                  }),
+                },
+                '&:hover:before': {
+                  opacity: '1 !important',
+                  background:
+                    'linear-gradient(180deg, #00ff7f 0%, #00d2ff 100%) !important',
+                  boxShadow:
+                    '0 0 12px rgba(0, 255, 127, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+                  transform: 'scaleX(1.12)',
+                },
+                '&.simplebar-visible:before': {
+                  opacity: '0.9 !important',
+                },
+              },
+              // Rolagem suave e prevenção de transbordo horizontal
+              '& .simplebar-content-wrapper': {
+                scrollBehavior: 'smooth',
+                overscrollBehavior: 'contain',
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(0, 167, 111, 0.6) transparent',
+                '&::-webkit-scrollbar': {
+                  width: 7,
+                },
+                '&::-webkit-scrollbar-track': {
+                  background: 'transparent',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  borderRadius: 4,
+                  backgroundColor: 'rgba(0, 167, 111, 0.65)',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                },
+              },
+              '& .simplebar-content': {
+                pr: '4px',
+              },
             }}
           >
             <NavSectionVertical
               data={DEVOS_NAV_DATA}
-              sx={{ px: 2, flex: '1 1 auto' }}
+              sx={{ px: 2, flex: '1 0 auto' }}
             />
 
-            <Box sx={{ px: 2, pb: 2, pt: 1 }}>
+            <Box sx={{ px: 2, pb: 2, pt: 1, flexShrink: 0, mt: 'auto' }}>
               <Box
                 sx={{
                   p: 1.5,
@@ -545,10 +628,38 @@ export function DevOSLayout({ children }: Props) {
         </Box>
       </Box>
 
-      <Scrollbar fillContent sx={{ flex: '1 1 auto', my: 1 }}>
+      <Scrollbar
+        fillContent
+        autoHide={false}
+        clickOnTrack
+        sx={{
+          flex: '1 1 auto',
+          my: 1,
+          '& .simplebar-track.simplebar-vertical': {
+            width: 8,
+            right: 2,
+            top: 4,
+            bottom: 4,
+            borderRadius: 4,
+            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+            ...theme.applyStyles('dark', {
+              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+            }),
+          },
+          '& .simplebar-scrollbar:before': {
+            opacity: '0.75 !important',
+            borderRadius: 4,
+            background:
+              'linear-gradient(180deg, rgba(0, 167, 111, 0.85) 0%, rgba(145, 158, 171, 0.7) 100%) !important',
+          },
+          '& .simplebar-content-wrapper': {
+            scrollBehavior: 'smooth',
+          },
+        }}
+      >
         <NavSectionVertical
           data={DEVOS_NAV_DATA}
-          sx={{ px: 1, flex: '1 1 auto' }}
+          sx={{ px: 1, flex: '1 0 auto' }}
         />
       </Scrollbar>
 
