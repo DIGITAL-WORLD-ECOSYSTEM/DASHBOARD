@@ -14,6 +14,7 @@ import { usePathname } from '../hooks';
 // Módulos DevOS
 const DashboardPage = lazy(() => import('src/pages/devos/page'));
 const DatabasePage = lazy(() => import('src/pages/devos/database-page'));
+const NotificationsPage = lazy(() => import('src/pages/devos/notifications-page'));
 const APIsPage = lazy(() => import('src/pages/devos/apis-page'));
 const AuditPage = lazy(() => import('src/pages/devos/audit-page'));
 const SecurityPage = lazy(() => import('src/pages/devos/security-page'));
@@ -66,6 +67,7 @@ export const devosRoutes: RouteObject[] = [
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'database', element: <DatabasePage /> },
+      { path: 'notifications', element: <NotificationsPage /> },
       { path: 'apis', element: <APIsPage /> },
       { path: 'audit', element: <AuditPage /> },
       { path: 'security', element: <SecurityPage /> },
