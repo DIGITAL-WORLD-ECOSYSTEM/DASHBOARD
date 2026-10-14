@@ -64,7 +64,6 @@ const FileManagerPage = lazy(() => import('src/pages/dashboard/file-manager'));
 // App
 const ChatPage = lazy(() => import('src/pages/dashboard/chat'));
 const MailPage = lazy(() => import('src/pages/dashboard/mail'));
-const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
 
 // ----------------------------------------------------------------------
 
@@ -217,14 +216,6 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'video', element: <FileManagerPage /> },
           { path: 'document', element: <FileManagerPage /> },
         ],
-      },
-      { 
-        path: 'calendar', 
-        element: (
-          <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
-            <CalendarPage />
-          </RoleBasedGuard>
-        ) 
       },
     ],
   },
