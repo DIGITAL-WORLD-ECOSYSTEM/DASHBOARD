@@ -2,10 +2,10 @@ import { useMemo, useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
+import Tabs from '@mui/material/Tabs';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -13,34 +13,34 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Tooltip from '@mui/material/Tooltip';
 import { alpha } from '@mui/material/styles';
-import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
+import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import TableContainer from '@mui/material/TableContainer';
+import DialogContent from '@mui/material/DialogContent';
 import InputAdornment from '@mui/material/InputAdornment';
+import TableContainer from '@mui/material/TableContainer';
+import TableSortLabel from '@mui/material/TableSortLabel';
 import TablePagination from '@mui/material/TablePagination';
 
 import { Iconify } from 'src/components/iconify';
 
 import {
+  DevOSInvoicePDFViewer,
+  DevOSInvoicePDFDownload,
+} from '../components/invoice-pdf';
+import {
   INITIAL_INVOICES,
   type InvoiceItem,
   type InvoiceItemDetail,
 } from '../invoices-data';
-import {
-  DevOSInvoicePDFViewer,
-  DevOSInvoicePDFDownload,
-} from '../components/invoice-pdf';
 
 // ----------------------------------------------------------------------
 
@@ -74,11 +74,20 @@ export function InvoicesView() {
   const [selected, setSelected] = useState<string[]>([]);
   const [batchConfirmOpen, setBatchConfirmOpen] = useState(false);
 
-  // Modais de detalhe, criação e PDF
+  // Modais de detalhe, criação, edição e PDF
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceItem | null>(null);
   const [pdfModalOpen, setPdfModalOpen] = useState(false);
   const [newInvoiceModalOpen, setNewInvoiceModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingInvoice, setEditingInvoice] = useState<InvoiceItem | null>(null);
   const [feedbackAlert, setFeedbackAlert] = useState<{ type: 'success' | 'info' | 'warning'; message: string } | null>(null);
+
+  // Form de Edição
+  const [editDescription, setEditDescription] = useState('');
+  const [editReferenceMonth, setEditReferenceMonth] = useState('');
+  const [editDueDate, setEditDueDate] = useState('');
+  const [editAmount, setEditAmount] = useState('');
+  const [editPaymentMethod, setEditPaymentMethod] = useState('');
 
   // Form de Nova Fatura com múltiplos itens dinâmicos
   const [newMemberName, setNewMemberName] = useState('Andressa de Lima Ferreira');
@@ -302,6 +311,40 @@ export function InvoicesView() {
     [selectedInvoice]
   );
 
+  // Edição de fatura
+  const handleOpenEdit = (inv: InvoiceItem) => {
+    setEditingInvoice(inv);
+    setEditDescription(inv.description);
+    setEditReferenceMonth(inv.referenceMonth);
+    setEditDueDate(inv.dueDate);
+    setEditAmount(String(inv.amount));
+    setEditPaymentMethod(inv.paymentMethod);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingInvoice) return;
+    const numAmt = parseFloat(editAmount) || editingInvoice.amount;
+    const updated: InvoiceItem = {
+      ...editingInvoice,
+      description: editDescription,
+      referenceMonth: editReferenceMonth,
+      dueDate: editDueDate,
+      amount: numAmt,
+      amountFormatted: `R$ ${numAmt.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+      paymentMethod: editPaymentMethod,
+    };
+    setInvoices(invoices.map((inv) => (inv.id === editingInvoice.id ? updated : inv)));
+    if (selectedInvoice?.id === editingInvoice.id) {
+      setSelectedInvoice(updated);
+    }
+    setEditModalOpen(false);
+    setFeedbackAlert({
+      type: 'success',
+      message: `Fatura ${editingInvoice.id} atualizada com sucesso!`,
+    });
+  };
+
   // Manipulação de Itens dinâmicos no modal de criação
   const handleAddItem = () => {
     const nextId = `item-${newItems.length + 1}`;
@@ -377,6 +420,8 @@ export function InvoicesView() {
     });
   };
 
+  const latestInvoice = paginatedInvoices[0] || invoices[0];
+
   return (
     <Stack spacing={2.5}>
       {/* 1. HEADER DO MÓDULO */}
@@ -399,7 +444,7 @@ export function InvoicesView() {
             />
           </Stack>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Gestão completa de faturas, geração de PDFs oficiais, conciliação e liquidação imutável no D1 Ledger.
+            Hub centralizado de faturamento da DAO: emissão multi-item, espelho oficial, download em PDF e liquidação no D1 Ledger.
           </Typography>
         </Box>
 
@@ -586,6 +631,255 @@ export function InvoicesView() {
             <Typography variant="caption" sx={{ color: 'success.main', fontWeight: 700, mt: 0.5, display: 'block' }}>
               ● 100% Identidades Verificadas D1
             </Typography>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* 2.5. CENTRAL DE ACESSO RÁPIDO AOS SERVIÇOS DE FATURAS (HUB NATIVO) */}
+      <Grid container spacing={2}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card
+            sx={{
+              p: 2,
+              height: '100%',
+              bgcolor: 'background.paper',
+              border: (t) => `1px solid ${t.palette.divider}`,
+              borderRadius: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                borderColor: 'primary.main',
+                boxShadow: (t) => `0 4px 20px 0 ${alpha(t.palette.primary.main, 0.12)}`,
+              },
+            }}
+          >
+            <Box>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.2 }}>
+                <Box
+                  sx={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 1,
+                    bgcolor: (t) => alpha(t.palette.primary.main, 0.12),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'primary.main',
+                  }}
+                >
+                  <Iconify icon={'solar:add-circle-bold' as any} width={20} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                    Emitir Fatura
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Multi-Item & Taxas
+                  </Typography>
+                </Box>
+              </Stack>
+              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
+                Cadastrar nova fatura com discriminação de múltiplos serviços e registro no D1.
+              </Typography>
+            </Box>
+
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<Iconify icon={'solar:pen-new-square-bold' as any} width={16} />}
+              onClick={() => setNewInvoiceModalOpen(true)}
+              sx={{ fontWeight: 800, textTransform: 'none', width: '100%' }}
+            >
+              Criar Nova Fatura
+            </Button>
+          </Card>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card
+            sx={{
+              p: 2,
+              height: '100%',
+              bgcolor: 'background.paper',
+              border: (t) => `1px solid ${t.palette.divider}`,
+              borderRadius: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                borderColor: 'info.main',
+                boxShadow: (t) => `0 4px 20px 0 ${alpha(t.palette.info.main, 0.12)}`,
+              },
+            }}
+          >
+            <Box>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.2 }}>
+                <Box
+                  sx={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 1,
+                    bgcolor: (t) => alpha(t.palette.info.main, 0.12),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'info.main',
+                  }}
+                >
+                  <Iconify icon={'solar:file-text-bold' as any} width={20} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                    Espelho & Detalhes
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Comprovante & D1
+                  </Typography>
+                </Box>
+              </Stack>
+              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
+                Consultar o espelho oficial detalhado com protocolo criptográfico imutável.
+              </Typography>
+            </Box>
+
+            <Button
+              variant="outlined"
+              color="info"
+              size="small"
+              startIcon={<Iconify icon={'solar:eye-bold' as any} width={16} />}
+              onClick={() => setSelectedInvoice(latestInvoice)}
+              sx={{ fontWeight: 800, textTransform: 'none', width: '100%' }}
+            >
+              Abrir Espelho Detalhado
+            </Button>
+          </Card>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card
+            sx={{
+              p: 2,
+              height: '100%',
+              bgcolor: 'background.paper',
+              border: (t) => `1px solid ${t.palette.divider}`,
+              borderRadius: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                borderColor: 'success.main',
+                boxShadow: (t) => `0 4px 20px 0 ${alpha(t.palette.success.main, 0.12)}`,
+              },
+            }}
+          >
+            <Box>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.2 }}>
+                <Box
+                  sx={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 1,
+                    bgcolor: (t) => alpha(t.palette.success.main, 0.12),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'success.main',
+                  }}
+                >
+                  <Iconify icon={'solar:printer-minimalistic-bold' as any} width={20} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                    Visualizador PDF
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Timbre Oficial ASPPIBRA
+                  </Typography>
+                </Box>
+              </Stack>
+              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
+                Visualizar e baixar documento PDF oficial para impressão ou envio ao associado.
+              </Typography>
+            </Box>
+
+            <Button
+              variant="outlined"
+              color="success"
+              size="small"
+              startIcon={<Iconify icon={'solar:document-bold' as any} width={16} />}
+              onClick={() => {
+                setSelectedInvoice(latestInvoice);
+                setPdfModalOpen(true);
+              }}
+              sx={{ fontWeight: 800, textTransform: 'none', width: '100%' }}
+            >
+              Visualizar em PDF
+            </Button>
+          </Card>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Card
+            sx={{
+              p: 2,
+              height: '100%',
+              bgcolor: 'background.paper',
+              border: (t) => `1px solid ${t.palette.divider}`,
+              borderRadius: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                borderColor: 'warning.main',
+                boxShadow: (t) => `0 4px 20px 0 ${alpha(t.palette.warning.main, 0.12)}`,
+              },
+            }}
+          >
+            <Box>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 1.2 }}>
+                <Box
+                  sx={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 1,
+                    bgcolor: (t) => alpha(t.palette.warning.main, 0.12),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'warning.main',
+                  }}
+                >
+                  <Iconify icon={'solar:pen-bold' as any} width={20} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'text.primary' }}>
+                    Editar Cobrança
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                    Vencimento & Valores
+                  </Typography>
+                </Box>
+              </Stack>
+              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 2 }}>
+                Ajustar valores, competências ou forma de pagamento de cobranças abertas.
+              </Typography>
+            </Box>
+
+            <Button
+              variant="outlined"
+              color="warning"
+              size="small"
+              startIcon={<Iconify icon={'solar:pen-linear' as any} width={16} />}
+              onClick={() => handleOpenEdit(latestInvoice)}
+              sx={{ fontWeight: 800, textTransform: 'none', width: '100%' }}
+            >
+              Editar Fatura
+            </Button>
           </Card>
         </Grid>
       </Grid>
@@ -870,9 +1164,9 @@ export function InvoicesView() {
           </Box>
         )}
 
-        {/* 3.5. TABELA COM ORDENAÇÃO DINÂMICA DE COLUNAS */}
-        <TableContainer>
-          <Table size={dense ? 'small' : 'medium'}>
+        {/* 3.5. TABELA COM ORDENAÇÃO DINÂMICA DE COLUNAS E ROLAGEM HORIZONTAL GARANTIDA */}
+        <TableContainer sx={{ overflowX: 'auto', borderRadius: 1.5 }}>
+          <Table size={dense ? 'small' : 'medium'} sx={{ minWidth: 980 }}>
             <TableHead sx={{ bgcolor: (t) => alpha(t.palette.grey[500], 0.04) }}>
               <TableRow>
                 <TableCell padding="checkbox">
@@ -883,7 +1177,7 @@ export function InvoicesView() {
                     onChange={handleSelectAllClick}
                   />
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem' }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', width: 120 }}>
                   <TableSortLabel
                     active={orderBy === 'id'}
                     direction={orderBy === 'id' ? order : 'asc'}
@@ -901,7 +1195,7 @@ export function InvoicesView() {
                     ASSOCIADO / MEMBRO
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem' }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', width: 110 }}>
                   <TableSortLabel
                     active={orderBy === 'referenceMonth'}
                     direction={orderBy === 'referenceMonth' ? order : 'asc'}
@@ -910,7 +1204,7 @@ export function InvoicesView() {
                     COMPETÊNCIA
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem' }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', width: 110 }}>
                   <TableSortLabel
                     active={orderBy === 'dueDate'}
                     direction={orderBy === 'dueDate' ? order : 'asc'}
@@ -919,10 +1213,10 @@ export function InvoicesView() {
                     VENCIMENTO
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem' }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', width: 180 }}>
                   MÉTODO / GATEWAY
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textAlign: 'right' }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textAlign: 'right', width: 130 }}>
                   <TableSortLabel
                     active={orderBy === 'amount'}
                     direction={orderBy === 'amount' ? order : 'asc'}
@@ -931,7 +1225,7 @@ export function InvoicesView() {
                     VALOR (BRL)
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textAlign: 'center' }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textAlign: 'center', width: 110 }}>
                   <TableSortLabel
                     active={orderBy === 'status'}
                     direction={orderBy === 'status' ? order : 'asc'}
@@ -940,7 +1234,7 @@ export function InvoicesView() {
                     STATUS
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textAlign: 'center', width: 140 }}>
+                <TableCell sx={{ fontWeight: 800, fontSize: '0.75rem', textAlign: 'center', width: 160 }}>
                   AÇÕES
                 </TableCell>
               </TableRow>
@@ -964,12 +1258,33 @@ export function InvoicesView() {
                       />
                     </TableCell>
 
-                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 800, color: 'primary.main', fontSize: '0.78rem' }}>
+                    <TableCell
+                      onClick={() => setSelectedInvoice(inv)}
+                      sx={{
+                        fontFamily: 'monospace',
+                        fontWeight: 800,
+                        color: 'primary.main',
+                        fontSize: '0.78rem',
+                        cursor: 'pointer',
+                        '&:hover': { textDecoration: 'underline' },
+                      }}
+                    >
                       {inv.id}
                     </TableCell>
 
-                    <TableCell>
-                      <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.8rem', color: 'text.primary' }}>
+                    <TableCell
+                      onClick={() => setSelectedInvoice(inv)}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: '0.8rem',
+                          color: 'text.primary',
+                          '&:hover': { color: 'primary.main' },
+                        }}
+                      >
                         {inv.memberName}
                       </Typography>
                       <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.7rem' }}>
@@ -985,7 +1300,7 @@ export function InvoicesView() {
                       {inv.dueDate}
                     </TableCell>
 
-                    <TableCell sx={{ fontSize: '0.78rem', color: 'text.secondary', maxWidth: 170 }}>
+                    <TableCell sx={{ fontSize: '0.78rem', color: 'text.secondary', maxWidth: 180 }}>
                       <Typography variant="caption" noWrap sx={{ display: 'block' }}>
                         {inv.paymentMethod}
                       </Typography>
@@ -1031,21 +1346,46 @@ export function InvoicesView() {
 
                     <TableCell sx={{ textAlign: 'center' }}>
                       <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                        {/* BOTÃO DETALHES */}
+                        {/* 1. VER ESPELHO */}
                         <Tooltip title="Ver Espelho e Detalhes">
                           <IconButton
                             size="small"
                             onClick={() => setSelectedInvoice(inv)}
-                            sx={{ color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
+                            sx={{ color: 'text.secondary', '&:hover': { color: 'info.main' } }}
                           >
                             <Iconify icon={'solar:eye-bold' as any} width={18} />
                           </IconButton>
                         </Tooltip>
 
-                        {/* BOTÃO BAIXAR PDF */}
+                        {/* 2. EDITAR FATURA */}
+                        <Tooltip title="Editar Fatura">
+                          <IconButton
+                            size="small"
+                            onClick={() => handleOpenEdit(inv)}
+                            sx={{ color: 'text.secondary', '&:hover': { color: 'warning.main' } }}
+                          >
+                            <Iconify icon={'solar:pen-bold' as any} width={18} />
+                          </IconButton>
+                        </Tooltip>
+
+                        {/* 3. VISUALIZAR PDF FULLSCREEN */}
+                        <Tooltip title="Visualizar PDF Oficial">
+                          <IconButton
+                            size="small"
+                            onClick={() => {
+                              setSelectedInvoice(inv);
+                              setPdfModalOpen(true);
+                            }}
+                            sx={{ color: 'text.secondary', '&:hover': { color: 'success.main' } }}
+                          >
+                            <Iconify icon={'solar:printer-minimalistic-bold' as any} width={18} />
+                          </IconButton>
+                        </Tooltip>
+
+                        {/* 4. BAIXAR PDF */}
                         <DevOSInvoicePDFDownload invoice={inv} currentStatus={inv.status} />
 
-                        {/* BOTÃO LIQUIDAR */}
+                        {/* 5. LIQUIDAR NO D1 */}
                         {inv.status !== 'paid' && (
                           <Tooltip title="Dar Baixa / Liquidar no D1">
                             <IconButton
@@ -1333,7 +1673,7 @@ export function InvoicesView() {
 
       {/* 5. MODAL DE RECIBO & ESPELHO DETALHADO DA FATURA */}
       <Dialog
-        open={Boolean(selectedInvoice) && !pdfModalOpen}
+        open={Boolean(selectedInvoice) && !pdfModalOpen && !editModalOpen}
         onClose={() => setSelectedInvoice(null)}
         maxWidth="md"
         fullWidth
@@ -1479,16 +1819,27 @@ export function InvoicesView() {
           <Stack direction="row" spacing={1}>
             {selectedInvoice && (
               <>
-                <DevOSInvoicePDFDownload invoice={selectedInvoice} currentStatus={selectedInvoice.status} />
                 <Button
                   size="small"
                   variant="outlined"
+                  color="warning"
+                  startIcon={<Iconify icon={'solar:pen-bold' as any} width={16} />}
+                  onClick={() => handleOpenEdit(selectedInvoice)}
+                  sx={{ textTransform: 'none', fontWeight: 700 }}
+                >
+                  Editar Dados
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  color="success"
                   startIcon={<Iconify icon={'solar:document-text-bold' as any} width={16} />}
                   onClick={() => setPdfModalOpen(true)}
                   sx={{ textTransform: 'none', fontWeight: 700 }}
                 >
                   Visualizar PDF
                 </Button>
+                <DevOSInvoicePDFDownload invoice={selectedInvoice} currentStatus={selectedInvoice.status} />
               </>
             )}
           </Stack>
@@ -1547,7 +1898,95 @@ export function InvoicesView() {
         </Box>
       </Dialog>
 
-      {/* 7. DIÁLOGO DE CONFIRMAÇÃO DE EXCLUSÃO EM LOTE */}
+      {/* 7. MODAL DE EDIÇÃO DE FATURA */}
+      <Dialog
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ pb: 1, borderBottom: (t) => `1px solid ${t.palette.divider}` }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, color: 'text.primary' }}>
+            Editar Informações da Fatura • {editingInvoice?.id}
+          </Typography>
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            Membro: {editingInvoice?.memberName} ({editingInvoice?.memberDoc})
+          </Typography>
+        </DialogTitle>
+
+        <DialogContent sx={{ p: 2.5 }}>
+          <Stack spacing={2} sx={{ mt: 1 }}>
+            <TextField
+              label="Descrição do Recebível"
+              fullWidth
+              size="small"
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
+
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 6 }}>
+                <TextField
+                  label="Competência (AAAA-MM)"
+                  fullWidth
+                  size="small"
+                  value={editReferenceMonth}
+                  onChange={(e) => setEditReferenceMonth(e.target.value)}
+                />
+              </Grid>
+              <Grid size={{ xs: 6 }}>
+                <TextField
+                  label="Data de Vencimento"
+                  fullWidth
+                  size="small"
+                  type="date"
+                  value={editDueDate}
+                  onChange={(e) => setEditDueDate(e.target.value)}
+                  slotProps={{ inputLabel: { shrink: true } }}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 6 }}>
+                <TextField
+                  label="Valor (R$)"
+                  fullWidth
+                  size="small"
+                  type="number"
+                  value={editAmount}
+                  onChange={(e) => setEditAmount(e.target.value)}
+                />
+              </Grid>
+              <Grid size={{ xs: 6 }}>
+                <TextField
+                  label="Método de Pagamento"
+                  fullWidth
+                  size="small"
+                  value={editPaymentMethod}
+                  onChange={(e) => setEditPaymentMethod(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </Stack>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 2, borderTop: (t) => `1px solid ${t.palette.divider}` }}>
+          <Button onClick={() => setEditModalOpen(false)} sx={{ color: 'text.secondary', textTransform: 'none' }}>
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={handleSaveEdit}
+            sx={{ fontWeight: 800, textTransform: 'none' }}
+          >
+            Salvar Alterações
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* 8. DIÁLOGO DE CONFIRMAÇÃO DE EXCLUSÃO EM LOTE */}
       <Dialog
         open={batchConfirmOpen}
         onClose={() => setBatchConfirmOpen(false)}
