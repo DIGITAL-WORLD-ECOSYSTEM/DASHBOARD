@@ -28,7 +28,6 @@ const OverviewFilePage = lazy(() => import('src/pages/dashboard/file'));
 // Analytics
 const AnalyticsGlobalPage = lazy(() => import('src/pages/dashboard/analytics/global'));
 const AnalyticsContractPage = lazy(() => import('src/pages/dashboard/analytics/contract'));
-const BankingFinancialHistoryPage = lazy(() => import('src/pages/dashboard/banking/financial-history'));
 const BankingTreasuryPage = lazy(() => import('src/pages/dashboard/banking/treasury'));
 const BankingPaymentsPage = lazy(() => import('src/pages/dashboard/banking/payments'));
 const AnalyticsUserListPage = lazy(() => import('src/pages/dashboard/analytics/user-list'));
@@ -140,14 +139,6 @@ export const dashboardRoutes: RouteObject[] = [
           { path: 'receber', element: <OverviewBankingReceberPage /> },
           { path: 'transferencias', element: <OverviewBankingTransferenciasPage /> },
           { path: 'transacoes', element: <OverviewBankingTransacoesPage /> },
-          { 
-            path: 'financial-history', 
-            element: (
-              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
-                <BankingFinancialHistoryPage />
-              </RoleBasedGuard>
-            ) 
-          },
           { 
             path: 'treasury', 
             element: (
