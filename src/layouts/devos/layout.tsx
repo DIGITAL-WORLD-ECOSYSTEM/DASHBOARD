@@ -17,7 +17,6 @@ import { usePathname } from 'src/routes/hooks';
 
 import { Logo } from 'src/components/logo';
 import { Iconify } from 'src/components/iconify';
-import { Scrollbar } from 'src/components/scrollbar';
 import { NavSectionMini, NavSectionVertical } from 'src/components/nav-section';
 
 import { MenuButton } from '../components/menu-button';
@@ -459,96 +458,64 @@ export function DevOSLayout({ children }: Props) {
             </Box>
           </Box>
 
-          <Scrollbar
-            fillContent
-            autoHide={false}
-            clickOnTrack
+          <Box
             sx={{
-              height: 1,
               minHeight: 0,
-              flex: '1 1 auto',
+              flex: '1 1 0',
+              display: 'flex',
+              flexDirection: 'column',
+              overflowY: 'scroll',
+              overflowX: 'hidden',
+              scrollBehavior: 'smooth',
+              overscrollBehavior: 'contain',
               borderRadius: 'inherit',
-              // 🎚️ BARRA DE ROLAGEM 3D VIDROMÓRFICA ULTRA-ELEGANTE E SEMPRE VISÍVEL
-              '& .simplebar-track.simplebar-vertical': {
-                width: 9,
-                right: 3,
-                top: 8,
-                bottom: 8,
-                borderRadius: 5,
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)',
+              pr: '3px',
+
+              // 🎚️ BARRA DE ROLAGEM NATIVA 3D VIDROMÓRFICA ULTRA-ELEGANTE E SEMPRE ATIVA
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(0, 167, 111, 0.85) rgba(145, 158, 171, 0.1)',
+
+              '&::-webkit-scrollbar': {
+                width: '8px',
+                display: 'block !important',
+              },
+              '&::-webkit-scrollbar-track': {
+                background: 'rgba(0, 0, 0, 0.04)',
+                borderRadius: '8px',
+                margin: '8px 0',
                 border: '1px solid rgba(255, 255, 255, 0.3)',
                 boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.06)',
-                zIndex: 10,
-                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  width: 11,
-                  backgroundColor: 'rgba(0, 0, 0, 0.08)',
-                },
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)',
                 ...theme.applyStyles('dark', {
-                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
                   boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.4)',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  },
                 }),
               },
-              '& .simplebar-scrollbar': {
-                minHeight: 38,
+              '&::-webkit-scrollbar-thumb': {
+                background:
+                  'linear-gradient(180deg, rgba(0, 167, 111, 0.95) 0%, rgba(0, 120, 103, 0.85) 100%)',
+                borderRadius: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.5)',
+                boxShadow:
+                  '0 2px 6px rgba(0, 167, 111, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+                minHeight: '40px',
                 cursor: 'pointer',
-                '&:before': {
-                  opacity: '0.75 !important',
-                  borderRadius: 5,
-                  left: 1.5,
-                  right: 1.5,
-                  top: 2,
-                  bottom: 2,
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                ...theme.applyStyles('dark', {
                   background:
-                    'linear-gradient(180deg, rgba(0, 167, 111, 0.9) 0%, rgba(145, 158, 171, 0.75) 100%) !important',
+                    'linear-gradient(180deg, rgba(0, 255, 127, 0.9) 0%, rgba(0, 167, 111, 0.8) 100%)',
+                  border: '1px solid rgba(255, 255, 255, 0.25)',
                   boxShadow:
-                    '0 2px 6px rgba(0, 167, 111, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
-                  transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                  ...theme.applyStyles('dark', {
-                    background:
-                      'linear-gradient(180deg, rgba(0, 255, 127, 0.85) 0%, rgba(0, 167, 111, 0.7) 100%) !important',
-                    boxShadow:
-                      '0 2px 8px rgba(0, 255, 127, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
-                  }),
-                },
-                '&:hover:before': {
-                  opacity: '1 !important',
+                    '0 2px 8px rgba(0, 255, 127, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35)',
+                }),
+                '&:hover': {
                   background:
-                    'linear-gradient(180deg, #00ff7f 0%, #00d2ff 100%) !important',
+                    'linear-gradient(180deg, #00ff7f 0%, #00d2ff 100%)',
                   boxShadow:
-                    '0 0 12px rgba(0, 255, 127, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
-                  transform: 'scaleX(1.12)',
+                    '0 0 14px rgba(0, 255, 127, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
                 },
-                '&.simplebar-visible:before': {
-                  opacity: '0.9 !important',
-                },
-              },
-              // Rolagem suave e prevenção de transbordo horizontal
-              '& .simplebar-content-wrapper': {
-                scrollBehavior: 'smooth',
-                overscrollBehavior: 'contain',
-                scrollbarWidth: 'thin',
-                scrollbarColor: 'rgba(0, 167, 111, 0.6) transparent',
-                '&::-webkit-scrollbar': {
-                  width: 7,
-                },
-                '&::-webkit-scrollbar-track': {
-                  background: 'transparent',
-                },
-                '&::-webkit-scrollbar-thumb': {
-                  borderRadius: 4,
-                  backgroundColor: 'rgba(0, 167, 111, 0.65)',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                },
-              },
-              '& .simplebar-content': {
-                pr: '4px',
               },
             }}
           >
@@ -589,7 +556,7 @@ export function DevOSLayout({ children }: Props) {
                 </Typography>
               </Box>
             </Box>
-          </Scrollbar>
+          </Box>
         </>
       )}
     </NavRoot>
@@ -628,32 +595,38 @@ export function DevOSLayout({ children }: Props) {
         </Box>
       </Box>
 
-      <Scrollbar
-        fillContent
-        autoHide={false}
-        clickOnTrack
+      <Box
         sx={{
-          flex: '1 1 auto',
+          minHeight: 0,
+          flex: '1 1 0',
+          display: 'flex',
+          flexDirection: 'column',
+          overflowY: 'scroll',
+          overflowX: 'hidden',
+          scrollBehavior: 'smooth',
+          overscrollBehavior: 'contain',
           my: 1,
-          '& .simplebar-track.simplebar-vertical': {
-            width: 8,
-            right: 2,
-            top: 4,
-            bottom: 4,
-            borderRadius: 4,
-            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(0, 167, 111, 0.85) rgba(145, 158, 171, 0.1)',
+          '&::-webkit-scrollbar': {
+            width: '8px',
+            display: 'block !important',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'rgba(0, 0, 0, 0.04)',
+            borderRadius: '4px',
             ...theme.applyStyles('dark', {
-              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+              background: 'rgba(255, 255, 255, 0.05)',
             }),
           },
-          '& .simplebar-scrollbar:before': {
-            opacity: '0.75 !important',
-            borderRadius: 4,
+          '&::-webkit-scrollbar-thumb': {
             background:
-              'linear-gradient(180deg, rgba(0, 167, 111, 0.85) 0%, rgba(145, 158, 171, 0.7) 100%) !important',
-          },
-          '& .simplebar-content-wrapper': {
-            scrollBehavior: 'smooth',
+              'linear-gradient(180deg, rgba(0, 167, 111, 0.95) 0%, rgba(0, 120, 103, 0.85) 100%)',
+            borderRadius: '4px',
+            ...theme.applyStyles('dark', {
+              background:
+                'linear-gradient(180deg, rgba(0, 255, 127, 0.9) 0%, rgba(0, 167, 111, 0.8) 100%)',
+            }),
           },
         }}
       >
@@ -661,7 +634,7 @@ export function DevOSLayout({ children }: Props) {
           data={DEVOS_NAV_DATA}
           sx={{ px: 1, flex: '1 0 auto' }}
         />
-      </Scrollbar>
+      </Box>
 
       <Box sx={{ pt: 1 }}>
         <Box
