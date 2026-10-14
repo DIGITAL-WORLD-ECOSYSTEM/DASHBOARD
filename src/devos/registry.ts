@@ -11,21 +11,15 @@ export type DevModule = {
 
 export const DEV_MODULES: DevModule[] = [
   { id: 'dashboard', title: 'Command Center', path: '/dev' },
-  { id: 'identity', title: 'Identity Lab', path: '/dev/identity' },
-  { id: 'impersonation', title: 'Impersonation', path: '/dev/impersonation' },
+  { id: 'dao', title: 'Tesouraria', path: '/dev/dao' },
+  { id: 'wallets', title: 'Carteiras', path: '/dev/wallets' },
+  { id: 'ledger', title: 'Livro-Razão', path: '/dev/ledger' },
+  { id: 'invoices', title: 'Faturas', path: '/dev/invoices' },
   { id: 'database', title: 'Database', path: '/dev/database' },
-  { id: 'apis', title: 'APIs', path: '/dev/apis' },
-  { id: 'audit', title: 'Audit Explorer', path: '/dev/audit' },
   { id: 'security', title: 'Security Center', path: '/dev/security' },
-  { id: 'flags', title: 'Feature Flags', path: '/dev/flags' },
+  { id: 'audit', title: 'Audit Explorer', path: '/dev/audit' },
+  { id: 'apis', title: 'APIs', path: '/dev/apis' },
   { id: 'infrastructure', title: 'Infrastructure', path: '/dev/infrastructure' },
-  { id: 'environment', title: 'Environment', path: '/dev/environment' },
-  { id: 'testing', title: 'Testing Lab', path: '/dev/testing' },
-  { id: 'dao', title: 'DAO Console', path: '/dev/dao' },
-  { id: 'releases', title: 'Release Center', path: '/dev/releases' },
-  { id: 'jobs', title: 'Jobs & Queues', path: '/dev/jobs' },
-  { id: 'registry', title: 'System Registry', path: '/dev/registry' },
-  { id: 'about', title: 'About (Meta)', path: '/dev/about' },
 ];
 
 export const FOUNDER_MODULES: DevModule[] = [
