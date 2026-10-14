@@ -1,31 +1,17 @@
-import { useState } from 'react';
-
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
-import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
 import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
 import { alpha } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import LinearProgress from '@mui/material/LinearProgress';
 
 import { Iconify } from 'src/components/iconify';
 
-import { NativeTokenMonitorCard } from '../components/native-token-monitor-card';
-import {
-  MOCK_SAFE_ASSETS,
-  MOCK_SAFE_SIGNERS,
-  type SafeProposal,
-  MOCK_SAFE_PROPOSALS,
-} from '../../mock-data';
+import { MOCK_SAFE_ASSETS, MOCK_SAFE_SIGNERS } from '../../mock-data';
+import { LiquidityPoolsCard, NativeTokenMonitorCard } from '../components';
 
 // ----------------------------------------------------------------------
 
@@ -39,10 +25,6 @@ const ASSET_COLORS: Record<string, string> = {
 };
 
 export function TreasuryView() {
-  const [simulationModalOpen, setSimulationModalOpen] = useState(false);
-  const [selectedProposal, setSelectedProposal] = useState<SafeProposal | null>(null);
-  const [simulationFeedback, setSimulationFeedback] = useState<string | null>(null);
-
   // Cálculos consolidados da Tesouraria ASPPIBRA
   const totalUsdValuation = MOCK_SAFE_ASSETS.reduce((acc, curr) => acc + curr.valueUsd, 0);
   const totalBrlValuation = totalUsdValuation * USD_TO_BRL_RATE;
@@ -55,18 +37,6 @@ export function TreasuryView() {
       color: ASSET_COLORS[asset.symbol] || '#64748B',
     };
   });
-
-  const handleSimulate = (proposal: SafeProposal) => {
-    setSelectedProposal(proposal);
-    setSimulationModalOpen(true);
-    setSimulationFeedback(null);
-  };
-
-  const handleExecuteSimulation = () => {
-    setSimulationFeedback(
-      `Simulação executada com sucesso em memória! Dry-run validado pelo motor local. NENHUMA transação foi transmitida para a rede blockchain (INV-001).`
-    );
-  };
 
   return (
     <Stack spacing={2.5}>
@@ -271,101 +241,11 @@ export function TreasuryView() {
         ))}
       </Grid>
 
-      {/* 4. DUAL COLUMN: ACTIVE PROPOSALS & SIGNERS MATRIX (THEME-AWARE) */}
+      {/* 4. DUAL COLUMN: LIQUIDITY POOLS & SIGNERS MATRIX */}
       <Grid container spacing={2.5}>
-        {/* Proposals Column */}
+        {/* Liquidity Pools Column */}
         <Grid size={{ xs: 12, lg: 7 }}>
-          <Card
-            sx={{
-              p: 2.5,
-              bgcolor: 'background.paper',
-              border: (theme) => `1px solid ${theme.palette.divider}`,
-              borderRadius: 2,
-              height: '100%',
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary', mb: 2 }}>
-              Treasury Proposals ({MOCK_SAFE_PROPOSALS.length})
-            </Typography>
-
-            <Stack spacing={1.5}>
-              {MOCK_SAFE_PROPOSALS.map((p) => {
-                const quorumPercent = (p.confirmations / p.threshold) * 100;
-                return (
-                  <Box
-                    key={p.id}
-                    sx={{
-                      p: 1.75,
-                      bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
-                      border: (theme) => `1px solid ${theme.palette.divider}`,
-                      borderRadius: 1.5,
-                    }}
-                  >
-                    <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                      <Box>
-                        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                          <Chip
-                            label={p.id}
-                            size="small"
-                            variant="soft"
-                            color="info"
-                            sx={{
-                              height: 20,
-                              fontSize: '0.68rem',
-                              fontWeight: 800,
-                            }}
-                          />
-                          <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                            {p.title}
-                          </Typography>
-                        </Stack>
-                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 0.5 }}>
-                          Type: {p.type} • Target: <code>{p.targetAddress}</code>
-                        </Typography>
-                      </Box>
-
-                      <Button
-                        size="small"
-                        variant="outlined"
-                        color="warning"
-                        onClick={() => handleSimulate(p)}
-                        startIcon={<Iconify icon={'solar:play-circle-bold' as any} width={14} />}
-                        sx={{
-                          fontSize: '0.72rem',
-                          textTransform: 'none',
-                          py: 0.3,
-                          px: 1,
-                        }}
-                      >
-                        Simular (Local)
-                      </Button>
-                    </Stack>
-
-                    <Stack spacing={0.5} sx={{ mt: 1.25 }}>
-                      <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                          Signatures: {p.confirmations} / {p.threshold} ({p.status})
-                        </Typography>
-                        <Typography variant="caption" sx={{ color: 'info.main', fontWeight: 700, fontFamily: 'monospace' }}>
-                          {p.valueEth}
-                        </Typography>
-                      </Stack>
-                      <LinearProgress
-                        variant="determinate"
-                        value={quorumPercent}
-                        color={quorumPercent >= 100 ? 'success' : 'info'}
-                        sx={{
-                          height: 5,
-                          borderRadius: 1,
-                          bgcolor: (theme) => alpha(theme.palette.grey[500], 0.16),
-                        }}
-                      />
-                    </Stack>
-                  </Box>
-                );
-              })}
-            </Stack>
-          </Card>
+          <LiquidityPoolsCard />
         </Grid>
 
         {/* Signers Matrix Column */}
@@ -434,90 +314,6 @@ export function TreasuryView() {
           </Card>
         </Grid>
       </Grid>
-
-      {/* 5. TRANSACTION SIMULATION MODAL (SIMULATION ONLY) */}
-      <Dialog
-        open={simulationModalOpen}
-        onClose={() => setSimulationModalOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}`, pb: 2 }}>
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Iconify icon={'solar:play-bold' as any} width={20} sx={{ color: 'warning.main' }} />
-            <Typography variant="h6" sx={{ fontWeight: 800 }}>
-              Simulador de Transação Safe (In-Memory Dry-Run)
-            </Typography>
-          </Stack>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            ASPPIBRA Protocol Vault • SIMULATION ONLY • ZERO BLOCKCHAIN INTERACTION
-          </Typography>
-        </DialogTitle>
-
-        <DialogContent sx={{ py: 3 }}>
-          {selectedProposal && (
-            <Stack spacing={2.5}>
-              <Box sx={{ p: 2, bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04), borderRadius: 1.5, border: (theme) => `1px solid ${theme.palette.divider}` }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                  PROPOSTA SELECIONADA
-                </Typography>
-                <Typography variant="body1" sx={{ fontWeight: 700, color: 'info.main', my: 0.5 }}>
-                  {selectedProposal.id}: {selectedProposal.title}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                  Amount: {selectedProposal.valueEth} → Recipient: {selectedProposal.targetAddress}
-                </Typography>
-              </Box>
-
-              <Box sx={{ p: 2, bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04), borderRadius: 1.5, border: (theme) => `1px solid ${theme.palette.divider}` }}>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                  MOCK EXECUTION PRE-CHECK
-                </Typography>
-                <Stack spacing={1} sx={{ mt: 1 }}>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Estimated Gas Units:</Typography>
-                    <Typography variant="caption" sx={{ color: 'success.main', fontFamily: 'monospace' }}>42,108 Gas (Mock)</Typography>
-                  </Stack>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>Operation Policy Check:</Typography>
-                    <Typography variant="caption" sx={{ color: 'success.main', fontFamily: 'monospace' }}>ALLOWED (SIMULATION_ONLY)</Typography>
-                  </Stack>
-                  <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>State Mutation Result:</Typography>
-                    <Typography variant="caption" sx={{ color: 'warning.main', fontFamily: 'monospace' }}>SANDBOX ISOLATED (NO EVM WRITE)</Typography>
-                  </Stack>
-                </Stack>
-              </Box>
-
-              {simulationFeedback && (
-                <Alert severity="success">
-                  {simulationFeedback}
-                </Alert>
-              )}
-            </Stack>
-          )}
-        </DialogContent>
-
-        <DialogActions sx={{ p: 2, borderTop: (theme) => `1px solid ${theme.palette.divider}` }}>
-          <Button
-            onClick={() => setSimulationModalOpen(false)}
-            sx={{ color: 'text.secondary', textTransform: 'none' }}
-          >
-            Fechar
-          </Button>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={handleExecuteSimulation}
-            sx={{
-              fontWeight: 800,
-              textTransform: 'none',
-            }}
-          >
-            Executar Dry-Run Local
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Stack>
   );
 }
