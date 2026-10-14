@@ -44,6 +44,7 @@ const AccountTwoFAPage = lazy(() => import('src/pages/dashboard/user/account/2fa
 const FileManagerPage = lazy(() => import('src/pages/dashboard/file-manager'));
 // App
 const ChatPage = lazy(() => import('src/pages/dashboard/chat'));
+const DesignSystemPage = lazy(() => import('src/pages/dashboard/design-system'));
 
 // ----------------------------------------------------------------------
 
@@ -76,6 +77,7 @@ export const dashboardRoutes: RouteObject[] = [
     element: CONFIG.auth.skip ? dashboardLayout() : <AuthGuard>{dashboardLayout()}</AuthGuard>,
     children: [
       { index: true, element: <IndexPage /> },
+      { path: 'design-system', element: <DesignSystemPage /> },
       { path: 'chat', element: <ChatPage /> },
       {
         path: 'banking',
