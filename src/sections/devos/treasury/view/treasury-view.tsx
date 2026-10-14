@@ -10,8 +10,8 @@ import Typography from '@mui/material/Typography';
 
 import { Iconify } from 'src/components/iconify';
 
-import { MOCK_SAFE_ASSETS, MOCK_SAFE_SIGNERS } from '../../mock-data';
-import { LiquidityPoolsCard, NativeTokenMonitorCard } from '../components';
+import { MOCK_SAFE_ASSETS } from '../../mock-data';
+import { TokenHoldersCard, LiquidityPoolsCard, NativeTokenMonitorCard } from '../components';
 
 // ----------------------------------------------------------------------
 
@@ -241,77 +241,16 @@ export function TreasuryView() {
         ))}
       </Grid>
 
-      {/* 4. DUAL COLUMN: LIQUIDITY POOLS & SIGNERS MATRIX */}
+      {/* 4. DUAL COLUMN: LIQUIDITY POOLS & TOKEN HOLDERS */}
       <Grid container spacing={2.5}>
         {/* Liquidity Pools Column */}
         <Grid size={{ xs: 12, lg: 7 }}>
           <LiquidityPoolsCard />
         </Grid>
 
-        {/* Signers Matrix Column */}
+        {/* Token Holders Column */}
         <Grid size={{ xs: 12, lg: 5 }}>
-          <Card
-            sx={{
-              p: 2.5,
-              bgcolor: 'background.paper',
-              border: (theme) => `1px solid ${theme.palette.divider}`,
-              borderRadius: 2,
-              height: '100%',
-            }}
-          >
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary', mb: 2 }}>
-              Authorized Signers Matrix ({MOCK_SAFE_SIGNERS.length})
-            </Typography>
-
-            <Stack spacing={1.25}>
-              {MOCK_SAFE_SIGNERS.map((signer) => (
-                <Box
-                  key={signer.address}
-                  sx={{
-                    p: 1.5,
-                    bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04),
-                    border: (theme) => `1px solid ${theme.palette.divider}`,
-                    borderRadius: 1.5,
-                  }}
-                >
-                  <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box>
-                      <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary' }}>
-                        {signer.label}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>
-                        {signer.address} • {signer.role}
-                      </Typography>
-                    </Box>
-
-                    <Chip
-                      label={signer.status}
-                      size="small"
-                      variant="soft"
-                      color={
-                        signer.status === 'CONFIRMED'
-                          ? 'success'
-                          : signer.status === 'PENDING'
-                            ? 'warning'
-                            : 'default'
-                      }
-                      sx={{
-                        height: 20,
-                        fontSize: '0.62rem',
-                        fontWeight: 800,
-                      }}
-                    />
-                  </Stack>
-                </Box>
-              ))}
-            </Stack>
-
-            <Box sx={{ mt: 2, p: 1.25, bgcolor: (theme) => alpha(theme.palette.grey[500], 0.04), borderRadius: 1 }}>
-              <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                Note: Signer EVM identities are separated from Operator Ed25519 device identities (INV-010).
-              </Typography>
-            </Box>
-          </Card>
+          <TokenHoldersCard />
         </Grid>
       </Grid>
     </Stack>
