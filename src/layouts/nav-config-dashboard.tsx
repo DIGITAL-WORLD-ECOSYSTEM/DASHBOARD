@@ -113,18 +113,6 @@ export const navData: NavSectionProps['data'] = [
         ],
       },
       {
-        title: 'Faturas',
-        path: paths.dashboard.invoice.root,
-        icon: ICONS.invoice,
-        allowedRoles: ['admin', 'dev'],
-        children: [
-          { title: 'Lista', path: paths.dashboard.invoice.root },
-          { title: 'Detalhes', path: paths.dashboard.invoice.demo.details },
-          { title: 'Criar', path: paths.dashboard.invoice.new },
-          { title: 'Editar', path: paths.dashboard.invoice.demo.edit },
-        ],
-      },
-      {
         title: 'Blog',
         path: paths.dashboard.post.root,
         icon: ICONS.blog,
