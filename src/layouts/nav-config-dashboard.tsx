@@ -142,46 +142,6 @@ export const navData: NavSectionProps['data'] = [
         icon: ICONS.calendar,
         allowedRoles: ['admin', 'dev'],
       },
-      {
-        title: 'Central de Notificações',
-        path: paths.dashboard.communication.root,
-        icon: ICONS.mail,
-        allowedRoles: ['admin', 'dev'],
-        children: [
-          {
-            title: 'Visão Geral',
-            path: paths.dashboard.communication.notifications,
-          },
-          {
-            title: 'E-mail',
-            path: paths.dashboard.communication.email,
-            allowedRoles: ['admin', 'dev'],
-          },
-          {
-            title: 'WhatsApp',
-            path: paths.dashboard.communication.whatsapp,
-            allowedRoles: ['admin', 'dev'],
-          },
-          {
-            title: 'SMS',
-            path: paths.dashboard.communication.sms,
-            allowedRoles: ['admin', 'dev'],
-          },
-          {
-            title: 'Redes Sociais',
-            path: paths.dashboard.communication.social,
-            allowedRoles: ['admin', 'dev'],
-          },
-          {
-            title: 'Chat',
-            path: paths.dashboard.communication.chat,
-          },
-          {
-            title: 'Configurações',
-            path: paths.dashboard.communication.settings,
-          },
-        ],
-      },
     ],
   },
   /**
