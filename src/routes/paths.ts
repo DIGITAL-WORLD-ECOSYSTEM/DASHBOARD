@@ -59,6 +59,7 @@ export const paths = {
     root: '/',
     mail: `${ROOTS.DASHBOARD}/communication/email`,
     chat: `${ROOTS.DASHBOARD}/chat`,
+    designSystem: `${ROOTS.DASHBOARD}/design-system`,
     fileManager: `${ROOTS.DASHBOARD}/file-manager`,
     general: {
       app: `${ROOTS.DASHBOARD}/app`,
