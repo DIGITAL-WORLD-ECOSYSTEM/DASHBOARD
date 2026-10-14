@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
 import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
 import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import Grid from '@mui/material/Grid';
