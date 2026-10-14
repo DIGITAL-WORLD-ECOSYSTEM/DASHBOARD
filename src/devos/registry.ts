@@ -16,6 +16,7 @@ export const DEV_MODULES: DevModule[] = [
   { id: 'ledger', title: 'Livro-Razão', path: '/dev/ledger' },
   { id: 'invoices', title: 'Faturas', path: '/dev/invoices' },
   { id: 'database', title: 'Database', path: '/dev/database' },
+  { id: 'notifications', title: 'Central de Notificações', path: '/dev/notifications' },
   { id: 'security', title: 'Security Center', path: '/dev/security' },
   { id: 'audit', title: 'Audit Explorer', path: '/dev/audit' },
   { id: 'apis', title: 'APIs', path: '/dev/apis' },
