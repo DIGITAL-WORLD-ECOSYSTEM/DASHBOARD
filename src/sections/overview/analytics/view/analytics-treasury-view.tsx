@@ -18,7 +18,7 @@ import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 
-import { FinancialTransactionsTable } from 'src/sections/banking/financial-history/components/financial-transactions-table';
+import { FinancialTransactionsTable } from 'src/sections/devos/ledger/citizen-ledger';
 
 import { AnalyticsWidgetSummary } from '../analytics-widget-summary';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
