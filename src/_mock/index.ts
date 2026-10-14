@@ -19,5 +19,3 @@ export * from './_invoice';
 export * from './_product';
 
 export * from './_overview';
-
-export * from './_calendar';
