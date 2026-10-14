@@ -93,7 +93,7 @@ export const paths = {
         root: `${ROOTS.DASHBOARD}/banking`,
         treasury: `${ROOTS.DASHBOARD}/banking/treasury`,
         payments: `${ROOTS.DASHBOARD}/banking/payments`,
-        financialHistory: `${ROOTS.DASHBOARD}/banking/financial-history`,
+        financialHistory: `${ROOTS.DEVOS}/ledger`,
       },
       file: `${ROOTS.DASHBOARD}/file`,
     },
@@ -153,6 +153,7 @@ export const paths = {
     dao: `${ROOTS.DEVOS}/dao`,
     wallets: `${ROOTS.DEVOS}/wallets`,
     ledger: `${ROOTS.DEVOS}/ledger`,
+    citizenLedger: `${ROOTS.DEVOS}/ledger`,
     invoices: `${ROOTS.DEVOS}/invoices`,
     founder: {
       strategic: `${ROOTS.DEVOS}/founder/strategic`,
