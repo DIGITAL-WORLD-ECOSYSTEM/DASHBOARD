@@ -55,7 +55,7 @@ describe('DevOS Layout — Integridade da Barra Lateral e Navegação', () => {
     expect(getSectionTitle(paths.devos.ledger)).toBe('Livro-Razão');
     expect(getSectionTitle(paths.devos.invoices)).toBe('Faturas');
     expect(getSectionTitle(paths.devos.database)).toBe('Database');
-    expect(getSectionTitle(paths.devos.notifications)).toBe('Notificações');
+    expect(getSectionTitle(paths.devos.notifications.root)).toBe('Notificações');
     expect(getSectionTitle(paths.devos.security)).toBe('Security');
     expect(getSectionTitle(paths.devos.audit)).toBe('Audit');
     expect(getSectionTitle(paths.devos.apis)).toBe('APIs');
