@@ -6,6 +6,9 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hooks';
+
 import { CONFIG } from 'src/global-config';
 
 import { Iconify } from 'src/components/iconify';
@@ -16,18 +19,20 @@ const metadata = { title: `DevOS Cockpit - Central de Notificações - ${CONFIG.
 
 const CHANNELS = [
   {
-    title: 'Alertas On-chain & Webhooks',
-    desc: 'Eventos de liquidez, governança e alertas de segurança emitidos pelo motor de contratos.',
-    icon: 'solar:shield-warning-bold',
-    status: 'Ativo',
-    color: '#00A76F',
-  },
-  {
     title: 'E-mail Transacional & Marketing',
     desc: 'Disparos transacionais da DAO, confirmações de ordens e comunicados aos cooperados.',
     icon: 'solar:letter-bold',
-    status: 'Integrando',
+    status: 'Integrado',
     color: '#0288D1',
+    path: paths.devos.notifications.email,
+  },
+  {
+    title: 'Chat Interno & Suporte',
+    desc: 'Fila de atendimento interno dos cooperados e moderação de salas de membros da DAO.',
+    icon: 'solar:users-group-rounded-bold',
+    status: 'Integrado',
+    color: '#00ff7f',
+    path: paths.devos.notifications.chat,
   },
   {
     title: 'WhatsApp Oficial DAO',
@@ -35,6 +40,7 @@ const CHANNELS = [
     icon: 'solar:chat-round-dots-bold',
     status: 'Standby',
     color: '#22C55E',
+    path: paths.devos.notifications.whatsapp,
   },
   {
     title: 'SMS & Alertas Críticos',
@@ -42,6 +48,7 @@ const CHANNELS = [
     icon: 'solar:phone-calling-bold',
     status: 'Standby',
     color: '#F59E0B',
+    path: paths.devos.notifications.sms,
   },
   {
     title: 'Broadcasts & Redes Sociais',
@@ -49,17 +56,21 @@ const CHANNELS = [
     icon: 'solar:share-circle-bold',
     status: 'Planejado',
     color: '#8B5CF6',
+    path: paths.devos.notifications.social,
   },
   {
-    title: 'Chat Interno & Suporte',
-    desc: 'Fila de atendimento interno dos cooperados e moderação de salas de membros da DAO.',
-    icon: 'solar:users-group-rounded-bold',
-    status: 'Ativo',
-    color: '#00ff7f',
+    title: 'Configurações & LGPD',
+    desc: 'Parâmetros globais de opt-in/opt-out de cooperados e políticas de privacidade e proteção de dados.',
+    icon: 'solar:settings-minimalistic-bold',
+    status: 'Governança',
+    color: '#EC4899',
+    path: paths.devos.notifications.settings,
   },
 ];
 
 export default function NotificationsPage() {
+  const router = useRouter();
+
   return (
     <>
       <title>{metadata.title}</title>
@@ -148,6 +159,7 @@ export default function NotificationsPage() {
                 <Button
                   size="small"
                   variant="outlined"
+                  onClick={() => router.push(channel.path)}
                   sx={{
                     color: '#E2E8F0',
                     borderColor: 'rgba(255, 255, 255, 0.15)',
@@ -158,7 +170,7 @@ export default function NotificationsPage() {
                     },
                   }}
                 >
-                  Gerenciar Canal
+                  Acessar Canal
                 </Button>
               </Card>
             </Grid>
