@@ -8,8 +8,8 @@ import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
 import { Iconify } from 'src/components/iconify';
 
-import { MOCK_FINANCIAL_PROFILES } from 'src/sections/banking/financial-history/utils/mock-financial-profile';
-import { FinancialSummaryHeader } from 'src/sections/banking/financial-history/components/financial-summary-header';
+import { MOCK_FINANCIAL_PROFILES } from 'src/sections/devos/ledger/citizen-ledger';
+import { FinancialSummaryHeader } from 'src/sections/devos/ledger/citizen-ledger';
 
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
