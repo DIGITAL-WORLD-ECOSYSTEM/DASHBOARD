@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
@@ -27,6 +29,7 @@ import TablePagination from '@mui/material/TablePagination';
 
 import { Iconify } from 'src/components/iconify';
 
+import { CitizenLedgerView } from '../citizen-ledger';
 import {
   LEDGER_METADATA,
   LEDGER_ACCOUNTS,
@@ -37,6 +40,7 @@ import {
 // ----------------------------------------------------------------------
 
 export function LedgerView() {
+  const [activeTab, setActiveTab] = useState<'macro' | 'citizen'>('macro');
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -87,8 +91,40 @@ export function LedgerView() {
         </Typography>
       </Box>
 
-      {/* 2. KPI METRICS CARDS */}
-      <Grid container spacing={2}>
+      {/* 2. NAVEGAÇÃO DE ABAS */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={activeTab}
+          onChange={(_, newValue) => setActiveTab(newValue)}
+          sx={{
+            '& .MuiTab-root': {
+              minHeight: 44,
+              fontWeight: 700,
+              fontSize: '0.85rem',
+            },
+          }}
+        >
+          <Tab
+            value="macro"
+            icon={<Iconify icon={'solar:calculator-bold-duotone' as any} width={20} />}
+            iconPosition="start"
+            label="Partidas Dobradas (D1 Macro Ledger)"
+          />
+          <Tab
+            value="citizen"
+            icon={<Iconify icon="solar:user-id-bold" width={20} />}
+            iconPosition="start"
+            label="Extrato por Associado (Citizen Ledger)"
+          />
+        </Tabs>
+      </Box>
+
+      {activeTab === 'citizen' ? (
+        <CitizenLedgerView />
+      ) : (
+        <>
+          {/* 3. KPI METRICS CARDS */}
+          <Grid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
             sx={{
@@ -591,6 +627,8 @@ export function LedgerView() {
           </Button>
         </DialogActions>
       </Dialog>
-    </Stack>
+    </>
+  )}
+</Stack>
   );
 }
