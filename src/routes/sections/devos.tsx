@@ -29,6 +29,9 @@ const DAOPage = lazy(() => import('src/pages/devos/dao-page'));
 const WalletsPage = lazy(() => import('src/pages/devos/wallets-page'));
 const LedgerPage = lazy(() => import('src/pages/devos/ledger-page'));
 const InvoicesPage = lazy(() => import('src/pages/devos/invoices-page'));
+const EcommercePage = lazy(() => import('src/pages/devos/ecommerce-page'));
+const AnalyticsPage = lazy(() => import('src/pages/devos/analytics-page'));
+const BlogPage = lazy(() => import('src/pages/devos/blog-page'));
 
 const StrategicPage = lazy(() => import('src/pages/devos/founder/strategic-page'));
 const OperationsPage = lazy(() => import('src/pages/devos/founder/operations-page'));
@@ -93,6 +96,9 @@ export const devosRoutes: RouteObject[] = [
       { path: 'wallets', element: <WalletsPage /> },
       { path: 'ledger', element: <LedgerPage /> },
       { path: 'invoices', element: <InvoicesPage /> },
+      { path: 'ecommerce', element: <EcommercePage /> },
+      { path: 'analytics', element: <AnalyticsPage /> },
+      { path: 'blog', element: <BlogPage /> },
       {
         path: 'founder',
         children: [
