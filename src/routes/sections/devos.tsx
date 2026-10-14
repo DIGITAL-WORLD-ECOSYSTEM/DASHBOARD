@@ -15,6 +15,12 @@ import { usePathname } from '../hooks';
 const DashboardPage = lazy(() => import('src/pages/devos/page'));
 const DatabasePage = lazy(() => import('src/pages/devos/database-page'));
 const NotificationsPage = lazy(() => import('src/pages/devos/notifications-page'));
+const DevOSEmailPage = lazy(() => import('src/pages/devos/communication/email-page'));
+const DevOSChatPage = lazy(() => import('src/pages/devos/communication/chat-page'));
+const DevOSWhatsAppPage = lazy(() => import('src/pages/devos/communication/whatsapp-page'));
+const DevOSSmsPage = lazy(() => import('src/pages/devos/communication/sms-page'));
+const DevOSSocialPage = lazy(() => import('src/pages/devos/communication/social-page'));
+const DevOSSettingsPage = lazy(() => import('src/pages/devos/communication/settings-page'));
 const APIsPage = lazy(() => import('src/pages/devos/apis-page'));
 const AuditPage = lazy(() => import('src/pages/devos/audit-page'));
 const SecurityPage = lazy(() => import('src/pages/devos/security-page'));
@@ -67,7 +73,18 @@ export const devosRoutes: RouteObject[] = [
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'database', element: <DatabasePage /> },
-      { path: 'notifications', element: <NotificationsPage /> },
+      {
+        path: 'notifications',
+        children: [
+          { index: true, element: <NotificationsPage /> },
+          { path: 'email', element: <DevOSEmailPage /> },
+          { path: 'chat', element: <DevOSChatPage /> },
+          { path: 'whatsapp', element: <DevOSWhatsAppPage /> },
+          { path: 'sms', element: <DevOSSmsPage /> },
+          { path: 'social', element: <DevOSSocialPage /> },
+          { path: 'settings', element: <DevOSSettingsPage /> },
+        ],
+      },
       { path: 'apis', element: <APIsPage /> },
       { path: 'audit', element: <AuditPage /> },
       { path: 'security', element: <SecurityPage /> },
