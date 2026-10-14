@@ -147,7 +147,6 @@ export const fetcher = async <T = unknown>(
 
 export const endpoints = {
   chat: '/api/v1/chat',
-  calendar: '/api/v1/calendar',
   auth: {
     me: '/api/v1/identity/me',
     changePassword: '/api/v1/identity/change-password',
