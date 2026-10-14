@@ -8,7 +8,9 @@ import { LoadingScreen } from 'src/components/loading-screen';
 
 // ----------------------------------------------------------------------
 
-const OverviewAnalyticsPage = lazy(() => import('src/pages/dashboard/banking/financial-history'));
+const OverviewAnalyticsPage = lazy(() =>
+  import('src/sections/devos/ledger/citizen-ledger').then((m) => ({ default: m.CitizenLedgerView }))
+);
 
 // ----------------------------------------------------------------------
 
