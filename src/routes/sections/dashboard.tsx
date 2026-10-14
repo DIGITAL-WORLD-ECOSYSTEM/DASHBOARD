@@ -72,14 +72,7 @@ const ChatPage = lazy(() => import('src/pages/dashboard/chat'));
 const MailPage = lazy(() => import('src/pages/dashboard/mail'));
 const CalendarPage = lazy(() => import('src/pages/dashboard/calendar'));
 
-// Communication (Notifications)
-const CommNotificationsPage = lazy(() => import('src/pages/dashboard/communication/notifications'));
-const CommEmailPage = lazy(() => import('src/pages/dashboard/communication/email'));
-const CommWhatsAppPage = lazy(() => import('src/pages/dashboard/communication/whatsapp'));
-const CommSmsPage = lazy(() => import('src/pages/dashboard/communication/sms'));
-const CommSocialPage = lazy(() => import('src/pages/dashboard/communication/social'));
-const CommChatPage = lazy(() => import('src/pages/dashboard/communication/chat'));
-const CommSettingsPage = lazy(() => import('src/pages/dashboard/communication/settings'));
+// ----------------------------------------------------------------------
 
 
 // ----------------------------------------------------------------------
@@ -257,47 +250,6 @@ export const dashboardRoutes: RouteObject[] = [
             <CalendarPage />
           </RoleBasedGuard>
         ) 
-      },
-      {
-        path: 'communication',
-        children: [
-          { index: true, element: <CommNotificationsPage /> },
-          { path: 'notifications', element: <CommNotificationsPage /> },
-          { 
-            path: 'email', 
-            element: (
-              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
-                <MailPage />
-              </RoleBasedGuard>
-            )
-          },
-          { 
-            path: 'whatsapp', 
-            element: (
-              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
-                <CommWhatsAppPage />
-              </RoleBasedGuard>
-            )
-          },
-          { 
-            path: 'sms', 
-            element: (
-              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
-                <CommSmsPage />
-              </RoleBasedGuard>
-            )
-          },
-          { 
-            path: 'social', 
-            element: (
-              <RoleBasedGuard allowedRoles={['admin', 'dev']} hasContent>
-                <CommSocialPage />
-              </RoleBasedGuard>
-            )
-          },
-          { path: 'chat', element: <CommChatPage /> },
-          { path: 'settings', element: <CommSettingsPage /> },
-        ]
       },
     ],
   },
