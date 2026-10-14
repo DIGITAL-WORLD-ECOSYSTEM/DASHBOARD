@@ -8,8 +8,7 @@ import { useGetTreasuryAnalytics } from 'src/actions/treasury';
 
 import { Iconify } from 'src/components/iconify';
 
-import { MOCK_FINANCIAL_PROFILES } from 'src/sections/devos/ledger/citizen-ledger';
-import { FinancialSummaryHeader } from 'src/sections/devos/ledger/citizen-ledger';
+import { FinancialSummaryHeader, MOCK_FINANCIAL_PROFILES } from 'src/sections/devos/ledger/citizen-ledger';
 
 import { AnalyticsCurrentVisits } from '../analytics-current-visits';
 import { AnalyticsWebsiteVisits } from '../analytics-website-visits';
