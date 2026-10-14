@@ -16,9 +16,9 @@ describe('DevOS Layout — Integridade da Barra Lateral e Navegação', () => {
     ]);
   });
 
-  it('deve conter todos os 10 itens de navegação esperados sem perdas', () => {
+  it('deve conter todos os 11 itens de navegação esperados sem perdas', () => {
     const totalItems = DEVOS_NAV_DATA.reduce((acc, group) => acc + group.items.length, 0);
-    expect(totalItems).toBe(10);
+    expect(totalItems).toBe(11);
 
     const financeiroGroup = DEVOS_NAV_DATA.find((g) => g.subheader === 'FINANCEIRO');
     expect(financeiroGroup?.items.map((i) => i.title)).toEqual([
@@ -32,6 +32,7 @@ describe('DevOS Layout — Integridade da Barra Lateral e Navegação', () => {
     expect(controlPlaneGroup?.items.map((i) => i.title)).toEqual([
       'Observability',
       'Database',
+      'Notificações',
     ]);
 
     const securityGroup = DEVOS_NAV_DATA.find((g) => g.subheader === 'SECURITY');
@@ -54,6 +55,7 @@ describe('DevOS Layout — Integridade da Barra Lateral e Navegação', () => {
     expect(getSectionTitle(paths.devos.ledger)).toBe('Livro-Razão');
     expect(getSectionTitle(paths.devos.invoices)).toBe('Faturas');
     expect(getSectionTitle(paths.devos.database)).toBe('Database');
+    expect(getSectionTitle(paths.devos.notifications)).toBe('Notificações');
     expect(getSectionTitle(paths.devos.security)).toBe('Security');
     expect(getSectionTitle(paths.devos.audit)).toBe('Audit');
     expect(getSectionTitle(paths.devos.apis)).toBe('APIs');
