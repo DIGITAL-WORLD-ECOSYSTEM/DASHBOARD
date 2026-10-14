@@ -44,7 +44,10 @@ export const navData: NavSectionProps['data'] = [
    */
   {
     subheader: 'OVERVIEW',
-    items: [{ title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard }],
+    items: [
+      { title: 'Início', path: paths.dashboard.root, icon: ICONS.dashboard },
+      { title: 'Design System', path: paths.dashboard.designSystem, icon: ICONS.params },
+    ],
   },
   /**
    * 📂 GRUPO: USUÁRIOS
