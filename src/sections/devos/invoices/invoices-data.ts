@@ -2,20 +2,37 @@
 // Invoices & Receivables Data for ASPPIBRA Association Members
 // ----------------------------------------------------------------------
 
+export interface InvoiceItemDetail {
+  id: string;
+  description: string;
+  service: string;
+  quantity: number;
+  price: number;
+  total: number;
+}
+
 export interface InvoiceItem {
   id: string;
   txId?: number;
   memberId: number;
   memberName: string;
   memberDoc: string;
+  memberEmail?: string;
+  memberPhone?: string;
+  memberAddress?: string;
   description: string;
   referenceMonth: string;
   amount: number;
   amountFormatted: string;
   dueDate: string;
+  createDate?: string;
   settledDate: string | null;
   paymentMethod: string;
-  status: 'paid' | 'pending' | 'overdue' | 'failed';
+  status: 'paid' | 'pending' | 'overdue' | 'failed' | 'draft';
+  items?: InvoiceItemDetail[];
+  taxes?: number;
+  discount?: number;
+  d1Protocol?: string;
 }
 
 export const INITIAL_INVOICES: InvoiceItem[] = [
