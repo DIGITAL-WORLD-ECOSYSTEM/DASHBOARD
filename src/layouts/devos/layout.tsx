@@ -68,6 +68,11 @@ export const DEVOS_NAV_DATA: NavSectionProps['data'] = [
         path: paths.devos.database,
         icon: <Iconify icon={'solar:database-bold' as any} />,
       },
+      {
+        title: 'Notificações',
+        path: paths.devos.notifications,
+        icon: <Iconify icon={'solar:bell-bing-bold' as any} />,
+      },
     ],
   },
   {
@@ -120,6 +125,9 @@ export function getSectionTitle(pathname: string): string {
   }
   if (pathname.startsWith(paths.devos.database)) {
     return 'Database';
+  }
+  if (pathname.startsWith(paths.devos.notifications)) {
+    return 'Notificações';
   }
   if (pathname.startsWith(paths.devos.security)) {
     return 'Security';
