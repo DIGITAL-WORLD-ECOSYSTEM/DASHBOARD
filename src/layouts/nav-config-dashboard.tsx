@@ -168,11 +168,6 @@ export const navData: NavSectionProps['data'] = [
             path: paths.dashboard.general.banking.payments,
             allowedRoles: ['admin', 'dev']
           },
-          { 
-            title: 'Histórico Financeiro', 
-            path: paths.dashboard.general.banking.financialHistory,
-            allowedRoles: ['admin', 'dev']
-          },
         ],
       },
       {
