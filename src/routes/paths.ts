@@ -156,28 +156,19 @@ export const paths = {
   // DEVOS
   devos: {
     root: ROOTS.DEVOS,
-    identity: `${ROOTS.DEVOS}/identity`,
-    impersonation: `${ROOTS.DEVOS}/impersonation`,
     database: `${ROOTS.DEVOS}/database`,
     apis: `${ROOTS.DEVOS}/apis`,
     audit: `${ROOTS.DEVOS}/audit`,
     security: `${ROOTS.DEVOS}/security`,
-    flags: `${ROOTS.DEVOS}/flags`,
     infrastructure: `${ROOTS.DEVOS}/infrastructure`,
-    environment: `${ROOTS.DEVOS}/environment`,
-    testing: `${ROOTS.DEVOS}/testing`,
     dao: `${ROOTS.DEVOS}/dao`,
     wallets: `${ROOTS.DEVOS}/wallets`,
     ledger: `${ROOTS.DEVOS}/ledger`,
     invoices: `${ROOTS.DEVOS}/invoices`,
-    releases: `${ROOTS.DEVOS}/releases`,
-    jobs: `${ROOTS.DEVOS}/jobs`,
-    registry: `${ROOTS.DEVOS}/registry`,
-    about: `${ROOTS.DEVOS}/about`,
     founder: {
       strategic: `${ROOTS.DEVOS}/founder/strategic`,
       operations: `${ROOTS.DEVOS}/founder/operations`,
       emergency: `${ROOTS.DEVOS}/founder/emergency`,
-    }
-  }
+    },
+  },
 };
