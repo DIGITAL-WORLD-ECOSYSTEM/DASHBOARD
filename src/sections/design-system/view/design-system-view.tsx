@@ -76,6 +76,7 @@ import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
 import { ColorPicker, ColorPreview } from 'src/components/color-utils';
 import { Upload, UploadBox, UploadAvatar } from 'src/components/upload';
 import { TableSkeleton, TableHeadCustom, TablePaginationCustom } from 'src/components/table';
+import { EdgerCard, EdgerButton, EdgerSquircleBadge } from 'src/components/edger-lights';
 
 // ----------------------------------------------------------------------
 
@@ -832,6 +833,102 @@ export function DesignSystemView() {
               </CyberCard>
             </Grid>
           </Grid>
+
+          {/* ======================================================== */}
+          {/* EDGER LIGHTS UI — SOFT COLORS. SHARP EDGES.             */}
+          {/* ======================================================== */}
+          <Card sx={{ p: 3, border: '1px solid', borderColor: 'divider' }}>
+            <CardHeader
+              title="EDGER Lights UI — Soft Colors. Sharp Edges."
+              subheader="Padrão oficial de cards táteis com camada 3D offset, faixa lateral luminosa, squircle badges e micro action buttons."
+              sx={{ px: 0, pt: 0 }}
+            />
+            <CardContent sx={{ px: 0, pb: 0 }}>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <EdgerCard
+                    variant="rose"
+                    title="Notificação Crítica de Cofre"
+                    description="Tentativa de rotação de chaves detectada no cofre operacional. Requer validação multi-sig imediata."
+                    timestamp="há 2 min"
+                    icon="solar:shield-warning-bold"
+                    unread
+                    pulse
+                    actionText="Revisar Transação"
+                    onAction={() => alert('Ação EDGER Lights: Revisar Transação')}
+                    secondaryActionText="Descartar"
+                    onSecondaryAction={() => alert('Ação EDGER Lights: Descartado')}
+                    onClose={() => alert('Fechar Card')}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <EdgerCard
+                    variant="amber"
+                    title="Aviso de Rebalanceamento"
+                    description="Pool de liquidez com variação superior a 4.8%. Recomendado aporte compensatório para manter a paridade."
+                    timestamp="há 15 min"
+                    icon="solar:bell-bing-bold"
+                    unread
+                    actionText="Ver Alocação"
+                    onAction={() => alert('Ação EDGER Lights: Ver Alocação')}
+                    onClose={() => alert('Fechar Card')}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <EdgerCard
+                    variant="emerald"
+                    title="Liquidação Concluída com Sucesso"
+                    description="Contrato #8492 aprovado pelo conselho e liquidado on-chain. Recibo criptográfico gerado e assinado."
+                    timestamp="há 1 hora"
+                    icon="solar:check-circle-bold"
+                    actionText="Baixar Recibo"
+                    onAction={() => alert('Ação EDGER Lights: Baixar Recibo')}
+                    onClose={() => alert('Fechar Card')}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <EdgerCard
+                    variant="sky"
+                    title="Proposta de Governança Aberta"
+                    description="Votação aberta para a proposta #27 da DAO: Expansão do programa de associados institucionais."
+                    timestamp="há 3 horas"
+                    icon="solar:users-group-two-rounded-bold"
+                    actionText="Votar Agora"
+                    onAction={() => alert('Ação EDGER Lights: Votar Agora')}
+                    secondaryActionText="Detalhes"
+                    onSecondaryAction={() => alert('Ação EDGER Lights: Ver Proposta')}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <EdgerCard
+                    variant="purple"
+                    title="Identidade Digital Ativada"
+                    description="Sua credencial de membro pleno foi vinculada ao DID. Acesso aos canais estratégicos concedido."
+                    timestamp="há 5 horas"
+                    icon="solar:crown-star-bold"
+                    actionText="Acessar Canal"
+                    onAction={() => alert('Ação EDGER Lights: Acessar')}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <EdgerCard
+                    variant="slate"
+                    title="Backup do Livro-Razão"
+                    description="Snapshot diário contábil gerado com sucesso. Hash de integridade validado na trilha de auditoria."
+                    timestamp="há 8 horas"
+                    icon="solar:database-bold"
+                    actionText="Consultar Log"
+                    onAction={() => alert('Ação EDGER Lights: Consultar Log')}
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader title="Sanfona Expansível (Accordion)" subheader="Superfícies colapsáveis para dados densos" />
