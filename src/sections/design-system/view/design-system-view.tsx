@@ -840,93 +840,159 @@ export function DesignSystemView() {
           <Card sx={{ p: 3, border: '1px solid', borderColor: 'divider' }}>
             <CardHeader
               title="EDGER Lights UI — Soft Colors. Sharp Edges."
-              subheader="Padrão oficial de cards táteis com camada 3D offset, faixa lateral luminosa, squircle badges e micro action buttons."
-              sx={{ px: 0, pt: 0 }}
+              subheader="Padrão oficial de cards táteis com modelos discriminados: Variação Borda Lateral e Variação Borda Inferior."
+              sx={{ px: 0, pt: 0, mb: 2 }}
             />
             <CardContent sx={{ px: 0, pb: 0 }}>
-              <Grid container spacing={3}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <EdgerCard
-                    variant="rose"
-                    title="Notificação Crítica de Cofre"
-                    description="Tentativa de rotação de chaves detectada no cofre operacional. Requer validação multi-sig imediata."
-                    timestamp="há 2 min"
-                    icon="solar:shield-warning-bold"
-                    unread
-                    pulse
-                    actionText="Revisar Transação"
-                    onAction={() => alert('Ação EDGER Lights: Revisar Transação')}
-                    secondaryActionText="Descartar"
-                    onSecondaryAction={() => alert('Ação EDGER Lights: Descartado')}
-                    onClose={() => alert('Fechar Card')}
-                  />
-                </Grid>
+              <Stack spacing={4}>
+                {/* ---------------------------------------------------- */}
+                {/* SUBSEÇÃO 1: MODELO 1 — BORDA LATERAL (LATERAL EDGE) */}
+                {/* ---------------------------------------------------- */}
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                      Modelo 1: Variação Borda Lateral (Lateral Edge)
+                    </Typography>
+                    <Box
+                      sx={{
+                        px: 1.2,
+                        py: 0.3,
+                        borderRadius: '6px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        bgcolor: 'error.lighter',
+                        color: 'error.dark',
+                      }}
+                    >
+                      Offset Lateral Esquerdo
+                    </Box>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
+                    Destaque tátil projetado na borda lateral esquerda, acompanhando com precisão a curvatura de 16px dos cantos arredondados. Ideal para notificações em lista, alertas de risco e comunicados contextuais.
+                  </Typography>
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <EdgerCard
-                    variant="amber"
-                    title="Aviso de Rebalanceamento"
-                    description="Pool de liquidez com variação superior a 4.8%. Recomendado aporte compensatório para manter a paridade."
-                    timestamp="há 15 min"
-                    icon="solar:bell-bing-bold"
-                    unread
-                    actionText="Ver Alocação"
-                    onAction={() => alert('Ação EDGER Lights: Ver Alocação')}
-                    onClose={() => alert('Fechar Card')}
-                  />
-                </Grid>
+                  <Grid container spacing={3}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <EdgerCard
+                        variant="rose"
+                        edgeStyle="lateral"
+                        title="Notificação Crítica de Cofre"
+                        description="Tentativa de rotação de chaves detectada no cofre operacional. Requer validação multi-sig imediata."
+                        timestamp="há 2 min"
+                        icon="solar:shield-warning-bold"
+                        unread
+                        pulse
+                        actionText="Revisar Transação"
+                        onAction={() => alert('Ação EDGER Lights: Revisar Transação')}
+                        secondaryActionText="Descartar"
+                        onSecondaryAction={() => alert('Ação EDGER Lights: Descartado')}
+                        onClose={() => alert('Fechar Card')}
+                      />
+                    </Grid>
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <EdgerCard
-                    variant="emerald"
-                    title="Liquidação Concluída com Sucesso"
-                    description="Contrato #8492 aprovado pelo conselho e liquidado on-chain. Recibo criptográfico gerado e assinado."
-                    timestamp="há 1 hora"
-                    icon="solar:check-circle-bold"
-                    actionText="Baixar Recibo"
-                    onAction={() => alert('Ação EDGER Lights: Baixar Recibo')}
-                    onClose={() => alert('Fechar Card')}
-                  />
-                </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <EdgerCard
+                        variant="amber"
+                        edgeStyle="lateral"
+                        title="Aviso de Rebalanceamento"
+                        description="Pool de liquidez com variação superior a 4.8%. Recomendado aporte compensatório para manter a paridade."
+                        timestamp="há 15 min"
+                        icon="solar:bell-bing-bold"
+                        unread
+                        actionText="Ver Alocação"
+                        onAction={() => alert('Ação EDGER Lights: Ver Alocação')}
+                        onClose={() => alert('Fechar Card')}
+                      />
+                    </Grid>
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <EdgerCard
-                    variant="sky"
-                    title="Proposta de Governança Aberta"
-                    description="Votação aberta para a proposta #27 da DAO: Expansão do programa de associados institucionais."
-                    timestamp="há 3 horas"
-                    icon="solar:users-group-two-rounded-bold"
-                    actionText="Votar Agora"
-                    onAction={() => alert('Ação EDGER Lights: Votar Agora')}
-                    secondaryActionText="Detalhes"
-                    onSecondaryAction={() => alert('Ação EDGER Lights: Ver Proposta')}
-                  />
-                </Grid>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <EdgerCard
+                        variant="emerald"
+                        edgeStyle="lateral"
+                        title="Liquidação Concluída com Sucesso"
+                        description="Contrato #8492 aprovado pelo conselho e liquidado on-chain. Recibo criptográfico gerado e assinado."
+                        timestamp="há 1 hora"
+                        icon="solar:check-circle-bold"
+                        actionText="Baixar Recibo"
+                        onAction={() => alert('Ação EDGER Lights: Baixar Recibo')}
+                        onClose={() => alert('Fechar Card')}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <EdgerCard
-                    variant="purple"
-                    title="Identidade Digital Ativada"
-                    description="Sua credencial de membro pleno foi vinculada ao DID. Acesso aos canais estratégicos concedido."
-                    timestamp="há 5 horas"
-                    icon="solar:crown-star-bold"
-                    actionText="Acessar Canal"
-                    onAction={() => alert('Ação EDGER Lights: Acessar')}
-                  />
-                </Grid>
+                <Divider />
 
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <EdgerCard
-                    variant="slate"
-                    title="Backup do Livro-Razão"
-                    description="Snapshot diário contábil gerado com sucesso. Hash de integridade validado na trilha de auditoria."
-                    timestamp="há 8 horas"
-                    icon="solar:database-bold"
-                    actionText="Consultar Log"
-                    onAction={() => alert('Ação EDGER Lights: Consultar Log')}
-                  />
-                </Grid>
-              </Grid>
+                {/* ---------------------------------------------------- */}
+                {/* SUBSEÇÃO 2: MODELO 2 — BORDA INFERIOR (BOTTOM EDGE) */}
+                {/* ---------------------------------------------------- */}
+                <Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                      Modelo 2: Variação Borda Inferior (Bottom Edge 3D)
+                    </Typography>
+                    <Box
+                      sx={{
+                        px: 1.2,
+                        py: 0.3,
+                        borderRadius: '6px',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        bgcolor: 'info.lighter',
+                        color: 'info.dark',
+                      }}
+                    >
+                      Camada 3D Inferior
+                    </Box>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
+                    Destaque tátil com camada 3D offset na borda inferior sólida, gerando o clássico efeito de botão ou bloco prensado. Ideal para cards de visão geral, governança da DAO e ações estratégicas.
+                  </Typography>
+
+                  <Grid container spacing={3}>
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <EdgerCard
+                        variant="sky"
+                        edgeStyle="bottom"
+                        title="Proposta de Governança Aberta"
+                        description="Votação aberta para a proposta #27 da DAO: Expansão do programa de associados institucionais."
+                        timestamp="há 3 horas"
+                        icon="solar:users-group-two-rounded-bold"
+                        actionText="Votar Agora"
+                        onAction={() => alert('Ação EDGER Lights: Votar Agora')}
+                        secondaryActionText="Detalhes"
+                        onSecondaryAction={() => alert('Ação EDGER Lights: Ver Proposta')}
+                      />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <EdgerCard
+                        variant="purple"
+                        edgeStyle="bottom"
+                        title="Identidade Digital Ativada"
+                        description="Sua credencial de membro pleno foi vinculada ao DID. Acesso aos canais estratégicos concedido."
+                        timestamp="há 5 horas"
+                        icon="solar:crown-star-bold"
+                        actionText="Acessar Canal"
+                        onAction={() => alert('Ação EDGER Lights: Acessar')}
+                      />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 4 }}>
+                      <EdgerCard
+                        variant="slate"
+                        edgeStyle="bottom"
+                        title="Backup do Livro-Razão"
+                        description="Snapshot diário contábil gerado com sucesso. Hash de integridade validado na trilha de auditoria."
+                        timestamp="há 8 horas"
+                        icon="solar:database-bold"
+                        actionText="Consultar Log"
+                        onAction={() => alert('Ação EDGER Lights: Consultar Log')}
+                      />
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Stack>
             </CardContent>
           </Card>
 
