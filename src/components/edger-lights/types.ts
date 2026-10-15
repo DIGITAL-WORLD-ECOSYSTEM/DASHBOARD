@@ -9,6 +9,8 @@ export type EdgerCardEdge = 'lateral' | 'bottom';
 export type EdgerColorToken = {
   bg: string;
   bgDark: string;
+  glassBg?: string;
+  glassBgDark?: string;
   border: string;
   borderDark: string;
   accent: string;
@@ -42,6 +44,24 @@ export type EdgerButtonProps = {
   sx?: SxProps<Theme>;
 };
 
+export type EdgerInlineNotificationProps = {
+  title: string;
+  description: React.ReactNode;
+  variant?: EdgerVariant;
+  edgeStyle?: EdgerCardEdge;
+  timestamp?: string;
+  icon?: string | React.ReactNode;
+  actionText?: string;
+  onAction?: () => void;
+  secondaryActionText?: string;
+  onSecondaryAction?: () => void;
+  onClose?: () => void;
+  unread?: boolean;
+  pulse?: boolean;
+  elevation3D?: boolean;
+  sx?: SxProps<Theme>;
+};
+
 export type EdgerCardProps = {
   title: string;
   description: React.ReactNode;
@@ -56,6 +76,7 @@ export type EdgerCardProps = {
   onClose?: () => void;
   unread?: boolean;
   pulse?: boolean;
+  glass?: boolean;
   elevation3D?: boolean;
   sx?: SxProps<Theme>;
 };
