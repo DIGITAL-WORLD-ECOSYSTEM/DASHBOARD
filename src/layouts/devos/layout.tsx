@@ -59,11 +59,6 @@ export const DEVOS_NAV_DATA: NavSectionProps['data'] = [
     subheader: 'OPERAÇÕES',
     items: [
       {
-        title: 'E-commerce',
-        path: paths.devos.ecommerce,
-        icon: <Iconify icon={'solar:cart-large-4-bold' as any} />,
-      },
-      {
         title: 'Hub Analítico',
         path: paths.devos.analytics,
         icon: <Iconify icon={'solar:chart-square-bold' as any} />,
@@ -142,9 +137,6 @@ export function getSectionTitle(pathname: string): string {
   }
   if (pathname.startsWith(paths.devos.invoices)) {
     return 'Faturas';
-  }
-  if (pathname.startsWith(paths.devos.ecommerce)) {
-    return 'E-commerce';
   }
   if (pathname.startsWith(paths.devos.analytics)) {
     return 'Hub Analítico';
