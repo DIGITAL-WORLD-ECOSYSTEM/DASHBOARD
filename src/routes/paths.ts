@@ -33,12 +33,6 @@ export const paths = {
   minimalStore: '#',
   freeUI: '#',
   figmaUrl: '#',
-  product: {
-    root: `/product`,
-    checkout: `/product/checkout`,
-    details: (id: string) => `/product/${id}`,
-    demo: { details: `/product/${MOCK_ID}` },
-  },
   post: {
     root: `/post`,
     details: (title: string) => `/post/${kebabCase(title)}`,
@@ -63,7 +57,6 @@ export const paths = {
     fileManager: `${ROOTS.DASHBOARD}/file-manager`,
     general: {
       app: `${ROOTS.DASHBOARD}/app`,
-      ecommerce: `${ROOTS.DEVOS}/ecommerce`,
       analytics: {
         root: `${ROOTS.DEVOS}/analytics`,
         global: `${ROOTS.DEVOS}/analytics`,
@@ -107,16 +100,6 @@ export const paths = {
       edit: (id: string) => `${ROOTS.DASHBOARD}/user/${id}/edit`,
       demo: { edit: `${ROOTS.DASHBOARD}/user/${MOCK_ID}/edit` },
     },
-    product: {
-      root: `${ROOTS.DEVOS}/ecommerce`,
-      new: `${ROOTS.DEVOS}/ecommerce`,
-      details: (id: string) => `${ROOTS.DEVOS}/ecommerce`,
-      edit: (id: string) => `${ROOTS.DEVOS}/ecommerce`,
-      demo: {
-        details: `${ROOTS.DEVOS}/ecommerce`,
-        edit: `${ROOTS.DEVOS}/ecommerce`,
-      },
-    },
     post: {
       root: `${ROOTS.DEVOS}/blog`,
       new: `${ROOTS.DEVOS}/blog`,
@@ -126,11 +109,6 @@ export const paths = {
         details: `${ROOTS.DEVOS}/blog`,
         edit: `${ROOTS.DEVOS}/blog`,
       },
-    },
-    order: {
-      root: `${ROOTS.DEVOS}/ecommerce`,
-      details: (id: string) => `${ROOTS.DEVOS}/ecommerce`,
-      demo: { details: `${ROOTS.DEVOS}/ecommerce` },
     },
   },
   // DEVOS
@@ -155,7 +133,6 @@ export const paths = {
     ledger: `${ROOTS.DEVOS}/ledger`,
     citizenLedger: `${ROOTS.DEVOS}/ledger`,
     invoices: `${ROOTS.DEVOS}/invoices`,
-    ecommerce: `${ROOTS.DEVOS}/ecommerce`,
     analytics: `${ROOTS.DEVOS}/analytics`,
     blog: `${ROOTS.DEVOS}/blog`,
     founder: {
