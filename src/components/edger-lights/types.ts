@@ -4,6 +4,8 @@ import type { SxProps, Theme } from '@mui/material/styles';
 
 export type EdgerVariant = 'rose' | 'amber' | 'emerald' | 'sky' | 'purple' | 'slate';
 
+export type EdgerCardEdge = 'lateral' | 'bottom';
+
 export type EdgerColorToken = {
   bg: string;
   bgDark: string;
@@ -44,6 +46,7 @@ export type EdgerCardProps = {
   title: string;
   description: React.ReactNode;
   variant?: EdgerVariant;
+  edgeStyle?: EdgerCardEdge;
   timestamp?: string;
   icon?: string | React.ReactNode;
   actionText?: string;
