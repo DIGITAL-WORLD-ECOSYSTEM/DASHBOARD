@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { EDGER_TOKENS } from './edger-tokens';
-import type { EdgerVariant } from './types';
+import type { EdgerVariant, EdgerCardEdge } from './types';
 
 // ----------------------------------------------------------------------
 
@@ -31,5 +31,12 @@ describe('EDGER Lights UI — Design Tokens & Architecture', () => {
       expect(token.text).toBeTruthy();
       expect(token.textDark).toBeTruthy();
     });
+  });
+
+  it('deve suportar os dois modelos discriminados de borda tátil: lateral e bottom', () => {
+    const validEdges: EdgerCardEdge[] = ['lateral', 'bottom'];
+    expect(validEdges).toHaveLength(2);
+    expect(validEdges).toContain('lateral');
+    expect(validEdges).toContain('bottom');
   });
 });
