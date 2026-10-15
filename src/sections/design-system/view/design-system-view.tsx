@@ -1,37 +1,47 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Fab from '@mui/material/Fab';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
-import Chip from '@mui/material/Chip';
+import Step from '@mui/material/Step';
 import Paper from '@mui/material/Paper';
+import Radio from '@mui/material/Radio';
+import Badge from '@mui/material/Badge';
+import Table from '@mui/material/Table';
 import Stack from '@mui/material/Stack';
 import Alert from '@mui/material/Alert';
-import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import Slider from '@mui/material/Slider';
 import Rating from '@mui/material/Rating';
 import Avatar from '@mui/material/Avatar';
 import Dialog from '@mui/material/Dialog';
+import Stepper from '@mui/material/Stepper';
+import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
+import Skeleton from '@mui/material/Skeleton';
+import MenuItem from '@mui/material/MenuItem';
+import StepLabel from '@mui/material/StepLabel';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableHead from '@mui/material/TableHead';
 import TextField from '@mui/material/TextField';
 import Accordion from '@mui/material/Accordion';
 import AlertTitle from '@mui/material/AlertTitle';
 import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import RadioGroup from '@mui/material/RadioGroup';
+import Pagination from '@mui/material/Pagination';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import DialogTitle from '@mui/material/DialogTitle';
+import FormControl from '@mui/material/FormControl';
+import Autocomplete from '@mui/material/Autocomplete';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -40,7 +50,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import { paths } from 'src/routes/paths';
 
@@ -48,99 +57,219 @@ import { themeConfig } from 'src/theme/theme-config';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Label } from 'src/components/label';
+import { Editor } from 'src/components/editor';
 import { toast } from 'src/components/snackbar';
 import { Iconify } from 'src/components/iconify';
+import { FlagIcon } from 'src/components/flag-icon';
 import { CyberCard } from 'src/components/cyber-card';
+import { Chart, useChart } from 'src/components/chart';
+import { PhoneInput } from 'src/components/phone-input';
+import { NumberInput } from 'src/components/number-input';
 import { CyberButton } from 'src/components/cyber-button';
+import { EmptyContent } from 'src/components/empty-content';
+import { ConfirmDialog } from 'src/components/custom-dialog';
+import { CustomPopover } from 'src/components/custom-popover';
+import { FileThumbnail } from 'src/components/file-thumbnail';
+import { CountrySelect } from 'src/components/country-select';
+import { SearchNotFound } from 'src/components/search-not-found';
 import { CustomBreadcrumbs } from 'src/components/custom-breadcrumbs';
+import { ColorPicker, ColorPreview } from 'src/components/color-utils';
+import { Upload, UploadBox, UploadAvatar } from 'src/components/upload';
+import { TableSkeleton, TableHeadCustom, TablePaginationCustom } from 'src/components/table';
 
 // ----------------------------------------------------------------------
 
-type TabValue = 'colors' | 'buttons' | 'inputs' | 'cards' | 'data' | 'feedback';
+type TabValue =
+  | 'colors'
+  | 'buttons'
+  | 'inputs'
+  | 'advanced-inputs'
+  | 'cards'
+  | 'data'
+  | 'media-upload'
+  | 'charts'
+  | 'feedback'
+  | 'navigation-utils';
+
+const COLOR_TOKENS = [
+  { name: 'Primary (Cyber Green)', color: '#00A76F', role: 'Ações primárias, links ativos, destaques' },
+  { name: 'Secondary (Cosmic Purple)', color: '#8E33FF', role: 'Destaques secundários, governança' },
+  { name: 'Info (Cyan Blue)', color: '#00B8D9', role: 'Métricas, informativos e telecomunicações' },
+  { name: 'Success (Matrix Green)', color: '#22C55E', role: 'Sucesso, saldo positivo, status online' },
+  { name: 'Warning (Amber Gold)', color: '#FFAB00', role: 'Alertas de tesouraria, confirmações pendentes' },
+  { name: 'Error (Crimson Neon)', color: '#FF5630', role: 'Falhas críticas, liquidações, bloqueios' },
+];
+
+const GREY_TOKENS = [
+  { label: '50', color: '#FCFDFD' },
+  { label: '100', color: '#F9FAFB' },
+  { label: '200', color: '#F4F6F8' },
+  { label: '300', color: '#DFE3E8' },
+  { label: '400', color: '#C4CDD5' },
+  { label: '500', color: '#919EAB' },
+  { label: '600', color: '#637381' },
+  { label: '700', color: '#454F5B' },
+  { label: '800', color: '#212B36' },
+  { label: '900', color: '#161C24' },
+];
+
+const TABLE_HEAD = [
+  { id: 'nome', label: 'Nome / ID' },
+  { id: 'funcao', label: 'Função / Módulo' },
+  { id: 'status', label: 'Status' },
+  { id: 'saldo', label: 'Saldo (DAO)' },
+  { id: 'acoes', label: 'Ações', align: 'right' as const },
+];
+
+// ----------------------------------------------------------------------
 
 export function DesignSystemView() {
   const [currentTab, setCurrentTab] = useState<TabValue>('colors');
+
+  // Estados de formulários e seletores
+  const [switchChecked, setSwitchChecked] = useState(true);
+  const [checkboxChecked, setCheckboxChecked] = useState(true);
+  const [radioValue, setRadioValue] = useState('opcao1');
+  const [sliderValue, setSliderValue] = useState<number>(65);
+  const [ratingValue, setRatingValue] = useState<number | null>(4);
+  const [countryValue, setCountryValue] = useState('Brazil');
+  const [phoneValue, setPhoneValue] = useState('+5511988887777');
+  const [numberValue, setNumberValue] = useState<number | null>(10);
+  const [colorValue, setColorValue] = useState('#00A76F');
+  const [autocompleteValue, setAutocompleteValue] = useState<string | null>('Solana');
+  const [editorContent, setEditorContent] = useState(
+    '<h4>Protocolo DAO — Diretriz de Design</h4><p>Este texto é renderizado diretamente pelo componente <strong>Editor</strong> com suporte a formatação avançada.</p>'
+  );
+
+  // Estados de tabelas e paginação
+  const [tablePage, setTablePage] = useState(0);
+  const [tableRowsPerPage, setTableRowsPerPage] = useState(5);
+  const [isTableDense, setIsTableDense] = useState(false);
+  const [showTableSkeleton, setShowTableSkeleton] = useState(false);
+
+  // Estados de modais e popovers
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [ratingVal, setRatingVal] = useState<number | null>(4);
-  const [sliderVal, setSliderVal] = useState<number>(65);
-  const [switchVal, setSwitchVal] = useState(true);
+  const [popoverAnchor, setPopoverAnchor] = useState<HTMLElement | null>(null);
+
+  // Estado de Stepper
+  const [activeStep, setActiveStep] = useState(1);
+  const steps = ['Planejamento', 'Design System', 'Homologação', 'Deploy'];
+
+  const handleChangeTab = useCallback((event: React.SyntheticEvent, newValue: TabValue) => {
+    setCurrentTab(newValue);
+  }, []);
+
+  // Gráficos configurados via useChart
+  const areaChartOptions = useChart({
+    colors: ['#00A76F', '#8E33FF'],
+    xaxis: { categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago'] },
+    stroke: { curve: 'smooth', width: 2 },
+    tooltip: { y: { formatter: (val: number) => `${val} mil` } },
+  });
+
+  const barChartOptions = useChart({
+    colors: ['#00B8D9'],
+    stroke: { width: 0 },
+    xaxis: { categories: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'] },
+    plotOptions: { bar: { columnWidth: '45%', borderRadius: 4 } },
+  });
+
+  const donutChartOptions = useChart({
+    colors: ['#00A76F', '#8E33FF', '#00B8D9', '#FFAB00'],
+    labels: ['Membros Ativos', 'Governança', 'Tesouro', 'Staking'],
+    stroke: { width: 0 },
+  });
 
   return (
-    <DashboardContent maxWidth="xl">
+    <DashboardContent>
       <CustomBreadcrumbs
-        heading="Catálogo do Design System & Componentes"
+        heading="Catálogo do Design System"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Design System', href: paths.dashboard.designSystem },
-          { name: 'Catálogo Visual' },
+          { name: 'Showcase Interativo' },
         ]}
         action={
           <Button
             variant="contained"
             color="primary"
-            startIcon={<Iconify icon={'solar:refresh-bold' as any} />}
-            onClick={() => toast.info('Tema e tokens sincronizados em tempo real!')}
+            startIcon={<Iconify icon={'solar:refresh-circle-bold' as any} />}
+            onClick={() => toast.info('Design System sincronizado com os tokens ativos!')}
           >
-            Sincronizar Tokens
+            Sincronizar Tema
           </Button>
         }
-        sx={{ mb: { xs: 2, md: 3 } }}
+        sx={{ mb: { xs: 3, md: 5 } }}
       />
 
-      {/* BANNER INFORMATIVO */}
-      <Alert severity="info" variant={'soft' as any} sx={{ mb: 3 }}>
-        <AlertTitle sx={{ fontWeight: 800 }}>Ambiente de Validação & Homologação de Padrões Visuais</AlertTitle>
-        Esta página reúne todos os componentes, estados, variantes e tokens tipográficos do WebApp.
-        Utilize a engrenagem lateral para alternar entre <strong>Modo Claro</strong> e <strong>Modo Escuro</strong> e testar a resposta das superfícies.
-      </Alert>
-
-      {/* ABAS DO CATÁLOGO */}
-      <Card sx={{ mb: 3 }}>
+      <Card sx={{ mb: 4, p: 2 }}>
         <Tabs
           value={currentTab}
-          onChange={(_, val) => setCurrentTab(val)}
-          sx={{
-            px: 2,
-            borderBottom: 1,
-            borderColor: 'divider',
-            '& .MuiTab-root': { minHeight: 48, fontWeight: 700 },
-          }}
+          onChange={handleChangeTab}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
           <Tab
-            value="colors"
-            icon={<Iconify icon={'solar:palette-bold' as any} width={20} />}
+            icon={<Iconify icon={'solar:palette-round-bold-duotone' as any} />}
             iconPosition="start"
             label="1. Cores & Tipografia"
+            value="colors"
           />
           <Tab
-            value="buttons"
-            icon={<Iconify icon={'solar:cursor-bold' as any} width={20} />}
+            icon={<Iconify icon={'solar:cursor-bold-duotone' as any} />}
             iconPosition="start"
             label="2. Botões & Ações"
+            value="buttons"
           />
           <Tab
+            icon={<Iconify icon={'solar:pen-new-square-bold-duotone' as any} />}
+            iconPosition="start"
+            label="3. Formulários Básicos"
             value="inputs"
-            icon={<Iconify icon={'solar:pen-2-bold' as any} width={20} />}
-            iconPosition="start"
-            label="3. Formulários & Entradas"
           />
           <Tab
+            icon={<Iconify icon={'solar:slider-vertical-bold-duotone' as any} />}
+            iconPosition="start"
+            label="4. Seletores Avançados"
+            value="advanced-inputs"
+          />
+          <Tab
+            icon={<Iconify icon={'solar:widget-5-bold-duotone' as any} />}
+            iconPosition="start"
+            label="5. Cards & Superfícies"
             value="cards"
-            icon={<Iconify icon={'solar:widget-2-bold' as any} width={20} />}
-            iconPosition="start"
-            label="4. Cards & Superfícies"
           />
           <Tab
+            icon={<Iconify icon={'solar:list-bold-duotone' as any} />}
+            iconPosition="start"
+            label="6. Tabelas, Badges & Paginação"
             value="data"
-            icon={<Iconify icon={'solar:database-bold' as any} width={20} />}
-            iconPosition="start"
-            label="5. Tabelas & Badges"
           />
           <Tab
-            value="feedback"
-            icon={<Iconify icon={'solar:bell-bold' as any} width={20} />}
+            icon={<Iconify icon={'solar:cloud-upload-bold-duotone' as any} />}
             iconPosition="start"
-            label="6. Alertas & Feedback"
+            label="7. Upload & Mídia"
+            value="media-upload"
+          />
+          <Tab
+            icon={<Iconify icon={'solar:chart-2-bold-duotone' as any} />}
+            iconPosition="start"
+            label="8. Gráficos & Métricas"
+            value="charts"
+          />
+          <Tab
+            icon={<Iconify icon={'solar:danger-triangle-bold-duotone' as any} />}
+            iconPosition="start"
+            label="9. Alertas, Feedback & Modais"
+            value="feedback"
+          />
+          <Tab
+            icon={<Iconify icon={'solar:compass-bold-duotone' as any} />}
+            iconPosition="start"
+            label="10. Navegação & Utilidades"
+            value="navigation-utils"
           />
         </Tabs>
       </Card>
@@ -148,88 +277,123 @@ export function DesignSystemView() {
       {/* ABA 1: CORES E TIPOGRAFIA */}
       {currentTab === 'colors' && (
         <Stack spacing={4}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Paleta Cromática Institucional (Tokens Ativos)
-            </Typography>
-            <Grid container spacing={2}>
-              {[
-                { name: 'Primary (Verde Esmeralda)', main: themeConfig.palette.primary.main, lighter: themeConfig.palette.primary.lighter, dark: themeConfig.palette.primary.dark },
-                { name: 'Secondary (Roxo)', main: themeConfig.palette.secondary.main, lighter: themeConfig.palette.secondary.lighter, dark: themeConfig.palette.secondary.dark },
-                { name: 'Info (Ciano)', main: themeConfig.palette.info.main, lighter: themeConfig.palette.info.lighter, dark: themeConfig.palette.info.dark },
-                { name: 'Success (Verde Sucesso)', main: themeConfig.palette.success.main, lighter: themeConfig.palette.success.lighter, dark: themeConfig.palette.success.dark },
-                { name: 'Warning (Âmbar)', main: themeConfig.palette.warning.main, lighter: themeConfig.palette.warning.lighter, dark: themeConfig.palette.warning.dark },
-                { name: 'Error (Coral)', main: themeConfig.palette.error.main, lighter: themeConfig.palette.error.lighter, dark: themeConfig.palette.error.dark },
-              ].map((c) => (
-                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={c.name}>
-                  <Paper
-                    variant="outlined"
-                    sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      bgcolor: 'background.paper',
-                      border: '1px solid',
-                      borderColor: 'divider',
-                    }}
-                  >
-                    <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5 }}>
-                      {c.name}
-                    </Typography>
-                    <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-                      <Box sx={{ width: 40, height: 40, borderRadius: 1, bgcolor: c.lighter, border: '1px solid rgba(0,0,0,0.08)' }} />
-                      <Box sx={{ width: 40, height: 40, borderRadius: 1, bgcolor: c.main, boxShadow: '0 4px 10px rgba(0,0,0,0.15)' }} />
-                      <Box sx={{ width: 40, height: 40, borderRadius: 1, bgcolor: c.dark }} />
-                    </Stack>
-                    <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
-                      Main: <strong>{c.main}</strong>
-                    </Typography>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
+          <Card>
+            <CardHeader
+              title="Paleta Temática Principal"
+              subheader="Tokens semânticos utilizados na interface do WebApp"
+            />
+            <CardContent>
+              <Grid container spacing={2}>
+                {COLOR_TOKENS.map((token) => (
+                  <Grid key={token.name} size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        p: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        borderRadius: 2,
+                        transition: 'transform 0.2s',
+                        '&:hover': { transform: 'translateY(-2px)' },
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 1.5,
+                          bgcolor: token.color,
+                          boxShadow: (theme) => `0 4px 12px ${token.color}40`,
+                        }}
+                      />
+                      <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+                        <Typography variant="subtitle2" noWrap>
+                          {token.name}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+                          HEX: {token.color}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                          {token.role}
+                        </Typography>
+                      </Box>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
+            </CardContent>
           </Card>
 
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Hierarquia Tipográfica (Escalas Responsivas)
-            </Typography>
-            <Stack spacing={2} divider={<Divider />}>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>h1 (Barlow 800 ExtraBold)</Typography>
-                <Typography variant="h1">Título Institucional H1</Typography>
+          <Card>
+            <CardHeader title="Escala de Neutros (Grey Tokens)" subheader="Superfícies, bordas e contraste" />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                {GREY_TOKENS.map((grey) => (
+                  <Box
+                    key={grey.label}
+                    sx={{
+                      flex: '1 1 80px',
+                      p: 1.5,
+                      textAlign: 'center',
+                      borderRadius: 1.5,
+                      bgcolor: grey.color,
+                      border: '1px solid',
+                      borderColor: 'divider',
+                      color: parseInt(grey.label, 10) > 400 ? '#FFFFFF' : '#161C24',
+                    }}
+                  >
+                    <Typography variant="subtitle2">{grey.label}</Typography>
+                    <Typography variant="caption" sx={{ fontSize: 10, display: 'block' }}>
+                      {grey.color}
+                    </Typography>
+                  </Box>
+                ))}
               </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>h2 (Barlow 800 ExtraBold)</Typography>
-                <Typography variant="h2">Subtítulo Principal H2</Typography>
-              </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>h3 (Barlow 700 Bold)</Typography>
-                <Typography variant="h3">Cabeçalho de Seção H3</Typography>
-              </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>h4 (Public Sans 700 Bold)</Typography>
-                <Typography variant="h4">Bloco de Módulo H4</Typography>
-              </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>h5 (Public Sans 700 Bold)</Typography>
-                <Typography variant="h5">Título de Card H5</Typography>
-              </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>body1 e body2 (Public Sans 400 Regular)</Typography>
-                <Typography variant="body1" sx={{ mb: 0.5 }}>
-                  <strong>Body 1:</strong> Texto corrido encorpado utilizado em descrições e formulários institucionais da organização.
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  <strong>Body 2:</strong> Texto secundário utilizado para legendas, metadados e observações complementares.
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>Orbitron (Fonte Especial Tecnológica)</Typography>
-                <Typography sx={{ fontFamily: 'var(--font-orbitron), sans-serif', fontWeight: 800, letterSpacing: 1.5, fontSize: '1.25rem', color: 'primary.main' }}>
-                  DAO IDENTITY · SECURE PROTOCOL · ASPPIBRA
-                </Typography>
-              </Box>
-            </Stack>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Escala Tipográfica & Fontes"
+              subheader={`Fonte Secundária / Cyber: ${themeConfig.fontFamily.secondary} | Fonte Primária: ${themeConfig.fontFamily.primary}`}
+            />
+            <CardContent>
+              <Stack spacing={2.5}>
+                <Box>
+                  <Typography variant="h1" sx={{ fontFamily: 'var(--font-orbitron), "Orbitron", sans-serif' }}>
+                    h1. Orbitron Cyber Title (32px / 40px)
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box>
+                  <Typography variant="h2" sx={{ fontFamily: 'var(--font-orbitron), "Orbitron", sans-serif' }}>
+                    h2. Orbitron Subtitle Header (28px / 36px)
+                  </Typography>
+                </Box>
+                <Divider />
+                <Box>
+                  <Typography variant="h3">h3. Título de Seção DM Sans (24px)</Typography>
+                  <Typography variant="h4">h4. Título de Cartão DM Sans (20px)</Typography>
+                  <Typography variant="h5">h5. Subtítulo Médio DM Sans (18px)</Typography>
+                  <Typography variant="h6">h6. Subtítulo Pequeno DM Sans (16px)</Typography>
+                </Box>
+                <Divider />
+                <Box>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    <strong>body1:</strong> O ASPPIBRA WebApp foi concebido com uma arquitetura desacoplada,
+                    oferecendo alta performance, confiabilidade e governança descentralizada.
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    <strong>body2:</strong> Texto secundário de suporte e descrições detalhadas para leitura
+                    confortável em qualquer dispositivo.
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'text.disabled', display: 'block', mt: 0.5 }}>
+                    <strong>caption:</strong> Rótulos de metadados, carimbos de data/hora e identificadores de hash.
+                  </Typography>
+                </Box>
+              </Stack>
+            </CardContent>
           </Card>
         </Stack>
       )}
@@ -237,397 +401,1059 @@ export function DesignSystemView() {
       {/* ABA 2: BOTÕES E AÇÕES */}
       {currentTab === 'buttons' && (
         <Stack spacing={4}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Variantes de Botões (MuiButton)
-            </Typography>
-            <Stack spacing={3}>
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>1. Contained (Sólidos com Sombra Ativa)</Typography>
-                <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                  <Button variant="contained" color="primary">Primary</Button>
-                  <Button variant="contained" color="secondary">Secondary</Button>
-                  <Button variant="contained" color="info">Info</Button>
-                  <Button variant="contained" color="success">Success</Button>
-                  <Button variant="contained" color="warning">Warning</Button>
-                  <Button variant="contained" color="error">Error</Button>
-                  <Button variant="contained" disabled>Disabled</Button>
+          <Card>
+            <CardHeader title="Variantes de Botões MUI" subheader="Contained, Soft, Outlined e Text" />
+            <CardContent>
+              <Stack spacing={3}>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>
+                    Variante Contained (Preenchido)
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+                    <Button variant="contained" color="primary">Primary</Button>
+                    <Button variant="contained" color="secondary">Secondary</Button>
+                    <Button variant="contained" color="info">Info</Button>
+                    <Button variant="contained" color="success">Success</Button>
+                    <Button variant="contained" color="warning">Warning</Button>
+                    <Button variant="contained" color="error">Error</Button>
+                  </Box>
                 </Box>
-              </Box>
 
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>2. Soft (Variante Exclusiva com Transparência Suave)</Typography>
-                <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                  <Button variant="soft" color="primary">Primary</Button>
-                  <Button variant="soft" color="secondary">Secondary</Button>
-                  <Button variant="soft" color="info">Info</Button>
-                  <Button variant="soft" color="success">Success</Button>
-                  <Button variant="soft" color="warning">Warning</Button>
-                  <Button variant="soft" color="error">Error</Button>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>
+                    Variante Soft (Fundo Translúcido com Alta Legibilidade)
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+                    <Button variant="soft" color="primary">Primary Soft</Button>
+                    <Button variant="soft" color="secondary">Secondary Soft</Button>
+                    <Button variant="soft" color="info">Info Soft</Button>
+                    <Button variant="soft" color="success">Success Soft</Button>
+                    <Button variant="soft" color="warning">Warning Soft</Button>
+                    <Button variant="soft" color="error">Error Soft</Button>
+                  </Box>
                 </Box>
-              </Box>
 
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>3. Outlined (Bordas Finas)</Typography>
-                <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                  <Button variant="outlined" color="primary">Primary</Button>
-                  <Button variant="outlined" color="secondary">Secondary</Button>
-                  <Button variant="outlined" color="info">Info</Button>
-                  <Button variant="outlined" color="success">Success</Button>
-                  <Button variant="outlined" color="error">Error</Button>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>
+                    Variante Outlined (Contorno)
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+                    <Button variant="outlined" color="primary">Primary</Button>
+                    <Button variant="outlined" color="secondary">Secondary</Button>
+                    <Button variant="outlined" color="info">Info</Button>
+                    <Button variant="outlined" color="success">Success</Button>
+                    <Button variant="outlined" color="warning">Warning</Button>
+                    <Button variant="outlined" color="error">Error</Button>
+                  </Box>
                 </Box>
-              </Box>
-
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>4. Tamanhos Padronizados (small, medium, large, xLarge)</Typography>
-                <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
-                  <Button variant="contained" size="small" color="primary">Small (30px)</Button>
-                  <Button variant="contained" size="medium" color="primary">Medium (36px)</Button>
-                  <Button variant="contained" size="large" color="primary">Large (48px)</Button>
-                  <Button variant="contained" size="xLarge" color="primary">xLarge (56px)</Button>
-                </Box>
-              </Box>
-            </Stack>
+              </Stack>
+            </CardContent>
           </Card>
 
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Botões de Ícone & Componentes Especiais
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>IconButton</Typography>
-                <Stack direction="row" spacing={1}>
-                  <IconButton color="primary"><Iconify icon={'solar:heart-bold' as any} /></IconButton>
-                  <IconButton color="secondary"><Iconify icon={'solar:share-bold' as any} /></IconButton>
-                  <IconButton color="info"><Iconify icon={'solar:bell-bold' as any} /></IconButton>
-                  <IconButton color="error"><Iconify icon={'solar:trash-bin-trash-bold' as any} /></IconButton>
-                </Stack>
+          <Card>
+            <CardHeader title="Tamanhos de Botão & Floating Action Button (FAB)" subheader="Hierarquia de escala" />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap', mb: 3 }}>
+                <Button variant="contained" size="small" color="primary">Small</Button>
+                <Button variant="contained" size="medium" color="primary">Medium</Button>
+                <Button variant="contained" size="large" color="primary">Large</Button>
+                <Button variant="contained" size="xLarge" color="primary">Extra Large</Button>
               </Box>
+              <Divider sx={{ my: 2 }} />
+              <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>
+                Floating Action Buttons (FAB) & IconButtons
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Fab color="primary" size="small">
+                  <Iconify icon={'solar:add-circle-bold' as any} />
+                </Fab>
+                <Fab color="secondary" size="medium">
+                  <Iconify icon={'solar:star-bold' as any} />
+                </Fab>
+                <Fab color="primary" variant="extended">
+                  <Iconify icon={'solar:check-read-bold' as any} sx={{ mr: 1 }} />
+                  Ação Estendida
+                </Fab>
+                <IconButton color="primary">
+                  <Iconify icon={'solar:settings-bold-duotone' as any} />
+                </IconButton>
+                <IconButton color="info">
+                  <Iconify icon={'solar:bell-bold-duotone' as any} />
+                </IconButton>
+                <IconButton color="error">
+                  <Iconify icon={'solar:trash-bin-trash-bold-duotone' as any} />
+                </IconButton>
+              </Box>
+            </CardContent>
+          </Card>
 
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>CyberButton (DAO Neon Protocol)</Typography>
-                <Stack direction="row" spacing={1.5}>
-                  <CyberButton glowColor="primary">Confirmar Assinatura</CyberButton>
-                  <CyberButton glowColor="info">Consultar Smart Contract</CyberButton>
-                </Stack>
+          <Card>
+            <CardHeader
+              title="CyberButton Customizado"
+              subheader="Botão temático com visual cibernético, neon e cantos chanfrados"
+            />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+                <CyberButton variant="contained" color="primary" glowColor="primary">
+                  Cyber Primary Glow
+                </CyberButton>
+                <CyberButton variant="outlined" color="primary">
+                  Cyber Primary Outlined
+                </CyberButton>
+                <CyberButton variant="contained" color="secondary" glowColor="secondary">
+                  Cyber Secondary Glow
+                </CyberButton>
+                <CyberButton variant="outlined" color="secondary">
+                  Cyber Secondary Outlined
+                </CyberButton>
               </Box>
-            </Box>
+            </CardContent>
           </Card>
         </Stack>
       )}
 
-      {/* ABA 3: FORMULÁRIOS E ENTRADAS */}
+      {/* ABA 3: FORMULÁRIOS BÁSICOS */}
       {currentTab === 'inputs' && (
-        <Card sx={{ p: 3 }}>
-          <Typography variant="h6" sx={{ mb: 2.5, fontWeight: 800 }}>
-            Campos de Entrada & Controles de Formulário
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <TextField
-                fullWidth
-                label="Nome Completo"
-                placeholder="Ex: João da Silva"
-                helperText="Campo de texto padrão"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <TextField
-                fullWidth
-                label="Valor do Lançamento"
-                defaultValue="1500.00"
-                slotProps={{
-                  input: {
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                  },
-                }}
-                helperText="Input com Adornment de moeda"
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <TextField
-                fullWidth
-                error
-                label="CPF do Membro"
-                defaultValue="123.456.789"
-                helperText="CPF inválido ou não formatado"
-              />
-            </Grid>
+        <Stack spacing={4}>
+          <Card>
+            <CardHeader title="Campos de Texto (TextField)" subheader="Variações de estado, adornments e validação" />
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField fullWidth label="Padrão Outlined" placeholder="Digite seu nome..." />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Com Ícone Inicial"
+                    defaultValue="sandro_ceo@asppibra.com.br"
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Iconify icon={'solar:letter-bold-duotone' as any} />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Com Ícone Final"
+                    placeholder="Chave pública..."
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Iconify icon={'solar:key-minimalistic-bold-duotone' as any} />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    error
+                    label="Estado de Erro"
+                    defaultValue="valor_invalido_123"
+                    helperText="Este campo possui uma inconsistência"
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField fullWidth disabled label="Desabilitado" defaultValue="Campo não editável" />
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Seleção Simples"
+                    defaultValue="governance"
+                    slotProps={{ select: { native: true } }}
+                  >
+                    <option value="governance">Governança DAO</option>
+                    <option value="treasury">Tesouraria Ativa</option>
+                    <option value="infrastructure">Infraestrutura DevOps</option>
+                  </TextField>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <TextField
-                fullWidth
-                select
-                label="Categoria do Associado"
-                defaultValue="efetivo"
-                slotProps={{
-                  select: { native: true },
-                }}
-              >
-                <option value="efetivo">Membro Efetivo</option>
-                <option value="honorario">Membro Honorário</option>
-                <option value="fundador">Membro Fundador</option>
-              </TextField>
-            </Grid>
+          <Card>
+            <CardHeader title="Controles de Seleção & Alternância" subheader="Switches, Checkboxes, Radios, Sliders e Ratings" />
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Switches & Checkboxes</Typography>
+                  <Stack spacing={1}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={switchChecked}
+                          onChange={(e) => setSwitchChecked(e.target.checked)}
+                          color="primary"
+                        />
+                      }
+                      label="Notificações em Tempo Real"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={checkboxChecked}
+                          onChange={(e) => setCheckboxChecked(e.target.checked)}
+                          color="primary"
+                        />
+                      }
+                      label="Concordo com os Termos DAO"
+                    />
+                  </Stack>
+                </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Controles de Alternância (Switches & Checkbox)</Typography>
-              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                <FormControlLabel
-                  control={<Switch checked={switchVal} onChange={(e) => setSwitchVal(e.target.checked)} />}
-                  label="Notificações"
-                />
-                <FormControlLabel control={<Checkbox defaultChecked />} label="Termo Aceito" />
-              </Stack>
-            </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Grupos de Rádio</Typography>
+                  <FormControl>
+                    <RadioGroup value={radioValue} onChange={(e) => setRadioValue(e.target.value)}>
+                      <FormControlLabel value="opcao1" control={<Radio color="primary" />} label="Transações Rápidas" />
+                      <FormControlLabel value="opcao2" control={<Radio color="secondary" />} label="Transações Seguras" />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>Avaliação & Slider</Typography>
-              <Rating value={ratingVal} onChange={(_, val) => setRatingVal(val)} sx={{ mb: 1.5 }} />
-              <Slider value={sliderVal} onChange={(_, val) => setSliderVal(val as number)} valueLabelDisplay="auto" />
-            </Grid>
-          </Grid>
-        </Card>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Avaliação (Rating)</Typography>
+                  <Rating
+                    value={ratingValue}
+                    onChange={(e, val) => setRatingValue(val)}
+                    size="large"
+                  />
+                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: 'text.secondary' }}>
+                    Valor selecionado: {ratingValue} estrelas
+                  </Typography>
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Slider de Graduação (Valor: {sliderValue}%)
+                  </Typography>
+                  <Slider
+                    value={sliderValue}
+                    onChange={(e, val) => setSliderValue(val as number)}
+                    valueLabelDisplay="auto"
+                    color="primary"
+                    sx={{ maxWidth: 400 }}
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Stack>
       )}
 
-      {/* ABA 4: CARDS E SUPERFÍCIES */}
+      {/* ABA 4: SELETORES AVANÇADOS */}
+      {currentTab === 'advanced-inputs' && (
+        <Stack spacing={4}>
+          <Card>
+            <CardHeader
+              title="Entradas Especializadas do Sistema"
+              subheader="CountrySelect, PhoneInput, NumberInput, ColorPicker e Autocomplete"
+            />
+            <CardContent>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    CountrySelect (Seletor Internacional com Bandeiras)
+                  </Typography>
+                  <CountrySelect
+                    label="País de Domicílio"
+                    value={countryValue}
+                    onChange={(event, val) => setCountryValue(val as string)}
+                    placeholder="Selecione um país"
+                  />
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1 }}>
+                    Selecionado: {countryValue}
+                  </Typography>
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    PhoneInput (Telefone com Máscara e DDI)
+                  </Typography>
+                  <PhoneInput
+                    label="Telefone Corporativo"
+                    value={phoneValue}
+                    onChange={(val) => setPhoneValue(val || '')}
+                    defaultCountry="BR"
+                  />
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mt: 1 }}>
+                    Número normalizado: {phoneValue}
+                  </Typography>
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    NumberInput (Contador Numérico)
+                  </Typography>
+                  <NumberInput
+                    value={numberValue}
+                    onChange={(event, val) => setNumberValue(val)}
+                    min={1}
+                    max={100}
+                    helperText="Ajuste a quantidade de nós de validação (1 a 100)"
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Autocomplete (Busca com Tags)
+                  </Typography>
+                  <Autocomplete
+                    options={['Solana', 'Ethereum', 'Bitcoin', 'Polygon', 'Avalanche', 'Cosmos']}
+                    value={autocompleteValue}
+                    onChange={(event, val) => setAutocompleteValue(val)}
+                    renderInput={(params) => <TextField {...params} label="Rede Blockchain" />}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                  <Divider sx={{ my: 1 }} />
+                  <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+                    ColorPicker & ColorPreview (Seleção de Cores da Paleta)
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
+                    <ColorPicker
+                      value={colorValue}
+                      onChange={(val) => setColorValue(val as string)}
+                      options={['#00A76F', '#8E33FF', '#00B8D9', '#22C55E', '#FFAB00', '#FF5630', '#212B36']}
+                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        Preview em conjunto:
+                      </Typography>
+                      <ColorPreview colors={['#00A76F', '#8E33FF', '#00B8D9', '#FFAB00']} />
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Editor de Texto Rico (WYSIWYG)"
+              subheader="Componente Editor baseado em Tiptap integrado ao tema"
+            />
+            <CardContent>
+              <Editor
+                value={editorContent}
+                onChange={(val) => setEditorContent(val)}
+                placeholder="Escreva algo formatado..."
+              />
+            </CardContent>
+          </Card>
+        </Stack>
+      )}
+
+      {/* ABA 5: CARDS E SUPERFÍCIES */}
       {currentTab === 'cards' && (
         <Stack spacing={4}>
           <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <Card>
-                <CardHeader
-                  avatar={<Avatar sx={{ bgcolor: 'primary.main' }}>DAO</Avatar>}
-                  action={
-                    <IconButton><Iconify icon={'solar:menu-dots-bold' as any} /></IconButton>
-                  }
-                  title="Card Esculpido 3D (MuiCard Padrão)"
-                  subheader="Bordas de 20px, Relevo Táctil e Blur de 16px"
-                />
-                <CardContent>
-                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
-                    Este é o card institucional que hospeda relatórios, gráficos e painéis de dados.
-                    No modo claro, possui sombras em relevo esculpido. No modo escuro, converte-se no padrão Obsidian Glass.
-                  </Typography>
-                  <Stack direction="row" spacing={1}>
-                    <Chip label="PRODUÇÃO" size="small" color="primary" variant="soft" />
-                    <Chip label="AUTENTICADO" size="small" color="success" variant="soft" />
-                  </Stack>
-                </CardContent>
-                <CardActions sx={{ px: 3, pb: 2 }}>
-                  <Button size="small" color="primary" variant="contained">Acessar Detalhes</Button>
-                  <Button size="small" color="inherit">Exportar</Button>
-                </CardActions>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card
+                sx={{
+                  p: 3,
+                  boxShadow: (theme) => `0 8px 24px ${theme.vars.palette.grey[900]}20`,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  height: '100%',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                  <Avatar sx={{ bgcolor: 'primary.lighter', color: 'primary.main' }}>
+                    <Iconify icon={'solar:cube-bold-duotone' as any} />
+                  </Avatar>
+                  <Typography variant="h6">Card Esculpido 3D</Typography>
+                </Box>
+                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                  Superfície sólida com elevação suave, cantos arredondados (16px) e borda de delimitação suave.
+                </Typography>
+                <Button variant="soft" color="primary" fullWidth>
+                  Ver Detalhes
+                </Button>
               </Card>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <CyberCard variant="hero" color="primary" glow>
-                <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 800 }}>
-                  PROTOCOLO CRIPTOGRÁFICO DE CUSTÓDIA
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Paper
+                sx={{
+                  p: 3,
+                  height: '100%',
+                  backdropFilter: 'blur(16px)',
+                  backgroundColor: (theme) => `${theme.vars.palette.background.paper}B3`,
+                  border: '1px solid',
+                  borderColor: (theme) => `${theme.vars.palette.primary.main}33`,
+                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                  <Avatar sx={{ bgcolor: 'secondary.lighter', color: 'secondary.main' }}>
+                    <Iconify icon={'solar:ghost-bold-duotone' as any} />
+                  </Avatar>
+                  <Typography variant="h6">Obsidian Glass</Typography>
+                </Box>
+                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                  Vidro translúcido com desfoque de fundo (backdrop-filter) e reflexo de borda ciano/violeta.
                 </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 800, mt: 0.5, mb: 1.5 }}>
-                  Certificado de Chave de Notarização
+                <Button variant="soft" color="secondary" fullWidth>
+                  Explorar Vidro
+                </Button>
+              </Paper>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <CyberCard
+                variant="default"
+                glow
+                sx={{ height: '100%', p: 3 }}
+              >
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  CyberCard Futurista
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2.5 }}>
-                  Componente de alta fidelidade visual com acento neon, bordas de acrílico translúcido e regras automáticas de impressão A4.
+                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                  Card temático de alta densidade com cantos chanfrados e estética neon para módulos de inteligência e tesouraria.
                 </Typography>
-                <CyberButton glowColor="primary">Validar Integridade da Cadeia</CyberButton>
+                <CyberButton variant="contained" color="primary" fullWidth glowColor="primary">
+                  Executar Operação
+                </CyberButton>
               </CyberCard>
             </Grid>
           </Grid>
 
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Acordeões Sanfonados (MuiAccordion)
-            </Typography>
-            <Accordion defaultExpanded>
-              <AccordionSummary expandIcon={<Iconify icon={'solar:alt-arrow-down-bold' as any} />}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>1. Como funciona a custódia das chaves?</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  As credenciais e hashes são preservadas no cofre local criptografado em Argon2id e ChaCha20-Poly1305.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
-            <Accordion>
-              <AccordionSummary expandIcon={<Iconify icon={'solar:alt-arrow-down-bold' as any} />}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>2. Quais são as taxas da rede?</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  As taxas de processamento são custeadas pelo caixa operacional da DAO de acordo com a política institucional.
-                </Typography>
-              </AccordionDetails>
-            </Accordion>
+          <Card>
+            <CardHeader title="Sanfona Expansível (Accordion)" subheader="Superfícies colapsáveis para dados densos" />
+            <CardContent>
+              <Accordion defaultExpanded>
+                <AccordionSummary expandIcon={<Iconify icon={'solar:alt-arrow-down-bold' as any} />}>
+                  <Typography variant="subtitle1">Estrutura de Governança Descentralizada</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    A governança é exercida pelos detentores de tokens através de votações transparentes
+                    registradas em contratos inteligentes com timelock de segurança.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<Iconify icon={'solar:alt-arrow-down-bold' as any} />}>
+                  <Typography variant="subtitle1">Políticas de Segurança e Auditoria Criptográfica</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    Todas as transações exigem aprovação multi-assinatura e registros imutáveis em log de auditoria.
+                  </Typography>
+                </AccordionDetails>
+              </Accordion>
+            </CardContent>
           </Card>
         </Stack>
       )}
 
-      {/* ABA 5: TABELAS E BADGES */}
+      {/* ABA 6: TABELAS, BADGES E PAGINAÇÃO */}
       {currentTab === 'data' && (
         <Stack spacing={4}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Badges Semânticos (Label Component)
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 3 }}>
-              <Label color="default" variant="soft">Padrão</Label>
-              <Label color="primary" variant="soft">Primary</Label>
-              <Label color="secondary" variant="soft">Secondary</Label>
-              <Label color="info" variant="soft">Info</Label>
-              <Label color="success" variant="soft">Ativo / Concluído</Label>
-              <Label color="warning" variant="soft">Pendente</Label>
-              <Label color="error" variant="soft">Bloqueado / Falha</Label>
-            </Box>
-
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 800 }}>
-              Avatares e Agrupamentos (MuiAvatar)
-            </Typography>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-              <Avatar sx={{ bgcolor: 'primary.main' }}>AD</Avatar>
-              <Avatar sx={{ bgcolor: 'secondary.main' }}>SC</Avatar>
-              <Avatar sx={{ bgcolor: 'info.main' }}>JP</Avatar>
-              <AvatarGroup max={4}>
-                <Avatar sx={{ bgcolor: 'primary.light' }}>A</Avatar>
-                <Avatar sx={{ bgcolor: 'secondary.light' }}>B</Avatar>
-                <Avatar sx={{ bgcolor: 'warning.light' }}>C</Avatar>
-                <Avatar sx={{ bgcolor: 'error.light' }}>D</Avatar>
-                <Avatar sx={{ bgcolor: 'grey.500' }}>E</Avatar>
-              </AvatarGroup>
-            </Stack>
+          <Card>
+            <CardHeader title="Badges de Status (Label)" subheader="Variantes Soft, Filled e Outlined" />
+            <CardContent>
+              <Stack spacing={2}>
+                <Box>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                    Variante Soft
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Label variant="soft" color="default">Default</Label>
+                    <Label variant="soft" color="primary">Primary</Label>
+                    <Label variant="soft" color="secondary">Secondary</Label>
+                    <Label variant="soft" color="info">Info</Label>
+                    <Label variant="soft" color="success">Success</Label>
+                    <Label variant="soft" color="warning">Warning</Label>
+                    <Label variant="soft" color="error">Error</Label>
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block', mb: 1 }}>
+                    Variante Filled
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Label variant="filled" color="primary">Ativo</Label>
+                    <Label variant="filled" color="secondary">Pendente</Label>
+                    <Label variant="filled" color="success">Concluído</Label>
+                    <Label variant="filled" color="error">Revogado</Label>
+                  </Box>
+                </Box>
+              </Stack>
+            </CardContent>
           </Card>
 
           <Card>
-            <CardHeader title="Tabela de Dados Padrão (MuiTable)" subheader="Cabeçalhos neutros com linhas pontilhadas" />
-            <TableContainer sx={{ mt: 1 }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Identificador</TableCell>
-                    <TableCell>Membro / Associado</TableCell>
-                    <TableCell>Data de Registro</TableCell>
-                    <TableCell>Valor</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell align="right">Ação</TableCell>
-                  </TableRow>
-                </TableHead>
+            <CardHeader title="Avatares & Grupos (AvatarGroup)" subheader="Componentes de perfil e usuários empilhados" />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Avatar sx={{ bgcolor: 'primary.main' }}>SC</Avatar>
+                <Avatar sx={{ bgcolor: 'secondary.main' }}>DAO</Avatar>
+                <Avatar sx={{ bgcolor: 'info.main' }}>
+                  <Iconify icon={'solar:user-bold' as any} />
+                </Avatar>
+                <Divider orientation="vertical" flexItem />
+                <AvatarGroup max={4}>
+                  <Avatar sx={{ bgcolor: 'primary.main' }}>A</Avatar>
+                  <Avatar sx={{ bgcolor: 'secondary.main' }}>B</Avatar>
+                  <Avatar sx={{ bgcolor: 'info.main' }}>C</Avatar>
+                  <Avatar sx={{ bgcolor: 'warning.main' }}>D</Avatar>
+                  <Avatar sx={{ bgcolor: 'error.main' }}>E</Avatar>
+                </AvatarGroup>
+              </Box>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Tabela de Dados Interativa"
+              subheader="Demonstração com TableHeadCustom, linhas estilizadas e paginação personalizada"
+              action={
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => setShowTableSkeleton(!showTableSkeleton)}
+                >
+                  {showTableSkeleton ? 'Mostrar Dados' : 'Ver Skeleton'}
+                </Button>
+              }
+            />
+            <TableContainer sx={{ position: 'relative' }}>
+              <Table size={isTableDense ? 'small' : 'medium'}>
+                <TableHeadCustom headCells={TABLE_HEAD} />
                 <TableBody>
-                  {[
-                    { id: 'TX-9021', name: 'Sandro Silveira', date: '14/10/2026', value: 'R$ 12.450,00', status: 'Concluído', color: 'success' },
-                    { id: 'TX-9022', name: 'Associação Beneficente', date: '13/10/2026', value: 'R$ 4.200,00', status: 'Em Análise', color: 'warning' },
-                    { id: 'TX-9023', name: 'Cooperativa Nacional', date: '12/10/2026', value: 'R$ 28.900,00', status: 'Concluído', color: 'success' },
-                    { id: 'TX-9024', name: 'Carlos Eduardo Mendes', date: '11/10/2026', value: 'R$ 850,00', status: 'Cancelado', color: 'error' },
-                  ].map((row) => (
-                    <TableRow key={row.id} hover>
-                      <TableCell sx={{ fontWeight: 700 }}>{row.id}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell sx={{ fontWeight: 700 }}>{row.value}</TableCell>
-                      <TableCell>
-                        <Label color={row.color as any} variant="soft">{row.status}</Label>
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton size="small"><Iconify icon={'solar:eye-bold' as any} /></IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {showTableSkeleton ? (
+                    <TableSkeleton rowCount={3} cellCount={5} />
+                  ) : (
+                    <>
+                      <TableRow hover>
+                        <TableCell>
+                          <Typography variant="subtitle2">Sandro Silva</Typography>
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>sandro@asppibra.com.br</Typography>
+                        </TableCell>
+                        <TableCell>CEO / Administrador</TableCell>
+                        <TableCell><Label variant="soft" color="success">Online</Label></TableCell>
+                        <TableCell><Typography variant="subtitle2">145.200 DAO</Typography></TableCell>
+                        <TableCell align="right">
+                          <IconButton size="small"><Iconify icon={'solar:menu-dots-bold' as any} /></IconButton>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow hover>
+                        <TableCell>
+                          <Typography variant="subtitle2">Contrato de Tesouraria</Typography>
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>0x87a...4b12</Typography>
+                        </TableCell>
+                        <TableCell>Smart Contract</TableCell>
+                        <TableCell><Label variant="soft" color="primary">Ativo</Label></TableCell>
+                        <TableCell><Typography variant="subtitle2">1.250.000 DAO</Typography></TableCell>
+                        <TableCell align="right">
+                          <IconButton size="small"><Iconify icon={'solar:menu-dots-bold' as any} /></IconButton>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow hover>
+                        <TableCell>
+                          <Typography variant="subtitle2">Nó Validador #04</Typography>
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>192.168.1.104</Typography>
+                        </TableCell>
+                        <TableCell>Infraestrutura</TableCell>
+                        <TableCell><Label variant="soft" color="warning">Sincronizando</Label></TableCell>
+                        <TableCell><Typography variant="subtitle2">50.000 DAO</Typography></TableCell>
+                        <TableCell align="right">
+                          <IconButton size="small"><Iconify icon={'solar:menu-dots-bold' as any} /></IconButton>
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
+
+            <TablePaginationCustom
+              count={25}
+              page={tablePage}
+              rowsPerPage={tableRowsPerPage}
+              dense={isTableDense}
+              onChangeDense={(e) => setIsTableDense(e.target.checked)}
+              onPageChange={(e, newPage) => setTablePage(newPage)}
+              onRowsPerPageChange={(e) => setTableRowsPerPage(parseInt(e.target.value, 10))}
+            />
+          </Card>
+
+          <Card>
+            <CardHeader title="Paginação Numérica MUI" subheader="Alternativa de paginação com links diretos" />
+            <CardContent>
+              <Pagination count={10} color="primary" />
+            </CardContent>
           </Card>
         </Stack>
       )}
 
-      {/* ABA 6: ALERTAS E FEEDBACK */}
+      {/* ABA 7: UPLOAD E MÍDIA */}
+      {currentTab === 'media-upload' && (
+        <Stack spacing={4}>
+          <Card>
+            <CardHeader
+              title="Miniaturas de Arquivos (FileThumbnail)"
+              subheader="Ícones semânticos para cada extensão de arquivo reconhecida"
+            />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 3, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Box sx={{ textAlign: 'center' }}>
+                  <FileThumbnail file="relatorio-financeiro.pdf" sx={{ width: 56, height: 56, mx: 'auto' }} />
+                  <Typography variant="caption" sx={{ mt: 0.5, display: 'block' }}>PDF</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <FileThumbnail file="planilha-tesouraria.xlsx" sx={{ width: 56, height: 56, mx: 'auto' }} />
+                  <Typography variant="caption" sx={{ mt: 0.5, display: 'block' }}>Excel</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <FileThumbnail file="backup-dados.zip" sx={{ width: 56, height: 56, mx: 'auto' }} />
+                  <Typography variant="caption" sx={{ mt: 0.5, display: 'block' }}>Arquivo ZIP</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <FileThumbnail file="registro-audio.mp3" sx={{ width: 56, height: 56, mx: 'auto' }} />
+                  <Typography variant="caption" sx={{ mt: 0.5, display: 'block' }}>Áudio</Typography>
+                </Box>
+                <Box sx={{ textAlign: 'center' }}>
+                  <FileThumbnail file="documento-texto.txt" sx={{ width: 56, height: 56, mx: 'auto' }} />
+                  <Typography variant="caption" sx={{ mt: 0.5, display: 'block' }}>Texto</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Bandeiras Internacionais (FlagIcon)"
+              subheader="Renderização vetorial rápida por código ISO"
+            />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FlagIcon code="BR" sx={{ width: 32, height: 22, borderRadius: 0.5 }} />
+                  <Typography variant="body2">Brasil (BR)</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FlagIcon code="US" sx={{ width: 32, height: 22, borderRadius: 0.5 }} />
+                  <Typography variant="body2">Estados Unidos (US)</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FlagIcon code="PT" sx={{ width: 32, height: 22, borderRadius: 0.5 }} />
+                  <Typography variant="body2">Portugal (PT)</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FlagIcon code="DE" sx={{ width: 32, height: 22, borderRadius: 0.5 }} />
+                  <Typography variant="body2">Alemanha (DE)</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <FlagIcon code="JP" sx={{ width: 32, height: 22, borderRadius: 0.5 }} />
+                  <Typography variant="body2">Japão (JP)</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader
+              title="Uploads & Dropzone"
+              subheader="Upload de Avatar, Caixa Compacta (UploadBox) e Dropzone Completa (Upload)"
+            />
+            <CardContent>
+              <Grid container spacing={4} sx={{ alignItems: 'center' }}>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1, textAlign: 'center' }}>
+                    Upload de Avatar
+                  </Typography>
+                  <UploadAvatar
+                    helperText={
+                      <Typography variant="caption" sx={{ mt: 1, display: 'block', textAlign: 'center', color: 'text.secondary' }}>
+                        Clique ou arraste sua foto (PNG / JPG)
+                      </Typography>
+                    }
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 8 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Caixa Compacta (UploadBox)
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                    <UploadBox />
+                    <UploadBox />
+                  </Box>
+
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Dropzone de Arquivo Único / Múltiplo
+                  </Typography>
+                  <Upload
+                    multiple
+                    helperText={
+                      <Typography variant="caption" sx={{ mt: 1, display: 'block', color: 'text.secondary' }}>
+                        Arraste arquivos ou clique para procurar em seu dispositivo
+                      </Typography>
+                    }
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Stack>
+      )}
+
+      {/* ABA 8: GRÁFICOS E MÉTRICAS */}
+      {currentTab === 'charts' && (
+        <Stack spacing={4}>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Card>
+                <CardHeader
+                  title="Gráfico de Tendência (Área / Linha)"
+                  subheader="Desempenho histórico de operações e volume"
+                />
+                <CardContent>
+                  <Chart
+                    type="area"
+                    series={[
+                      { name: 'Volume Transacionado', data: [12, 18, 14, 25, 32, 28, 45, 52] },
+                      { name: 'Recompensas de Staking', data: [5, 8, 7, 12, 15, 14, 20, 24] },
+                    ]}
+                    options={areaChartOptions}
+                    sx={{ height: 320 }}
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card sx={{ height: '100%' }}>
+                <CardHeader
+                  title="Distribuição do Tesouro"
+                  subheader="Divisão percentual por alocação"
+                />
+                <CardContent>
+                  <Chart
+                    type="donut"
+                    series={[40, 25, 20, 15]}
+                    options={donutChartOptions}
+                    sx={{ height: 300 }}
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12 }}>
+              <Card>
+                <CardHeader
+                  title="Gráfico de Barras Semanais"
+                  subheader="Fluxo diário de solicitações no cluster"
+                />
+                <CardContent>
+                  <Chart
+                    type="bar"
+                    series={[{ name: 'Requisições', data: [450, 620, 580, 890, 710, 420, 310] }]}
+                    options={barChartOptions}
+                    sx={{ height: 280 }}
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Stack>
+      )}
+
+      {/* ABA 9: ALERTAS, FEEDBACK E MODAIS */}
       {currentTab === 'feedback' && (
         <Stack spacing={4}>
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2.5, fontWeight: 800 }}>
-              Caixas de Aviso e Alertas (MuiAlert)
-            </Typography>
-            <Stack spacing={2}>
-              <Alert severity="success" variant={'soft' as any}>
-                <AlertTitle>Operação Concluída com Êxito</AlertTitle>
-                A transação foi confirmada e protocolada no livro-razão institucional.
-              </Alert>
-              <Alert severity="info" variant={'soft' as any}>
-                <AlertTitle>Atualização da Versão WebApp</AlertTitle>
-                Uma nova versão do sistema está disponível para homologação dos membros.
-              </Alert>
-              <Alert severity="warning" variant={'soft' as any}>
-                <AlertTitle>Atenção aos Prazos de Vencimento</AlertTitle>
-                Existem 3 contratos aguardando quitação nesta semana.
-              </Alert>
-              <Alert severity="error" variant={'soft' as any}>
-                <AlertTitle>Falha de Autenticação Biométrica</AlertTitle>
-                Chave não reconhecida pelo leitor de segurança.
-              </Alert>
-            </Stack>
+          <Card>
+            <CardHeader title="Banners de Severidade (Alert Soft)" subheader="Feedback visual contextual" />
+            <CardContent>
+              <Stack spacing={2}>
+                <Alert severity="info" variant={'soft' as any}>
+                  <AlertTitle>Informativo</AlertTitle>
+                  O ciclo de governança #42 está aberto para envio de novas propostas comunitárias.
+                </Alert>
+                <Alert severity="success" variant={'soft' as any}>
+                  <AlertTitle>Sucesso</AlertTitle>
+                  A transação multi-assinatura foi confirmada e liquidada na blockchain.
+                </Alert>
+                <Alert severity="warning" variant={'soft' as any}>
+                  <AlertTitle>Atenção</AlertTitle>
+                  O saldo de reserva da tesouraria atingiu o limite operacional mínimo recomendado.
+                </Alert>
+                <Alert severity="error" variant={'soft' as any}>
+                  <AlertTitle>Erro Crítico</AlertTitle>
+                  O nó validador secundário perdeu sincronização com a rede principal.
+                </Alert>
+              </Stack>
+            </CardContent>
           </Card>
 
-          <Card sx={{ p: 3 }}>
-            <Typography variant="h6" sx={{ mb: 2.5, fontWeight: 800 }}>
-              Indicadores de Carregamento & Notificações Interativas
-            </Typography>
-            <Grid container spacing={3} sx={{ alignItems: 'center' }}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1.5 }}>Barras de Progresso</Typography>
-                <LinearProgress color="primary" sx={{ mb: 2, height: 8, borderRadius: 1 }} />
-                <LinearProgress color="secondary" sx={{ mb: 2, height: 8, borderRadius: 1 }} />
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <CircularProgress size={32} color="primary" />
-                  <CircularProgress size={32} color="secondary" />
-                  <CircularProgress size={32} color="info" />
-                </Stack>
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1.5 }}>Disparar Notificações (Toast Feedback)</Typography>
-                <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                  <Button variant="soft" color="success" onClick={() => toast.success('Sucesso: Operação efetuada!')}>
-                    Toast Sucesso
-                  </Button>
-                  <Button variant="soft" color="error" onClick={() => toast.error('Erro: Não foi possível gravar.')}>
-                    Toast Erro
-                  </Button>
-                  <Button variant="soft" color="warning" onClick={() => toast.warning('Aviso: Saldo próximo do limite.')}>
-                    Toast Aviso
-                  </Button>
-                  <Button variant="outlined" color="primary" onClick={() => setConfirmOpen(true)}>
-                    Abrir Modal Diálogo
-                  </Button>
+          <Card>
+            <CardHeader title="Indicadores de Carregamento & Skeletons" subheader="Barras de progresso e simulação de loading" />
+            <CardContent>
+              <Stack spacing={3}>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.secondary' }}>
+                    Barras de Progresso Linear
+                  </Typography>
+                  <LinearProgress variant="determinate" value={72} color="primary" sx={{ mb: 1.5, height: 8, borderRadius: 1 }} />
+                  <LinearProgress color="secondary" sx={{ height: 8, borderRadius: 1 }} />
                 </Box>
-              </Grid>
-            </Grid>
+                <Divider />
+                <Box>
+                  <Typography variant="subtitle2" sx={{ mb: 1.5, color: 'text.secondary' }}>
+                    Skeletons Animados (Placeholders de Carregamento)
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Stack spacing={1}>
+                        <Skeleton variant="text" sx={{ fontSize: '1.5rem', width: '60%' }} />
+                        <Skeleton variant="text" sx={{ fontSize: '1rem', width: '90%' }} />
+                        <Skeleton variant="text" sx={{ fontSize: '1rem', width: '80%' }} />
+                      </Stack>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                        <Skeleton variant="circular" width={56} height={56} />
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Skeleton variant="rectangular" height={24} sx={{ borderRadius: 1, mb: 1 }} />
+                          <Skeleton variant="rectangular" height={16} width="50%" sx={{ borderRadius: 1 }} />
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Stack>
+            </CardContent>
           </Card>
 
-          {/* MODAL DIALOG DEMO */}
-          <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)} maxWidth="xs" fullWidth>
-            <DialogTitle sx={{ fontWeight: 800 }}>Confirmar Aprovação do Padrão?</DialogTitle>
-            <DialogContent>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Ao confirmar, este padrão de tema e componentes servirá de base para a entrega final da versão dos usuários simples.
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button color="inherit" onClick={() => setConfirmOpen(false)}>Cancelar</Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => {
-                  setConfirmOpen(false);
-                  toast.success('Padrão homologado com sucesso!');
-                }}
-              >
-                Confirmar Aprovação
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Card sx={{ height: '100%' }}>
+                <CardHeader title="Estado de Conteúdo Vazio (EmptyContent)" />
+                <CardContent>
+                  <EmptyContent
+                    title="Nenhum registro ativo"
+                    description="Não existem dados vinculados aos filtros aplicados neste momento."
+                    action={
+                      <Button variant="contained" color="primary" size="small" sx={{ mt: 2 }}>
+                        Cadastrar Registro
+                      </Button>
+                    }
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Card sx={{ height: '100%' }}>
+                <CardHeader title="Pesquisa Sem Resultados (SearchNotFound)" />
+                <CardContent sx={{ pt: 4 }}>
+                  <SearchNotFound query="TermoInexistenteNoBanco" />
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+
+          <Card>
+            <CardHeader title="Diálogos Interativos & Notificações Sonner" subheader="Testes de confirmação e disparo de toasts" />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                <Button variant="contained" color="primary" onClick={() => setDialogOpen(true)}>
+                  Abrir Diálogo Regular
+                </Button>
+                <Button variant="contained" color="error" onClick={() => setConfirmOpen(true)}>
+                  Abrir ConfirmDialog
+                </Button>
+                <Button
+                  variant="soft"
+                  color="success"
+                  onClick={() => toast.success('Operação executada com total sucesso!')}
+                >
+                  Toast Sucesso
+                </Button>
+                <Button
+                  variant="soft"
+                  color="warning"
+                  onClick={() => toast.warning('Aviso: Verifique os parâmetros!')}
+                >
+                  Toast Aviso
+                </Button>
+                <Button
+                  variant="soft"
+                  color="error"
+                  onClick={() => toast.error('Erro ao conectar ao cluster remoto!')}
+                >
+                  Toast Erro
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
         </Stack>
       )}
+
+      {/* ABA 10: NAVEGAÇÃO E UTILIDADES */}
+      {currentTab === 'navigation-utils' && (
+        <Stack spacing={4}>
+          <Card>
+            <CardHeader title="Fluxo de Passos Sequenciais (Stepper)" subheader="Controle de etapas de onboarding ou formulários" />
+            <CardContent>
+              <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
+                {steps.map((label) => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  disabled={activeStep === 0}
+                  onClick={() => setActiveStep((prev) => prev - 1)}
+                >
+                  Voltar
+                </Button>
+                <Button
+                  size="small"
+                  variant="contained"
+                  disabled={activeStep === steps.length - 1}
+                  onClick={() => setActiveStep((prev) => prev + 1)}
+                >
+                  Avançar
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader title="Popovers Ancorados (CustomPopover)" subheader="Menu suspenso com setas posicionadas" />
+            <CardContent>
+              <Button
+                variant="contained"
+                color="secondary"
+                endIcon={<Iconify icon={'solar:alt-arrow-down-bold' as any} />}
+                onClick={(e) => setPopoverAnchor(e.currentTarget)}
+              >
+                Opções da Conta
+              </Button>
+
+              <CustomPopover
+                open={Boolean(popoverAnchor)}
+                anchorEl={popoverAnchor}
+                onClose={() => setPopoverAnchor(null)}
+                slotProps={{ arrow: { placement: 'top-left' } }}
+              >
+                <Box sx={{ p: 1.5, width: 220 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Opções Avançadas</Typography>
+                  <MenuItem onClick={() => setPopoverAnchor(null)}>
+                    <Iconify icon={'solar:user-bold' as any} sx={{ mr: 1 }} />
+                    Perfil do Membro
+                  </MenuItem>
+                  <MenuItem onClick={() => setPopoverAnchor(null)}>
+                    <Iconify icon={'solar:shield-check-bold' as any} sx={{ mr: 1 }} />
+                    Segurança 2FA
+                  </MenuItem>
+                  <Divider sx={{ my: 1 }} />
+                  <MenuItem onClick={() => setPopoverAnchor(null)} sx={{ color: 'error.main' }}>
+                    <Iconify icon={'solar:logout-bold' as any} sx={{ mr: 1 }} />
+                    Encerrar Sessão
+                  </MenuItem>
+                </Box>
+              </CustomPopover>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader title="Dicas Flutuantes (Tooltips) & Contadores (Badges)" subheader="Auxiliares visuais discretos" />
+            <CardContent>
+              <Box sx={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+                <Tooltip title="Exemplo de dica informativa superior (Tooltip)" placement="top">
+                  <Button variant="outlined">Passe o mouse (Top)</Button>
+                </Tooltip>
+                <Tooltip title="Informação de segurança confidencial" placement="bottom">
+                  <IconButton color="primary">
+                    <Iconify icon={'solar:shield-keyhole-bold-duotone' as any} />
+                  </IconButton>
+                </Tooltip>
+                <Divider orientation="vertical" flexItem />
+                <Badge badgeContent={4} color="error">
+                  <Iconify icon={'solar:bell-bing-bold-duotone' as any} width={32} />
+                </Badge>
+                <Badge badgeContent={99} color="primary">
+                  <Iconify icon={'solar:inbox-bold-duotone' as any} width={32} />
+                </Badge>
+              </Box>
+            </CardContent>
+          </Card>
+        </Stack>
+      )}
+
+      {/* DIÁLOGO REGULAR */}
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Iconify icon={'solar:shield-warning-bold' as any} sx={{ color: 'primary.main' }} />
+          Diálogo Padrão do Sistema
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            Esta janela modal utiliza a estilização nativa do tema, respeitando o modo claro/escuro e os raios de curvatura estabelecidos.
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Pode ser acoplado com formulários de entrada, visualizadores ou termos de consentimento da DAO.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" color="inherit" onClick={() => setDialogOpen(false)}>
+            Fechar
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              setDialogOpen(false);
+              toast.success('Ação do modal confirmada!');
+            }}
+          >
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* CONFIRM DIALOG */}
+      <ConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title="Confirmar Ação Crítica"
+        content="Você tem certeza de que deseja executar esta ação? Esta operação será registrada no log de auditoria permanente."
+        action={
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => {
+              setConfirmOpen(false);
+              toast.error('Ação confirmada e registrada no log!');
+            }}
+          >
+            Confirmar e Prosseguir
+          </Button>
+        }
+      />
     </DashboardContent>
   );
 }
