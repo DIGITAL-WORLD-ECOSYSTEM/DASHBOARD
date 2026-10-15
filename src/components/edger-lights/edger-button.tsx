@@ -1,5 +1,5 @@
 import ButtonBase from '@mui/material/ButtonBase';
-import { useTheme } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 
 import { Iconify } from 'src/components/iconify';
 
@@ -8,6 +8,7 @@ import type { EdgerButtonProps } from './types';
 
 // ----------------------------------------------------------------------
 // EDGER Micro Action Button: "Sharp Edges, Tactile Feedback"
+// Modelo Oficial sincronizado com AppPriorityAlerts
 // ----------------------------------------------------------------------
 
 export function EdgerButton({
@@ -28,26 +29,26 @@ export function EdgerButton({
   // Size scales
   const sizeStyles = {
     small: {
-      py: 0.6,
-      px: 1.4,
-      fontSize: '0.78rem',
+      py: 0.5,
+      px: 1.5,
+      fontSize: '0.75rem',
       borderRadius: '8px',
       iconSize: 15,
       gap: 0.8,
     },
     medium: {
-      py: 0.85,
+      py: 0.8,
       px: 1.8,
-      fontSize: '0.85rem',
-      borderRadius: '10px',
+      fontSize: '0.82rem',
+      borderRadius: '8px',
       iconSize: 18,
       gap: 1,
     },
     large: {
-      py: 1.1,
+      py: 1,
       px: 2.2,
-      fontSize: '0.92rem',
-      borderRadius: '12px',
+      fontSize: '0.90rem',
+      borderRadius: '10px',
       iconSize: 20,
       gap: 1.2,
     },
@@ -62,7 +63,7 @@ export function EdgerButton({
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontWeight: 650,
+        fontWeight: 700,
         fontFamily: theme.typography.fontFamily,
         letterSpacing: '0.01em',
         py: sizeStyles.py,
@@ -71,34 +72,27 @@ export function EdgerButton({
         borderRadius: sizeStyles.borderRadius,
         gap: sizeStyles.gap,
         color: isDark ? token.textDark : token.text,
-        bgcolor: isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.75)',
-        border: `1.5px solid ${isDark ? token.borderDark : token.border}`,
-        boxShadow: isDark
-          ? `0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08)`
-          : `0 2px 5px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.9)`,
+        bgcolor: alpha(token.accent, isDark ? 0.22 : 0.14),
+        border: `1px solid ${alpha(token.accent, isDark ? 0.35 : 0.28)}`,
+        boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.6)',
         cursor: disabled ? 'not-allowed' : 'pointer',
         opacity: disabled ? 0.45 : 1,
         transition: 'all 0.18s cubic-bezier(0.4, 0, 0.2, 1)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
         userSelect: 'none',
 
-        // Micro-interatividade no Hover
+        // Estilo no Hover (sem movimento de transform)
         '&:hover:not(:disabled)': {
-          transform: 'translateY(-1.5px)',
-          bgcolor: isDark ? 'rgba(255, 255, 255, 0.09)' : '#FFFFFF',
-          borderColor: isDark ? token.accent : token.accent,
-          boxShadow: isDark
-            ? `0 6px 14px ${token.shadow}, inset 0 1px 1px rgba(255, 255, 255, 0.2)`
-            : `0 5px 12px ${token.shadow}, inset 0 1px 1.5px rgba(255, 255, 255, 1)`,
+          bgcolor: alpha(token.accent, isDark ? 0.30 : 0.22),
+          boxShadow: `0 4px 10px ${alpha(token.accent, 0.25)}, inset 0 1px 0 rgba(255, 255, 255, 0.7)`,
         },
 
-        // Feedback de Clique (Tactile Press)
+        // Feedback de Clique (sem movimento de transform)
         '&:active:not(:disabled)': {
-          transform: 'translateY(1px) scale(0.98)',
           boxShadow: isDark
             ? `0 1px 3px rgba(0, 0, 0, 0.5)`
-            : `0 1px 2px rgba(0, 0, 0, 0.08)`,
+            : `0 1px 2px rgba(0, 0, 0, 0.06)`,
         },
 
         ...sx,
