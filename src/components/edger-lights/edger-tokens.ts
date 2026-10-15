@@ -8,6 +8,8 @@ export const EDGER_TOKENS: Record<EdgerVariant, EdgerColorToken> = {
   rose: {
     bg: '#FFF5F5',
     bgDark: 'rgba(244, 63, 94, 0.08)',
+    glassBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.50) 45%, rgba(254, 205, 211, 0.22) 100%)',
+    glassBgDark: 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(225, 29, 72, 0.12) 50%, rgba(15, 23, 42, 0.80) 100%)',
     border: '#FECDD3',
     borderDark: 'rgba(244, 63, 94, 0.35)',
     accent: '#E11D48',
@@ -23,6 +25,8 @@ export const EDGER_TOKENS: Record<EdgerVariant, EdgerColorToken> = {
   amber: {
     bg: '#FFFBEB',
     bgDark: 'rgba(245, 158, 11, 0.08)',
+    glassBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.50) 45%, rgba(253, 230, 138, 0.22) 100%)',
+    glassBgDark: 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(217, 119, 6, 0.12) 50%, rgba(15, 23, 42, 0.80) 100%)',
     border: '#FDE68A',
     borderDark: 'rgba(245, 158, 11, 0.35)',
     accent: '#D97706',
@@ -38,6 +42,8 @@ export const EDGER_TOKENS: Record<EdgerVariant, EdgerColorToken> = {
   emerald: {
     bg: '#F0FDF4',
     bgDark: 'rgba(16, 185, 129, 0.08)',
+    glassBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.50) 45%, rgba(167, 243, 208, 0.22) 100%)',
+    glassBgDark: 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(5, 150, 105, 0.12) 50%, rgba(15, 23, 42, 0.80) 100%)',
     border: '#A7F3D0',
     borderDark: 'rgba(16, 185, 129, 0.35)',
     accent: '#059669',
@@ -53,6 +59,8 @@ export const EDGER_TOKENS: Record<EdgerVariant, EdgerColorToken> = {
   sky: {
     bg: '#F0F9FF',
     bgDark: 'rgba(14, 165, 233, 0.08)',
+    glassBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.50) 45%, rgba(186, 230, 253, 0.22) 100%)',
+    glassBgDark: 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(2, 132, 199, 0.12) 50%, rgba(15, 23, 42, 0.80) 100%)',
     border: '#BAE6FD',
     borderDark: 'rgba(14, 165, 233, 0.35)',
     accent: '#0284C7',
@@ -68,6 +76,8 @@ export const EDGER_TOKENS: Record<EdgerVariant, EdgerColorToken> = {
   purple: {
     bg: '#FAF5FF',
     bgDark: 'rgba(168, 85, 247, 0.08)',
+    glassBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.50) 45%, rgba(233, 213, 255, 0.22) 100%)',
+    glassBgDark: 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(147, 51, 234, 0.12) 50%, rgba(15, 23, 42, 0.80) 100%)',
     border: '#E9D5FF',
     borderDark: 'rgba(168, 85, 247, 0.35)',
     accent: '#9333EA',
@@ -83,6 +93,8 @@ export const EDGER_TOKENS: Record<EdgerVariant, EdgerColorToken> = {
   slate: {
     bg: '#F8FAFC',
     bgDark: 'rgba(100, 116, 139, 0.08)',
+    glassBg: 'linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.50) 45%, rgba(226, 232, 240, 0.25) 100%)',
+    glassBgDark: 'linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(71, 85, 105, 0.12) 50%, rgba(15, 23, 42, 0.80) 100%)',
     border: '#E2E8F0',
     borderDark: 'rgba(148, 163, 184, 0.35)',
     accent: '#475569',
