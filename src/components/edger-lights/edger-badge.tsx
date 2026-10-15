@@ -15,8 +15,9 @@ export function EdgerSquircleBadge({
   variant = 'sky',
   size = 46,
   pulse = false,
+  solid = false,
   sx,
-}: EdgerSquircleBadgeProps) {
+}: EdgerSquircleBadgeProps & { solid?: boolean }) {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const token = EDGER_TOKENS[variant];
@@ -27,32 +28,19 @@ export function EdgerSquircleBadge({
         width: size,
         height: size,
         minWidth: size,
-        borderRadius: `${Math.round(size * 0.36)}px`, // Geometria Squircle Apple-style
+        borderRadius: `${Math.round(size * 0.36)}px`,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: isDark ? token.badgeBgDark : token.badgeBg,
-        border: `1.5px solid ${isDark ? token.borderDark : token.border}`,
-        color: isDark ? token.textDark : token.accent,
-        boxShadow: isDark
-          ? `inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 4px 12px ${token.shadow}`
-          : `inset 0 1px 1.5px rgba(255, 255, 255, 0.9), 0 4px 10px ${token.shadow}`,
+        background: solid ? token.accent : (isDark ? token.badgeBgDark : token.badgeBg),
+        border: solid ? 'none' : `1.5px solid ${isDark ? token.borderDark : token.border}`,
+        color: solid ? '#FFFFFF' : (isDark ? token.textDark : token.accent),
+        boxShadow: solid
+          ? `inset 0 1px 1.5px rgba(255, 255, 255, 0.42), 0 2.5px 8px ${token.shadow}`
+          : (isDark
+              ? `inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 4px 12px ${token.shadow}`
+              : `inset 0 1px 1.5px rgba(255, 255, 255, 0.9), 0 4px 10px ${token.shadow}`),
         position: 'relative',
-        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-        '&:hover': {
-          transform: 'scale(1.05)',
-          boxShadow: isDark
-            ? `inset 0 1px 2px rgba(255, 255, 255, 0.25), 0 6px 16px ${token.shadow}`
-            : `inset 0 1px 2px rgba(255, 255, 255, 1), 0 6px 14px ${token.shadow}`,
-        },
-        ...(pulse && {
-          animation: 'edgerPulse 2.4s infinite ease-in-out',
-          '@keyframes edgerPulse': {
-            '0%': { transform: 'scale(1)', boxShadow: `0 0 0 0 ${token.shadow}` },
-            '50%': { transform: 'scale(1.04)', boxShadow: `0 0 0 8px rgba(0,0,0,0)` },
-            '100%': { transform: 'scale(1)', boxShadow: `0 0 0 0 rgba(0,0,0,0)` },
-          },
-        }),
         ...sx,
       }}
     >
