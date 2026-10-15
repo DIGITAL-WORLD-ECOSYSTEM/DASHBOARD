@@ -18,6 +18,7 @@ export function EdgerCard({
   title,
   description,
   variant = 'rose',
+  edgeStyle = 'lateral',
   timestamp,
   icon,
   actionText,
@@ -34,6 +35,39 @@ export function EdgerCard({
   const isDark = theme.palette.mode === 'dark';
   const token = EDGER_TOKENS[variant];
 
+  // Cálculo da elevação 3D conforme o modelo discriminado:
+  // - 'lateral': Destaque tátil na borda lateral esquerda (sem borda inferior)
+  // - 'bottom': Destaque tátil na borda inferior em camada sólida 3D (sem borda lateral)
+  const getElevationStyles = () => {
+    if (!elevation3D) return {};
+
+    if (edgeStyle === 'lateral') {
+      return {
+        boxShadow: isDark
+          ? `-5px 0 0 0 ${token.accent}, -8px 12px 24px -4px rgba(0, 0, 0, 0.6)`
+          : `-4.5px 0 0 0 ${token.accent}, -6px 10px 22px -3px ${token.shadow}`,
+        '&:hover': {
+          transform: 'translateX(2px) translateY(-1px)',
+          boxShadow: isDark
+            ? `-7px 0 0 0 ${token.accent}, -12px 16px 28px -4px rgba(0, 0, 0, 0.7)`
+            : `-6.5px 0 0 0 ${token.accent}, -10px 14px 26px -3px ${token.shadow}`,
+        },
+      };
+    }
+
+    return {
+      boxShadow: isDark
+        ? `0 5px 0 0 ${token.accent}, 0 12px 24px -4px rgba(0, 0, 0, 0.6)`
+        : `0 4.5px 0 0 ${token.accent}, 0 10px 20px -3px ${token.shadow}`,
+      '&:hover': {
+        transform: 'translateY(-2px)',
+        boxShadow: isDark
+          ? `0 7px 0 0 ${token.accent}, 0 16px 28px -4px rgba(0, 0, 0, 0.7)`
+          : `0 6.5px 0 0 ${token.accent}, 0 14px 24px -3px ${token.shadow}`,
+      },
+    };
+  };
+
   return (
     <Box
       sx={{
@@ -46,37 +80,11 @@ export function EdgerCard({
         transition: 'all 0.22s cubic-bezier(0.4, 0, 0.2, 1)',
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-
-        // Camada 3D Deslocada (Layered 3D Offset - Assinatura do Modelo)
-        ...(elevation3D && {
-          boxShadow: isDark
-            ? `0 5px 0 0 ${token.accent}, 0 12px 24px -4px rgba(0, 0, 0, 0.6)`
-            : `0 4.5px 0 0 ${token.accent}, 0 10px 20px -3px ${token.shadow}`,
-          '&:hover': {
-            transform: 'translateY(-2px)',
-            boxShadow: isDark
-              ? `0 7px 0 0 ${token.accent}, 0 16px 28px -4px rgba(0, 0, 0, 0.7)`
-              : `0 6.5px 0 0 ${token.accent}, 0 14px 24px -3px ${token.shadow}`,
-          },
-        }),
-
+        ...getElevationStyles(),
         ...sx,
       }}
     >
-      {/* Faixa Lateral Luminosa de Destaque (Sharp Accent Strip) */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          width: '5px',
-          bgcolor: token.accent,
-          boxShadow: `2px 0 8px ${token.accent}`,
-        }}
-      />
-
-      <Box sx={{ p: { xs: 2.2, sm: 2.8 }, pl: { xs: 2.8, sm: 3.4 } }}>
+      <Box sx={{ p: { xs: 2.2, sm: 2.8 } }}>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
           {/* Squircle Badge com Inner Light Bevel */}
           {icon && (
