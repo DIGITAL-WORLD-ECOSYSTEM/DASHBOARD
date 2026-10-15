@@ -8,10 +8,8 @@
 ## 1. Código HTML (Uiverse HTML Tab)
 
 ```html
-<div class="edger-card edger-rose">
-  <!-- Faixa Lateral Luminosa de Destaque -->
-  <div class="edger-accent-strip"></div>
-
+<!-- MODELO 1: Variação Borda Lateral (Lateral Edge) -->
+<div class="edger-card edger-card--lateral edger-rose">
   <div class="edger-content">
     <!-- Squircle Badge com Efeito de Luz Interna -->
     <div class="edger-squircle">
@@ -46,6 +44,32 @@
     </div>
   </div>
 </div>
+
+<!-- MODELO 2: Variação Borda Inferior (Bottom Edge 3D Offset) -->
+<div class="edger-card edger-card--bottom edger-sky">
+  <div class="edger-content">
+    <div class="edger-squircle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+      </svg>
+    </div>
+    <div class="edger-body">
+      <div class="edger-header">
+        <div class="edger-title-wrap">
+          <h4 class="edger-title">Proposta de Governança Aberta</h4>
+        </div>
+        <span class="edger-timestamp">há 3 horas</span>
+      </div>
+      <p class="edger-description">
+        Votação aberta para a proposta #27 da DAO: Expansão do programa de associados institucionais.
+      </p>
+      <div class="edger-actions">
+        <button class="edger-btn edger-btn-primary">Votar Agora</button>
+        <button class="edger-btn edger-btn-ghost">Detalhes</button>
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ---
@@ -69,7 +93,7 @@
   --edger-shadow: rgba(225, 29, 72, 0.22);
 }
 
-/* Suporte Automático a Variações (Amber, Emerald, Sky, Purple) */
+/* Suporte Automático a Variações (Amber, Emerald, Sky, Purple, Slate) */
 .edger-amber {
   --edger-bg: #fffbeb;
   --edger-border: #fde68a;
@@ -103,7 +127,7 @@
   --edger-shadow: rgba(2, 132, 199, 0.22);
 }
 
-/* Estrutura Principal do Card */
+/* Estrutura Base do Card */
 .edger-card {
   position: relative;
   width: 100%;
@@ -114,26 +138,27 @@
   overflow: hidden;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  /* Efeito de Camada 3D Deslocada (Layered 3D Offset) */
-  box-shadow: 0 4.5px 0 0 var(--edger-accent), 0 10px 20px -3px var(--edger-shadow);
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.edger-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6.5px 0 0 var(--edger-accent), 0 14px 24px -3px var(--edger-shadow);
+/* MODELO 1: Borda Lateral (Lateral Edge) */
+.edger-card--lateral {
+  box-shadow: -4.5px 0 0 0 var(--edger-accent), -6px 10px 22px -3px var(--edger-shadow);
 }
 
-/* Faixa Lateral Luminosa (Sharp Accent Strip) */
-.edger-accent-strip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 5px;
-  background-color: var(--edger-accent);
-  box-shadow: 2px 0 8px var(--edger-accent);
+.edger-card--lateral:hover {
+  transform: translateX(2px) translateY(-1px);
+  box-shadow: -6.5px 0 0 0 var(--edger-accent), -10px 14px 26px -3px var(--edger-shadow);
+}
+
+/* MODELO 2: Borda Inferior (Bottom Edge 3D) */
+.edger-card--bottom {
+  box-shadow: 0 4.5px 0 0 var(--edger-accent), 0 10px 20px -3px var(--edger-shadow);
+}
+
+.edger-card--bottom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6.5px 0 0 var(--edger-accent), 0 14px 24px -3px var(--edger-shadow);
 }
 
 /* Conteúdo */
@@ -141,7 +166,7 @@
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  padding: 22px 24px 22px 28px;
+  padding: 22px 24px;
 }
 
 /* Squircle Badge com Bevel Interno */
