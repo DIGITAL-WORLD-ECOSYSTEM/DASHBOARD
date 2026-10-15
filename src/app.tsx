@@ -14,8 +14,6 @@ import { ProgressBar } from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsDrawer, defaultSettings, SettingsProvider } from 'src/components/settings';
 
-import { CheckoutProvider } from 'src/sections/checkout/context';
-
 import { AuthProvider } from 'src/auth/context/jwt';
 
 // ----------------------------------------------------------------------
@@ -27,9 +25,8 @@ type AppProps = {
 /**
  * Composição de provedores do Dashboard Web (Data Plane).
  *
- * Preserva integralmente o pipeline completo de provedores:
+ * Preserva o pipeline central de provedores:
  * - I18nProvider, AuthProvider, SettingsProvider, LocalizationProvider, ThemeProvider, MotionLazy
- * - CheckoutProvider (Gerenciamento de carrinho e checkout e-commerce)
  * - ChatRealtimeProvider (Conexão WebSocket para chat em tempo real)
  * - Snackbar, ProgressBar, SettingsDrawer
  */
@@ -46,14 +43,12 @@ export default function App({ children }: AppProps) {
               defaultMode={themeConfig.defaultMode}
             >
               <MotionLazy>
-                <CheckoutProvider>
-                  <ChatRealtimeProvider>
-                    <Snackbar />
-                    <ProgressBar />
-                    <SettingsDrawer defaultSettings={defaultSettings} />
-                    {children}
-                  </ChatRealtimeProvider>
-                </CheckoutProvider>
+                <ChatRealtimeProvider>
+                  <Snackbar />
+                  <ProgressBar />
+                  <SettingsDrawer defaultSettings={defaultSettings} />
+                  {children}
+                </ChatRealtimeProvider>
               </MotionLazy>
             </ThemeProvider>
           </LocalizationProvider>
