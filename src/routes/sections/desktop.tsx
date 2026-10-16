@@ -10,6 +10,7 @@ import { devosRoutes } from './devos';
 // ----------------------------------------------------------------------
 
 const Page404 = lazy(() => import('src/pages/error/404'));
+const DesignSystemPage = lazy(() => import('src/pages/dashboard/design-system'));
 
 function DevOSAppLayout() {
   return (
@@ -25,12 +26,11 @@ function DevOSAppLayout() {
  * Inclui:
  * - Redirecionamento da raiz desktop para /dev
  * - Cockpit e módulos administrativos do DevOS (devosRoutes)
+ * - Catálogo do Design System (/design-system)
  * - Fallback 404
  *
  * Envolvidas exclusivamente pela composição DevOSApp,
  * SEM instanciar CheckoutProvider ou ChatRealtimeProvider.
- *
- * ISOLAMENTO: Não importa App, authRoutes, shareRoutes ou dashboardRoutes.
  */
 export const desktopRoutes: RouteObject[] = [
   {
@@ -38,6 +38,7 @@ export const desktopRoutes: RouteObject[] = [
     children: [
       { path: '/', element: <Navigate to="/dev" replace /> },
       ...devosRoutes,
+      { path: 'design-system', element: <DesignSystemPage /> },
       { path: '*', element: <Page404 /> },
     ],
   },
