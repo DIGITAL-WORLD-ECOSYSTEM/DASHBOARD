@@ -762,77 +762,196 @@ export function DesignSystemView() {
       {/* ABA 5: CARDS E SUPERFÍCIES */}
       {currentTab === 'cards' && (
         <Stack spacing={4}>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Card
-                sx={{
-                  p: 3,
-                  boxShadow: (theme) => `0 8px 24px ${theme.vars.palette.grey[900]}20`,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  height: '100%',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                  <Avatar sx={{ bgcolor: 'primary.lighter', color: 'primary.main' }}>
-                    <Iconify icon={'solar:cube-bold-duotone' as any} />
-                  </Avatar>
-                  <Typography variant="h6">Card Esculpido 3D</Typography>
-                </Box>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-                  Superfície sólida com elevação suave, cantos arredondados (16px) e borda de delimitação suave.
-                </Typography>
-                <Button variant="soft" color="primary" fullWidth>
-                  Ver Detalhes
-                </Button>
-              </Card>
-            </Grid>
+          {/* 1. MODELOS ESTRUTURAIS DE PRODUÇÃO (DASHBOARD CORE) */}
+          <Box>
+            <Box sx={{ mb: 2.5 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+                1. Modelos Estruturais em Produção (Dashboard Core)
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Cards de conteúdo padrão, indicadores executivos e contêineres de dados utilizados nas telas principais.
+              </Typography>
+            </Box>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Paper
-                sx={{
-                  p: 3,
-                  height: '100%',
-                  backdropFilter: 'blur(16px)',
-                  backgroundColor: (theme) => `${theme.vars.palette.background.paper}B3`,
-                  border: '1px solid',
-                  borderColor: (theme) => `${theme.vars.palette.primary.main}33`,
-                  boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
-                  <Avatar sx={{ bgcolor: 'secondary.lighter', color: 'secondary.main' }}>
-                    <Iconify icon={'solar:ghost-bold-duotone' as any} />
-                  </Avatar>
-                  <Typography variant="h6">Obsidian Glass</Typography>
-                </Box>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-                  Vidro translúcido com desfoque de fundo (backdrop-filter) e reflexo de borda ciano/violeta.
-                </Typography>
-                <Button variant="soft" color="secondary" fullWidth>
-                  Explorar Vidro
-                </Button>
-              </Paper>
-            </Grid>
+            <Grid container spacing={3}>
+              {/* Modelo A: Card Esculpido 3D Padrão */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Card sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.lighter', color: 'primary.main' }}>
+                      <Iconify icon={'solar:cube-bold-duotone' as any} />
+                    </Avatar>
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Card Esculpido 3D</Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>Superfície MuiCard Padrão</Typography>
+                    </Box>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3, flexGrow: 1 }}>
+                    Superfície sólida com gradiente suave, elevação física, cantos arredondados de 20px e chanfro interno de luz superior.
+                  </Typography>
+                  <Button variant="soft" color="primary" fullWidth>
+                    Ver Detalhes
+                  </Button>
+                </Card>
+              </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <CyberCard
-                variant="default"
-                glow
-                sx={{ height: '100%', p: 3 }}
-              >
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  CyberCard Futurista
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-                  Card temático de alta densidade com cantos chanfrados e estética neon para módulos de inteligência e tesouraria.
-                </Typography>
-                <CyberButton variant="contained" color="primary" fullWidth glowColor="primary">
-                  Executar Operação
-                </CyberButton>
-              </CyberCard>
+              {/* Modelo B: Card de Indicadores / KPI Summary */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Card sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                      <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                        Volume Transacionado
+                      </Typography>
+                      <Avatar sx={{ width: 36, height: 36, bgcolor: 'success.lighter', color: 'success.main' }}>
+                        <Iconify icon={'solar:wallet-money-bold' as any} width={20} />
+                      </Avatar>
+                    </Box>
+                    <Typography variant="h3" sx={{ fontWeight: 800, mb: 1 }}>
+                      R$ 1.845.200
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, pt: 1, borderTop: '1px dashed', borderColor: 'divider' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', color: 'success.main', typography: 'subtitle2' }}>
+                      <Iconify icon={'solar:double-alt-arrow-up-bold-duotone' as any} width={18} sx={{ mr: 0.25 }} />
+                      +14.8%
+                    </Box>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                      vs mês anterior no livro-razão
+                    </Typography>
+                  </Box>
+                </Card>
+              </Grid>
+
+              {/* Modelo C: Card Contêiner com Header & Ações */}
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <CardHeader
+                    title="Contêiner Operacional"
+                    subheader="Relatórios & Tabelas"
+                    action={
+                      <IconButton size="small">
+                        <Iconify icon={'solar:menu-dots-bold' as any} />
+                      </IconButton>
+                    }
+                    sx={{ pb: 1 }}
+                  />
+                  <CardContent sx={{ pt: 1, flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                      Estrutura padrão com cabeçalho delimitado, área flexível de dados e rodapé de comando rápido.
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button size="small" variant="outlined" color="inherit" fullWidth>
+                        Filtrar
+                      </Button>
+                      <Button size="small" variant="contained" color="primary" fullWidth>
+                        Acessar
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
+
+          {/* 2. MODELOS TRANSLÚCIDOS E EXPERIMENTAIS */}
+          <Box>
+            <Box sx={{ mb: 2.5 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+                2. Modelos Translúcidos & Experimentais
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Superfícies de vidro escuro (Obsidian) e estética temática de alta densidade (CyberCard).
+              </Typography>
+            </Box>
+
+            <Grid container spacing={3}>
+              {/* Obsidian Glass */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Paper
+                  sx={{
+                    p: 3,
+                    height: '100%',
+                    backdropFilter: 'blur(16px)',
+                    backgroundColor: (theme) => `${theme.vars.palette.background.paper}B3`,
+                    border: '1px solid',
+                    borderColor: (theme) => `${theme.vars.palette.primary.main}33`,
+                    boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2 }}>
+                    <Avatar sx={{ bgcolor: 'secondary.lighter', color: 'secondary.main' }}>
+                      <Iconify icon={'solar:ghost-bold-duotone' as any} />
+                    </Avatar>
+                    <Typography variant="h6">Obsidian Glass</Typography>
+                  </Box>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                    Vidro translúcido com desfoque de fundo (backdrop-filter) e reflexo de borda ciano/violeta para painéis noturnos.
+                  </Typography>
+                  <Button variant="soft" color="secondary" fullWidth>
+                    Explorar Vidro
+                  </Button>
+                </Paper>
+              </Grid>
+
+              {/* CyberCard Futurista */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <CyberCard
+                  variant="default"
+                  glow
+                  sx={{ height: '100%', p: 3 }}
+                >
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    CyberCard Futurista
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
+                    Card temático de alta densidade com cantos chanfrados e estética neon para módulos de inteligência e tesouraria.
+                  </Typography>
+                  <CyberButton variant="contained" color="primary" fullWidth glowColor="primary">
+                    Executar Operação
+                  </CyberButton>
+                </CyberCard>
+              </Grid>
+            </Grid>
+          </Box>
+
+          {/* 3. COLEÇÃO EDGER LIGHTS — BLOCO VERTICAL */}
+          <Box>
+            <Box sx={{ mb: 2.5 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+                3. Coleção EDGER Lights — Bloco Vertical (EdgerCard)
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Cartões verticais em formato de bloco clássico com destaque tátil 3D lateral e bottom.
+              </Typography>
+            </Box>
+
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <EdgerCard
+                  variant="rose"
+                  edgeStyle="lateral"
+                  title="Alerta de Liquidez Crítica"
+                  description="Pool de liquidez da tesouraria atingiu limiar mínimo configurado para rebalanceamento."
+                  icon="solar:shield-warning-bold"
+                  actionText="Rebalancear"
+                  onAction={() => alert('Ação: Rebalancear Pool')}
+                  unread
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <EdgerCard
+                  variant="emerald"
+                  edgeStyle="bottom"
+                  title="Rendimento de Staking Ativo"
+                  description="Ciclo #14 encerrado com taxa de rendimento de 12.8% a.a. distribuída aos associados."
+                  icon="solar:cup-star-bold"
+                  actionText="Ver Extrato"
+                  onAction={() => alert('Ação: Ver Extrato de Staking')}
+                />
+              </Grid>
+            </Grid>
+          </Box>
 
           {/* ======================================================== */}
           {/* EDGER LIGHTS UI — INLINE NOTIFICATION                    */}
